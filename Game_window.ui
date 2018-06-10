@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Game_window</class>
- <widget class="QDialog" name="Game_window">
+ <widget class="QMainWindow" name="Game_window">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -438,37 +438,32 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>PacMan</string>
+   <string>MainWindow</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
-    <widget class="QGraphicsView" name="gameplay_area">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>620</width>
-       <height>750</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>620</width>
-       <height>750</height>
-      </size>
-     </property>
-    </widget>
-   </item>
-  </layout>
+  <widget class="QWidget" name="MainWidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QGraphicsView" name="gameplay_area">
+      <property name="minimumSize">
+       <size>
+        <width>620</width>
+        <height>750</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="font">
+    <font>
+     <pointsize>22</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+  </widget>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

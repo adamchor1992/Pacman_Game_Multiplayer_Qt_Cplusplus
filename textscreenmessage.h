@@ -1,24 +1,32 @@
-#ifndef TEXTSTARTEND_H
-#define TEXTSTARTEND_H
+#ifndef TEXTSCREENMESSAGE_H
+#define TEXTSCREENMESSAGE_H
 
+#include <QMap>
+#include <QDebug>
 #include <QPainter>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-class TextStartEnd : public QGraphicsItem
+class TextScreenMessage : public QGraphicsItem
 {
+private:
+    QMap <QString,int> text_states;
+    int current_text_state;
+
 public:
-    TextStartEnd();
-    QRectF boundingRect() const;
+    TextScreenMessage();
 
     void setScore(int _score);
     void setGameWon(bool _game_won);
     void setGameLost(bool _game_lost);
+    void setTextState(QString _textstate);
 
+    QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
     bool game_won, game_lost, playing;
     int score;
     int x,y,w,h;
 };
 
-#endif // TEXTSTARTEND_H
+#endif // TEXTSCREENMESSAGE_H

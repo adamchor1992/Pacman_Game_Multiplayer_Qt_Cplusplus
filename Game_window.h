@@ -7,13 +7,15 @@
 #include "powerball.h"
 #include "foodball.h"
 #include "ghost.h"
-//#include "textstartend.h"
+#include "textscreenmessage.h"
+#include "sounds.h"
 #include "clientconnection.h"
 #include "assert.h"
 
-#include <QDialog>
+#include <QMainWindow>
 #include <QtCore>
 #include <QtGui>
+#include <QPainter>
 #include <QGraphicsScene>
 #include <QList>
 #include "QRegExp"
@@ -24,7 +26,7 @@ namespace Ui
 class Game_window;
 }
 
-class Game_window : public QDialog
+class Game_window : public QMainWindow
 {
     Q_OBJECT
 
@@ -38,6 +40,7 @@ private:
     FoodBall *food_ball;
 
     ClientConnection *clientconnection;
+    TextScreenMessage *textscreenmessage;
 
     Map *pac_map;
     Pacman *pac_man;
@@ -56,6 +59,7 @@ private:
 
     int foodball_items_count;
     int powerball_items_count;
+    int game_state;
 
 public:
     explicit Game_window(QWidget *parent = 0);
@@ -65,6 +69,7 @@ public:
     void PopulateMap();
     void GenerateAndPlacePacman();
     void GenerateAndPlaceGhosts();
+    void InitializeSounds();
 
     void StartGame();
 

@@ -34,8 +34,9 @@ SOURCES += \
     pacman.cpp \
     foodball.cpp \
     powerball.cpp \
-    textstartend.cpp \
-    clientconnection.cpp
+    clientconnection.cpp \
+    sounds.cpp \
+    textscreenmessage.cpp
 
 HEADERS += \
         Game_window.h \
@@ -44,11 +45,12 @@ HEADERS += \
     pacman.h \
     foodball.h \
     powerball.h \
-    textstartend.h \
-    clientconnection.h
+    clientconnection.h \
+    sounds.h \
+    textscreenmessage.h
 
 FORMS += \
-        Game_window.ui
+    Game_window.ui
 
 RESOURCES += \
     images.qrc \

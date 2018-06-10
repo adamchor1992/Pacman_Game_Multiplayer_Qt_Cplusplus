@@ -4,12 +4,13 @@
 #include "powerball.h"
 
 Game_window::Game_window(QWidget *parent) :
-    QDialog(parent),
+    QMainWindow(parent),
     ui(new Ui::Game_window)
 {
     ui->setupUi(this);
 
     scene = new QGraphicsScene(this);
+
     ui->gameplay_area->setScene(scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
     scene->setSceneRect(0,0,614,740);
@@ -18,36 +19,27 @@ Game_window::Game_window(QWidget *parent) :
     clientconnection = new ClientConnection(this);
     clientconnection->RequestConnection();
 
+    textscreenmessage = new TextScreenMessage;
+
     GenerateMap();
     PopulateMap();
 
     GenerateAndPlacePacman();
     GenerateAndPlaceGhosts();
 
+    InitializeSounds();
+
     //ShowScoresAndLives();
+
+    game_state = 0;
 
     StartGame();
 
 //    collision_detection_delay = 0; //delay collision detection after game restart
 
-//    text_start_end = new TextStartEnd;
-//    scene->addItem(text_start_end);
+    ui->statusbar->showMessage("GET READY AND PRESS SPACE");
 
-//    playing=false;
-
-//    beginning_sound = new QMediaPlayer;
-//    eat_sound1 = new QMediaPlayer;
-//    eat_sound2 = new QMediaPlayer;
-//    eat_ghost_sound = new QMediaPlayer;
-//    pacman_death_sound = new QMediaPlayer;
-
-//    beginning_sound->setMedia(QUrl("qrc:/sounds/pacman_beginning.wav"));
-//    eat_sound1->setMedia(QUrl("qrc:/sounds/pacman_eat.wav"));
-//    eat_sound2->setMedia(QUrl("qrc:/sounds/pacman_eat.wav"));
-//    eat_ghost_sound->setMedia(QUrl("qrc:/sounds/pacman_eatghost.wav"));
-//    pacman_death_sound->setMedia(QUrl("qrc:/sounds/pacman_death.wav"));
-
-//    this->setFocus(Qt::ActiveWindowFocusReason);
+    //    playing=false;
 }
 
 void Game_window::GenerateMap()
@@ -109,37 +101,37 @@ void Game_window::GenerateAndPlaceGhosts()
 
     ghostplayer->setGhostDirection(1); //pacman moves left after game start
 
-    ghostplayer->setGhost_X(320);
-    ghostplayer->setGhost_Y(514);
+    ghostplayer->setGhost_X(307);
+    ghostplayer->setGhost_Y(252);
 
     scene->addItem(ghostplayer);
+}
+
+void Game_window::InitializeSounds()
+{
+    Sounds sounds;
 }
 
 void Game_window::StartGame()
 {
     //beginning_sound->play();
 
-    //text_start_end->hide();
+    ui->statusbar->showMessage("GAME STARTED",1500);
 
     updatertimer = new QTimer(this);
     updatecoordinates_timer = new QTimer(this);
 
-    //ghostsupdatertimer=new Qupdatertimer(this);
     connect(updatertimer, SIGNAL(timeout()), this,SLOT(updater()));
     connect(updatecoordinates_timer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()));
-    //connect(ghostsupdatertimer, SIGNAL(timeout()), this,SLOT(ghostupdater()));
+
     updatertimer->start(6);
     updatecoordinates_timer->start(6);
-    //ghostsupdatertimer->start(6);
 
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
 void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement using WSAD and directional keys
 {
-    //int pacman_nextdirection=pac_man->getNextDirection();
-    //int ghost_nextdirection=ghost1->getNextGhostDirection();
-
     switch(event->key())
     {
     case Qt::Key_A:
@@ -162,12 +154,13 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
         clientconnection->SendPressedKeyToServer('w');
         break;
 
-        //    case Qt::Key_Space:
-        //        if(!playing)
-        //        {
-        //            StartGame();
-        //            playing=true;
-        //        }
+    case Qt::Key_Space:
+        clientconnection->SendPressedKeyToServer('5');
+        break;
+
+    case Qt::Key_P:
+        clientconnection->SendPressedKeyToServer('6');
+        break;
 
     default:
         break;
@@ -182,7 +175,10 @@ void Game_window::UpdateCoordinatesFromServer()
     QString player2_x_part;
     QString player2_y_part;
 
-    QRegularExpression coordinates_pattern("{D1(1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.+)'}}");
+    qDebug() << "Data received on client: "<< data_received;
+
+    //QRegularExpression coordinates_pattern("{D1(1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.+)'}}");
+    QRegularExpression coordinates_pattern("{D1(1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[S:(0|1|2|3|4|5)\\],\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.+)'}}");
 
     QRegularExpression change_state_pattern("{del:\\[(\\d+,\\d+)\\]}");
 
@@ -204,17 +200,41 @@ void Game_window::UpdateCoordinatesFromServer()
         ghostplayer->setGhost_Y(player2_y_part.toInt());
         ghostplayer->setGhostDirection(match.captured(4).toInt());
 
-        if(match.captured(7) == "S")
+        if(match.captured(7) == "0")
+        {
+            game_state = 0;
+        }
+        else if(match.captured(7) == "1")
+        {
+            game_state = 1;
+        }
+        else if(match.captured(7) == "2")
+        {
+            game_state = 2;
+        }
+        else if(match.captured(7) == "3")
+        {
+            game_state = 3;
+        }
+        else if(match.captured(7) == "4")
+        {
+            game_state = 4;
+        }
+        else if(match.captured(7) == "5")
+        {
+            game_state = 5;
+        }
+
+        if(match.captured(8) == "S")
         {
             ghostplayer->setIsScared(true);
             ghostplayer->setScaredWhite(false);
         }
-        else if(match.captured(7) == "W")
+        else if(match.captured(8) == "W")
         {
-            ghostplayer->setIsScared(false);
             ghostplayer->setScaredWhite(true);
         }
-        else if(match.captured(7) == "N")
+        else if(match.captured(8) == "N")
         {
             ghostplayer->setIsScared(false);
             ghostplayer->setScaredWhite(false);
@@ -228,8 +248,8 @@ void Game_window::UpdateCoordinatesFromServer()
     }
     else
     {
-        qDebug() << data_received;
-        qDebug() << "PACKAGE LOST: Wrong coordinate package";
+        //qDebug() << data_received;
+        //qDebug() << "PACKAGE LOST: Wrong coordinate package";
     }
 
     if(match2.hasMatch())
@@ -255,12 +275,48 @@ void Game_window::UpdateCoordinatesFromServer()
 
 void Game_window::updater()
 {
-//    if(collision_detection_delay >= 500)
-//        CheckCollision();
-//    else
-//        collision_detection_delay++;
+//    if(updatertimer->isActive() == false && game_state == 1)
+//    {
+//        updatertimer->start(6);
+//    }
+//    else if(updatertimer->isActive() == true && game_state == 2)
+//    {
+//        updatertimer->stop();
+//    }
 
+//    if(ui->statusbar->currentMessage().length() > 0 && game_state == 1)
+//    {
+//        ui->statusbar->clearMessage();
+//    }
 
+//    if(ui->statusbar->currentMessage().length() > 0 && game_state == 2)
+//    {
+//        ui->statusbar->showMessage("PAUSED");
+//    }
+
+    if(game_state == 4)
+    {
+        scene->clear();
+        qDebug() << "Pacman wins";
+        ui->statusbar->showMessage("PACMAN WINS");
+        updatertimer->stop();
+    }
+
+    if(game_state == 5)
+    {
+        scene->clear();
+        qDebug() << "Ghost wins";
+        ui->statusbar->showMessage("GHOST WINS");
+        updatertimer->stop();
+    }
+
+    qDebug() << "Game state on client: " << game_state;
+
+//    if(!textscreenmessage->isVisible() && clientconnection->getSocketState() == QAbstractSocket::UnconnectedState)
+//    {
+//        textscreenmessage->setTextState("DISCONNECTED");
+//        textscreenmessage->show();
+//    }
 
 //    if(foodball_items_count==0)
 //    {
