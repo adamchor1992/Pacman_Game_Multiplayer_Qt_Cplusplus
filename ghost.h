@@ -20,6 +20,7 @@ private:
     bool is_scared;
     bool scared_white;
 
+    int scarestate;
     int animestate;
     int animation_modify_factor;
 
@@ -36,18 +37,22 @@ public:
 
     void setGhost_X(int);
     void setGhost_Y(int);
-    void setIsScared(bool option) {is_scared=option;}
-    void setScaredWhite(bool option) {scared_white=option;}
-    void setGhostDirection(int dir) {ghostdirection=dir;}
-    void setNextGhostDirection(int dir) {nextghostdirection=dir;}
+    void setIsScared(bool option) {is_scared = option;}
+    void setScaredWhite(bool option) {scared_white = option;}
+    void setGhostDirection(int dir) {ghostdirection = dir;}
+    void setNextGhostDirection(int dir) {nextghostdirection = dir;}
+    void setScarestate(int _scarestate) {scarestate = _scarestate;}
     void setGhostColor(QString col);
+    void incrementScarestate() {scarestate++;}
 
     int getGhost_X() {return ghost_x;}
     int getGhost_Y() {return ghost_y;}
     int getGhostDirection() {return ghostdirection;}
     int getNextGhostDirection() {return nextghostdirection;}
+    int getScarestate() {return scarestate;}
     bool getIsScared() {return is_scared;}
     bool getScaredWhite() {return scared_white;}
+
 };
 
 #endif // GHOST_H

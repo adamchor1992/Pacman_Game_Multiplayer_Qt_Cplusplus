@@ -8,6 +8,10 @@ Ghost::Ghost()
     ghostdirection=1;
     is_scared=false;
     scared_white=false;
+    scarestate = 0;
+
+    setGhost_X(307);
+    setGhost_Y(252);
 
     LoadGhostImages();
 }

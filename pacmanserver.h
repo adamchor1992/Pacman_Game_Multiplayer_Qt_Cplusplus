@@ -22,6 +22,9 @@ private:
     QTcpSocket *serversocket1;
     QTcpSocket *serversocket2;
 
+    //timers
+    QTimer *wait_for_player_connection_timer;
+    QTimer *wait_for_player_ready_signal_timer;
     QTimer *updatertimer;
     QTimer *sendcoordinates_player1_timer;
     QTimer *sendcoordinates_player2_timer;
@@ -38,6 +41,7 @@ private:
     QByteArray directionreceivedfromclient1;
     QByteArray directionreceivedfromclient2;
 
+    QByteArray game_state_packed;
     QByteArray is_ghost_scared_white_packed;
 
     int player1points;
@@ -48,31 +52,43 @@ private:
     int foodball_items_count;
     int powerball_items_count;
 
+    int game_state; //0-not started yet, 1-started and running, 2-paused, 3-aborted, to be restarted, 4-pacman wins, 5-ghost wins
+    bool player1_ready, player2_ready;
+
 public:
     explicit PacmanServer(QObject *parent = nullptr);
 
     void StartListening();
+    void PackDataToSendToClients();
     void Player1Move();
     void Player2Move();
 
-signals:
+    void SetUpAndFillMap();
+    
+    void SetUpAndPlacePlayers();
+    void StartGame();
+    void PauseGame();
+    void ResumeGame();
+
+    void CheckCollision();
 
 public slots:
     void AcceptConnection();
+    void WaitForPlayerConnection();
+    void WaitForPlayerReadySignals();
 
     void SendcoordinatesToClient1();
     void SendcoordinatesToClient2();
     void updater();
 
-    int ReadDirectionFromClient1();
-    int ReadDirectionFromClient2();
+    void ReadDirectionFromClient1();
+    void ReadDirectionFromClient2();
     void connected1();
     void disconnected1();
     void bytesWritten1(qint64 bytes);
     void connected2();
     void disconnected2();
     void bytesWritten2(qint64 bytes);
-
 };
 
 #endif // PACMANSERVER_H
