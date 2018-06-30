@@ -3,27 +3,15 @@
 
 Pacman::Pacman()
 {
-
+    setPac_X(320);
+    setPac_Y(514);
+    setDirection(0); //pacman does not move after game start
 }
 
-void Pacman::setPac_X(int x)
+void Pacman::Reset()
 {
-    pac_x=x;
+    setPac_X(320);
+    setPac_Y(514);
+    setDirection(0); //pacman does not move after game start
 }
-
-void Pacman::setPac_Y(int y)
-{
-    pac_y=y;
-}
-
-void Pacman::setDirection(int dir)
-{
-    direction=dir;
-}
-
-void Pacman::setNextDirection(int dir)
-{
-    nextdirection=dir;
-}
-
 

@@ -12,15 +12,19 @@ private:
 public:
     Pacman();
 
-    void setPac_X(int);
-    void setPac_Y(int);
-    void setDirection(int dir);
-    void setNextDirection(int dir);
+    void Reset();
 
-    int getPac_X() {return pac_x;}
-    int getPac_Y() {return pac_y;}
-    int getDirection() {return direction;}
-    int getNextDirection() {return nextdirection;}
+    //setters
+    void setPac_X(int x) {pac_x = x;}
+    void setPac_Y(int y) {pac_y = y;}
+    void setDirection(int dir) {direction = dir;}
+    void setNextDirection(int dir) {nextdirection = dir;}
+
+    //getters
+    int getPac_X() const {return pac_x;}
+    int getPac_Y() const {return pac_y;}
+    int getDirection() const {return direction;}
+    int getNextDirection() const {return nextdirection;}
 };
 
 #endif // PACMAN_H

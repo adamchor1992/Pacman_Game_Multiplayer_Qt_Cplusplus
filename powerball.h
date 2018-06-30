@@ -10,7 +10,7 @@ private:
     QVector<QPoint> powerballpositions;
 public:
     PowerBall();
-    QVector<QPoint> getPowerBallPositions() {return powerballpositions;}
+    QVector<QPoint> getPowerBallPositions() const {return powerballpositions;}
 };
 
 #endif // POWERBALL_H

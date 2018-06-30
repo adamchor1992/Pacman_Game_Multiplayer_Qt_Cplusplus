@@ -43,6 +43,4 @@ void FoodBall::CreateFoodballPositionsVector()
         }
     }
     std::swap( foodballpositions, unique_foodballpositions );
-
-    //qDebug("Foodball positions vector size after deleting non-unique elements: %d",foodballpositions.size());
 }

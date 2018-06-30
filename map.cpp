@@ -90,11 +90,6 @@ Map::Map()
     CreatePathPoints(579, 580, 579, 645);
 }
 
-QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every timer cycle
-{
-    return QRect(0,0,614,740);
-}
-
 void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
 {
     QPoint p;
@@ -161,8 +156,4 @@ bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible f
         }
     }
     return false;
-}
-
-Map::~Map()
-{
 }

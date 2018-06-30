@@ -12,7 +12,7 @@ private:
     QVector<QPoint> pacmanmapforreference;
 public:
     FoodBall();
-    QVector<QPoint> getFoodBallPositions() {return foodballpositions;}
+    QVector<QPoint> getFoodBallPositions() const {return foodballpositions;}
     void CreateFoodballPositionsVector();
 };
 
