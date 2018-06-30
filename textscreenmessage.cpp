@@ -58,10 +58,14 @@ void TextScreenMessage::setTextState(QString _textstate)
 
 void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    QPen pen(Qt::red);
-    painter->setPen(pen);
+    QPen pen_red(Qt::red);
+    QPen pen_yellow(Qt::yellow);
+    QPen pen_magenta(Qt::magenta);
+
+    painter->setPen(pen_red);
+
     QFont font=painter->font();
-    font.setPointSize (33);
+    font.setPointSize (25);
     painter->setFont(font);
 
     switch(current_text_state)
@@ -73,10 +77,12 @@ void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         painter->drawText(boundingRect(),Qt::AlignCenter, "PAUSED");
         break;
     case 3:
-        painter->drawText(boundingRect(),Qt::AlignCenter, "PACMAN WINS");
+        painter->setPen(pen_yellow);
+        painter->drawText(boundingRect(),Qt::AlignCenter, "PACMAN WINS\nPRESS SPACE TO RESTART");
         break;
     case 4:
-        painter->drawText(boundingRect(),Qt::AlignCenter, "GHOST WINS");
+        painter->setPen(pen_magenta);
+        painter->drawText(boundingRect(),Qt::AlignCenter, "GHOST WINS\nPRESS SPACE TO RESTART");
         break;
     case 5:
         painter->drawText(boundingRect(),Qt::AlignCenter, "DISCONNECTED");

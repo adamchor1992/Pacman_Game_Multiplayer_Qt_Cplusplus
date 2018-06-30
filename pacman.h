@@ -9,7 +9,6 @@ private:
     int pac_x;
     int pac_y;
     int direction;
-    int nextdirection;
     int animestate;
     int animation_modify_factor;
 
@@ -22,21 +21,16 @@ private:
 
 public:
     Pacman();
-
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void LoadPacmanImages();
     void advance();
 
     void setPac_X(int);
     void setPac_Y(int);
     void setDirection(int dir);
-    void setNextDirection(int dir);
 
-    int getPac_X() {return pac_x;}
-    int getPac_Y() {return pac_y;}
-    int getDirection() {return direction;}
-    int getNextDirection() {return nextdirection;}
+    //redefined pure virtual methods
+    QRectF boundingRect() const;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 };
 
 #endif // PACMAN_H

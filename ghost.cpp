@@ -23,46 +23,49 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     {
         switch(ghostdirection)
         {
-            case 1:
-                if(animestate==0)
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left1);
-                }
-                else
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left2);
-                }
-                break;
-            case 4:
-                if(animestate==0)
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right1);
-                }
-                else
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right2);
-                }
-                break;
-            case 3:
-                if(animestate==0)
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down1);
-                }
-                else
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down2);
-                }
-                break;
-            case 2:
-                if(animestate==0)
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up1);
-                }
-                else
-                {
-                    painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up2);
-                }
-                break;
+        case 0:
+            painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down1);
+            break;
+        case 1:
+            if(animestate==0)
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left1);
+            }
+            else
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left2);
+            }
+            break;
+        case 4:
+            if(animestate==0)
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right1);
+            }
+            else
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right2);
+            }
+            break;
+        case 3:
+            if(animestate==0)
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down1);
+            }
+            else
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down2);
+            }
+            break;
+        case 2:
+            if(animestate==0)
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up1);
+            }
+            else
+            {
+                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up2);
+            }
+            break;
         }
     }
     else
