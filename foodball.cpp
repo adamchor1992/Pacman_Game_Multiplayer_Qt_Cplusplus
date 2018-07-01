@@ -29,8 +29,6 @@ void FoodBall::CreateFoodballPositionsVector()
         }
     }
 
-    //qDebug("Foodball positions vector size in function creating it: %d",foodballpositions.size());
-
     // Create a new vector without the duplicates
     QVector<QPoint> unique_foodballpositions;
 

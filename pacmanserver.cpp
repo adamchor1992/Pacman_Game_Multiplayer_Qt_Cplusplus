@@ -38,8 +38,6 @@ void PacmanServer::SetUpAndFillMap()
 
     foodball_items_count = foodball_positions.size();
     powerball_items_count = powerball_positions.size();
-
-    //qDebug("Foodball positions size on server: %d", foodball_positions.size());
 }
 
 void PacmanServer::SetUpAndPlacePlayers()
@@ -92,6 +90,79 @@ void PacmanServer::StopAllTimers()
 
 void PacmanServer::ResetContainersAndVariables()
 {
+    pac_man.Reset();
+    ghostplayer.Reset();
+
+
+    QByteArray player1_direction = QByteArray::number(0);
+    QByteArray player2_direction = QByteArray::number(0);
+
+    QByteArray player1_x_coordinate = QByteArray::number(pac_man.getPac_X());
+    QByteArray player1_y_coordinate = QByteArray::number(pac_man.getPac_Y());
+
+    QByteArray player2_x_coordinate = QByteArray::number(ghostplayer.getGhost_X());
+    QByteArray player2_y_coordinate = QByteArray::number(ghostplayer.getGhost_Y());
+
+    QByteArray player1_x_coordinate_packed = "{{D1" + player1_direction + "[x1:"+player1_x_coordinate+",";
+    QByteArray player1_y_coordinate_packed = "y1:" + player1_y_coordinate + "];";
+    QByteArray player2_x_coordinate_packed = "D2" + player2_direction + "[x2:"+player2_x_coordinate+",";
+    QByteArray player2_y_coordinate_packed = "y2:" + player2_y_coordinate + "]},";
+
+    if(game_state == 0) //game not started
+    {
+        game_state_packed = "{[S:0],";
+    }
+    else if(game_state == 1) //game running
+    {
+        game_state_packed = "{[S:1],";
+    }
+    else if(game_state == 2) //game paused
+    {
+        game_state_packed = "{[S:2],";
+    }
+    else if(game_state == 3) //game aborted, to be restarted
+    {
+        game_state_packed = "{[S:3],";
+    }
+    else if(game_state == 4) //pacman wins
+    {
+        game_state_packed = "{[S:4],";
+        updatertimer.stop();
+    }
+    else if(game_state == 5) //ghost wins
+    {
+        game_state_packed = "{[S:5],";
+        updatertimer.stop();
+    }
+
+    if(ghostplayer.getIsScared()) //scared
+    {
+        if(!ghostplayer.getScaredWhite()) //scared blue
+        {
+            is_ghost_scared_white_packed = "[G:S],";
+        }
+        else //scared white
+        {
+            is_ghost_scared_white_packed = "[G:W],";
+        }
+    }
+
+    else //no scared
+    {
+        is_ghost_scared_white_packed = "[G:N],";
+    }
+
+    QByteArray points_packed = "[P:" + QByteArray::number(player1points) + "]},";
+
+    messagetowrite = "{del:[100,100]}";
+
+    QByteArray message_packed = "{'" + messagetowrite + "'}}";
+
+    info_package_for_clients_packed = player1_x_coordinate_packed + player1_y_coordinate_packed + player2_x_coordinate_packed + player2_y_coordinate_packed +
+            game_state_packed + is_ghost_scared_white_packed + points_packed + message_packed;
+
+
+
     foodball_positions.clear();
     foodball_positions.squeeze();
     foodball_positions = food_ball.getFoodBallPositions();
@@ -102,15 +173,10 @@ void PacmanServer::ResetContainersAndVariables()
 
     foodball_items_count = foodball_positions.size();
     powerball_items_count = powerball_positions.size();
-
-    pac_man.Reset();
-    ghostplayer.Reset();
 }
 
 void PacmanServer::PrepareRestart()
 {
-    qDebug() << "Restarting game on server, players not ready yet";
-
     ResetContainersAndVariables();
 
     con_waitforplayerreadysignal_timer = connect(&wait_for_player_ready_signal_timer, SIGNAL(timeout()), this, SLOT(WaitForPlayerReadySignals()), Qt::UniqueConnection);
@@ -206,21 +272,11 @@ void PacmanServer::WaitForPlayerReadySignals()
 void PacmanServer::SendcoordinatesToClient1()
 {
     serversocket1->write(info_package_for_clients_packed);
-//    int bytes;
-//    if(bytes = serversocket1->write(coordinates_players_packed))
-//    {
-//       qDebug() << "Server sent "<< bytes <<" bytes with those coordinates:      " << coordinates_players_packed;
-//    }
 }
 
 void PacmanServer::SendcoordinatesToClient2()
 {
     serversocket2->write(info_package_for_clients_packed);
-//    int bytes;
-//    if(bytes = serversocket2->write(coordinates_players_packed))
-//    {
-//       qDebug() << "Server sent "<< bytes <<" bytes with those coordinates:      " << coordinates_players_packed;
-//    }
     emit(PrepareNextCoordinatesPackage());
 }
 
@@ -286,7 +342,6 @@ void PacmanServer::PackDataToSendToClients()
 
         QByteArray points_packed = "[P:" + QByteArray::number(player1points) + "]},";
 
-        //QByteArray message = "hello";
         QByteArray message_packed = "{'" + messagetowrite + "'}}";
 
         info_package_for_clients_packed = player1_x_coordinate_packed + player1_y_coordinate_packed + player2_x_coordinate_packed + player2_y_coordinate_packed +
@@ -313,7 +368,6 @@ void PacmanServer::Player1Move()
             if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
-                nextdirection=0;
             }
             break;
 
@@ -323,7 +377,6 @@ void PacmanServer::Player1Move()
             if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
-                nextdirection=0;
             }
             break;
 
@@ -333,7 +386,6 @@ void PacmanServer::Player1Move()
             if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
-                nextdirection=0;
             }
             break;
 
@@ -343,7 +395,6 @@ void PacmanServer::Player1Move()
             if(pac_map.IsPointAvailable(p))
             {
                 direction=nextdirection;
-                nextdirection=0;
             }
             break;
         }
@@ -434,7 +485,6 @@ void PacmanServer::Player2Move()
                 if(pac_map.IsPointAvailable(p))
                 {
                     ghost_direction=nextghostdirection;
-                    nextghostdirection=0;
                 }
                 break;
 
@@ -444,7 +494,6 @@ void PacmanServer::Player2Move()
                 if(pac_map.IsPointAvailable(p))
                 {
                     ghost_direction=nextghostdirection;
-                    nextghostdirection=0;
                 }
                 break;
 
@@ -454,7 +503,6 @@ void PacmanServer::Player2Move()
                 if(pac_map.IsPointAvailable(p))
                 {
                     ghost_direction=nextghostdirection;
-                    nextghostdirection=0;
                 }
                 break;
 
@@ -464,7 +512,6 @@ void PacmanServer::Player2Move()
                 if(pac_map.IsPointAvailable(p))
                 {
                     ghost_direction=nextghostdirection;
-                    nextghostdirection=0;
                 }
                 break;
             }
@@ -586,8 +633,6 @@ void PacmanServer::DisconnectAllSignals()
 
 void PacmanServer::updater()
 {
-    //qDebug() << "Game state on server: " << game_state << "Game state packed on server: " << game_state_packed;
-
     int pac_x = pac_man.getPac_X();
     int pac_y = pac_man.getPac_Y();
 
@@ -603,8 +648,6 @@ void PacmanServer::updater()
 
             foodball_items_count--;
             foodball_positions.remove(i);
-
-            qDebug() << "Na serwerze pozostalo " << foodball_positions.size() << "foodballi";
         }
     }
 
@@ -619,11 +662,8 @@ void PacmanServer::updater()
             powerball_positions.remove(i);
 
             ghostplayer.setIsScared(true);
-
-            qDebug() << "Na serwerze pozostalo " << powerball_positions.size() << "powerballi";
         }
     }
-
 
     if(foodball_items_count==0)
     {
@@ -643,11 +683,6 @@ void PacmanServer::updater()
     {
         ghostplayer.incrementScarestate();
 
-        if(ghostplayer.getScarestate() == 1)
-        {
-            //ghoststimer->setInterval(50);
-        }
-
         if(ghostplayer.getScarestate() == 750)
         {
             ghostplayer.setScaredWhite(true);
@@ -659,7 +694,6 @@ void PacmanServer::updater()
             ghostplayer.setScaredWhite(false);
 
             ghostplayer.setScarestate(0);
-            //ghoststimer->setInterval(4);
         }
     }
 
@@ -675,8 +709,6 @@ void PacmanServer::ReadDirectionFromClient1()
 {
     directionreceivedfromclient1 = serversocket1->readAll();
     directionreceivedfromclient1.resize(1);
-    qDebug() << "Socket1: " << directionreceivedfromclient1;
-    qDebug() << "Game state on server: " << game_state;
 
     if((game_state == 0 || game_state == 4 || game_state == 5) && directionreceivedfromclient1.toInt() == 5) // 5 is ready signal
     {
@@ -702,12 +734,6 @@ void PacmanServer::ReadDirectionFromClient1()
         return;
     }
 
-//    if((game_state == 4 || game_state == 5) && directionreceivedfromclient1.toInt() == 7) // 7 is restart signal
-//    {
-//        PrepareRestart();
-//        return;
-//    }
-
     pac_man.setNextDirection(directionreceivedfromclient1.toInt());
 }
 
@@ -719,6 +745,7 @@ void PacmanServer::connected1()
 void PacmanServer::disconnected1()
 {
     qDebug() << "Client 1 Disconnected!";
+    exit(1);
 }
 
 //socket2
@@ -726,8 +753,6 @@ void PacmanServer::ReadDirectionFromClient2()
 {
     directionreceivedfromclient2 = serversocket2->readAll();
     directionreceivedfromclient2.resize(1);
-    qDebug() << "Socket2: " << directionreceivedfromclient2;
-    qDebug() << "Game state on server: " << game_state;
 
     if((game_state == 0 || game_state == 4 || game_state == 5) && directionreceivedfromclient2.toInt() == 5) // 5 is ready signal
     {
@@ -764,4 +789,5 @@ void PacmanServer::connected2()
 void PacmanServer::disconnected2()
 {
       qDebug() << "Client 2 Disconnected!";
+      exit(2);
 }
