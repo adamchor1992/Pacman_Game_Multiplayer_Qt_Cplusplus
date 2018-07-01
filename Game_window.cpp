@@ -3,9 +3,7 @@
 #include "map.h"
 #include "powerball.h"
 
-Game_window::Game_window(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::Game_window)
+Game_window::Game_window(QWidget *parent, QHostAddress _address, uint _port) : QMainWindow(parent), ui(new Ui::Game_window)
 {
     ui->setupUi(this);
 
@@ -21,7 +19,7 @@ Game_window::Game_window(QWidget *parent) :
     //passing status bar and game state so clientconnection object can write messages directly to status bar
     clientconnection = new ClientConnection(ui->statusbar, &game_state, this);
 
-    clientconnection->RequestConnection();
+    clientconnection->RequestConnection(_address,_port);
 
     GenerateMap();
     PopulateMap();
@@ -131,22 +129,22 @@ void Game_window::HideSceneItems()
 
 void Game_window::RestartGame()
 {
+    pac_man.setDirection(0); //pacman does not move after game start
+    pac_man.setPac_X(320);
+    pac_man.setPac_Y(514);
+
     textscreenmessage.hide();
     scene.removeItem(&textscreenmessage);
 
     qDebug() << "Restarting game";
 
     ResetVariablesandContainers();
-
     PopulateMap();
     PrepareGameToStart();
 
-    qDebug() << "Trying to show hidden map";
     map_item->show();
-    qDebug() << "Trying to show hidden pacman";
     scene.addItem(&pac_man);
     pac_man.show();
-    qDebug() << "Trying to show hidden ghost";
     scene.addItem(&ghostplayer);
     ghostplayer.show();
 
@@ -211,7 +209,6 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
         break;
 
     case Qt::Key_Space:
-        qDebug() << ("Game state on client: ") << game_state;
         if(game_state == 4 || game_state == 5)
         {
             clientconnection->SendPressedKeyToServer('7');
@@ -314,13 +311,11 @@ void Game_window::UpdateCoordinatesFromServer()
             foodball_graphical_items_table_dict.value(iter1.key())->hide();
             foodball_graphical_items_table_dict.remove(iter1.key());
             sounds.eat_sound1.play();
-            qDebug() << "Client has " << foodball_graphical_items_table_dict.size() << "foodballs left";
         }
         else if(iter2 != powerball_graphical_items_table_dict.end())
         {
             powerball_graphical_items_table_dict.value(iter2.key())->hide();
             powerball_graphical_items_table_dict.remove(iter2.key());
-            qDebug() << "Client has " << powerball_graphical_items_table_dict.size() << "powerballs left";
         }
     }
 }

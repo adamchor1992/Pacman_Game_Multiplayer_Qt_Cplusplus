@@ -94,22 +94,4 @@ void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         painter->drawText(boundingRect(),Qt::AlignCenter, "WRONG TEXT STATE");
         break;
     }
-
-//    if(!playing)
-//    {
-//        if(game_won)
-//        {
-//            painter->drawText(boundingRect().x(),boundingRect().y(), "  CONGRATULATIONS");
-//            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
-//        }
-//        else if(game_lost)
-//        {
-//            painter->drawText(boundingRect().x(),boundingRect().y(), "YOU LOST, GAME OVER");
-//            painter->drawText(boundingRect(),Qt::AlignCenter, "FINAL SCORE : "+QString::number(score));
-//        }
-//        else
-//        {
-//            painter->drawText(boundingRect(),Qt::AlignCenter, "PRESS SPACE TO START");
-//        }
-//    }
 }

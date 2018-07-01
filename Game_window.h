@@ -11,6 +11,8 @@
 #include "clientconnection.h"
 #include "assert.h"
 
+#include "askforipinterface.h"
+
 #include <QMainWindow>
 #include <QtCore>
 #include <QtGui>
@@ -30,6 +32,7 @@ class Game_window : public QMainWindow
 
 private:
     Ui::Game_window *ui;
+
     QGraphicsScene scene;
 
     QTimer updatertimer;
@@ -68,7 +71,8 @@ private:
     bool restartpending;
 
 public:
-    explicit Game_window(QWidget *parent = 0);
+    explicit Game_window(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"), uint _port = 0);
+
     ~Game_window();
 
     void GenerateMap();

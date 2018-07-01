@@ -14,8 +14,6 @@ class ClientConnection : public QObject
 private:
     QTcpSocket *clientsocket;
     QStatusBar *statusbar;
-    QHostAddress serveraddress;
-    int serverport;
 
     QByteArray coordinates;
     QByteArray message_from_server;
@@ -25,7 +23,7 @@ private:
 public:
     explicit ClientConnection(QStatusBar *_statusbar, int *_game_state, QObject *parent = nullptr);
 
-    void RequestConnection();
+    void RequestConnection(QHostAddress _address, uint _port);
     void SendPressedKeyToServer(char key);
     QByteArray getCoordinates() {return coordinates;}
 

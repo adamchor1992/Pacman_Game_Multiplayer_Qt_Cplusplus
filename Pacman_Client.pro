@@ -36,7 +36,8 @@ SOURCES += \
     powerball.cpp \
     clientconnection.cpp \
     sounds.cpp \
-    textscreenmessage.cpp
+    textscreenmessage.cpp \
+    askforipinterface.cpp
 
 HEADERS += \
         Game_window.h \
@@ -47,10 +48,12 @@ HEADERS += \
     powerball.h \
     clientconnection.h \
     sounds.h \
-    textscreenmessage.h
+    textscreenmessage.h \
+    askforipinterface.h
 
 FORMS += \
-    Game_window.ui
+    Game_window.ui \
+    askforipinterface.ui
 
 RESOURCES += \
     images.qrc \

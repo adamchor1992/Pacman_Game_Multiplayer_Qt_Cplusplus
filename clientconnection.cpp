@@ -5,12 +5,6 @@ ClientConnection::ClientConnection(QStatusBar *_statusbar, int *_game_state, QOb
     statusbar = _statusbar;
     game_state = _game_state; //client connection is now writing game_state directly to Game_window object
     clientsocket = new QTcpSocket(this);
-    //serveraddress = "192.168.43.152";
-    //serveraddress = "192.168.43.235"; // telefon
-    //serveraddress = "192.168.8.102"; //wiocha internet
-    serveraddress = QHostAddress("192.168.1.179");
-    //serveraddress = "10.2.122.95"; // wi-free
-    serverport = 5000;
 
     //connect slots
     connect(clientsocket,SIGNAL(connected()), this, SLOT(connected()), Qt::UniqueConnection);
@@ -18,9 +12,10 @@ ClientConnection::ClientConnection(QStatusBar *_statusbar, int *_game_state, QOb
     connect(clientsocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()), Qt::UniqueConnection);
 }
 
-void ClientConnection::RequestConnection()
+void ClientConnection::RequestConnection(QHostAddress _address, uint _port)
 {
-    clientsocket->connectToHost(serveraddress, serverport);
+    //clientsocket->connectToHost(serveraddress, serverport);
+    clientsocket->connectToHost(_address, _port);
 
     if(!clientsocket->waitForConnected(500))
     {
@@ -64,7 +59,6 @@ void ClientConnection::SendPressedKeyToServer(char key)
         qDebug("Unrecognized or wrong key");
         break;
     }
-    qDebug() << "Game state on client: " << *game_state;
 }
 
 //SLOTS
