@@ -9,18 +9,17 @@ class Map
 private:
     QPixmap map_background_picture;
     QVector<QPoint> pacman_paths;
-
-public:
-    Map();
-    void CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end);
     void LoadMapImage();
-    bool IsPointAvailable(QPoint);
+    void CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end);
     QRectF boundingRect() const;
 
-    QPixmap getMap_Background_Picture() {return map_background_picture;}
+public:
+    /*! Create path points where movement is possible on map */
+    Map();
+    /*! Get pacman possible paths in form of QVector<QPoint> */
     QVector<QPoint> getPacmanPaths() {return pacman_paths;}
-
-    ~Map();
+    /*! Get pixel map of game map in form of QPixmap */
+    QPixmap getMap_Background_Picture() {return map_background_picture;}
 };
 
 #endif // MAP_H

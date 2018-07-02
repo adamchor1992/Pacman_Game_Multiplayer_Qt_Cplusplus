@@ -310,7 +310,7 @@ void Game_window::UpdateCoordinatesFromServer()
         {
             foodball_graphical_items_table_dict.value(iter1.key())->hide();
             foodball_graphical_items_table_dict.remove(iter1.key());
-            sounds.eat_sound1.play();
+            sounds.eat_sound.play();
         }
         else if(iter2 != powerball_graphical_items_table_dict.end())
         {

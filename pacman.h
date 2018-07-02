@@ -19,18 +19,22 @@ private:
     QPixmap down1,down2,down3,down4;
     QPixmap right1,right2,right3,right4;
 
-public:
-    Pacman();
     void LoadPacmanImages();
-    void advance();
-
-    void setPac_X(int);
-    void setPac_Y(int);
-    void setDirection(int dir);
-
     //redefined pure virtual methods
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+public:
+    /*! Initialize member variables and load pacman images */
+    Pacman();
+    /*! Increment pacman's animation state */
+    void advance();
+    /*! Set pacman x coordinate */
+    void setPac_X(int);
+    /*! Set pacman y coordinate */
+    void setPac_Y(int);
+    /*! Set pacman direction of movement */
+    void setDirection(int dir);
 };
 
 #endif // PACMAN_H

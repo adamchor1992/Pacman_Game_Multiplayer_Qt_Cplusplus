@@ -157,19 +157,3 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
         }
     }
 }
-
-bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible for Pacman (is present in pacman_paths vector)
-{
-    for(int i=0;i<pacman_paths.size();i++)
-    {
-        if(pacman_paths[i]==point)
-        {
-             return true;
-        }
-    }
-    return false;
-}
-
-Map::~Map()
-{
-}

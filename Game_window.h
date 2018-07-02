@@ -70,23 +70,23 @@ private:
     bool waitingforrestartkey;
     bool restartpending;
 
-public:
-    explicit Game_window(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"), uint _port = 0);
-
-    ~Game_window();
-
     void GenerateMap();
     void PopulateMap();
     void GenerateAndPlacePacman();
     void GenerateAndPlaceGhosts();
     void InitializeSounds();
-
     void PrepareGameToStart();
     void ResetVariablesandContainers();
     void HideSceneItems();
     void RestartGame();
 
-public slots:
+public:
+    /*! Initialize member variables, create game window and scene, populate the scene, connect to server and prepare game to start */
+    explicit Game_window(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"), uint _port = 0);
+    /*! Delete dynamically allocated objects */
+    ~Game_window();
+
+private slots:
     void StartGame();
     void CheckForRestartGameSignal();
     void updater();

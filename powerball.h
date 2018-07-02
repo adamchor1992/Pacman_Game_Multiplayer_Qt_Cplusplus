@@ -9,7 +9,9 @@ class PowerBall
 private:
     QVector<QPoint> powerballpositions;
 public:
+    /*! Fill powerballpositions vector with powerball positions represented as QPoints  */
     PowerBall();
+    /*! Get powerball coordinates in form of QVector<QPoint> */
     QVector<QPoint> getPowerBallPositions() {return powerballpositions;}
 };
 

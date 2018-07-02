@@ -2,9 +2,6 @@
 
 TextScreenMessage::TextScreenMessage()
 {
-    game_won=false;
-    game_lost=false;
-
     text_states.insert("start", 1);
     text_states.insert("paused", 2);
     text_states.insert("end_pacman", 3);
@@ -19,29 +16,6 @@ TextScreenMessage::TextScreenMessage()
     h=200;
     x=614/2-w/2;
     y=714/2-h/2;
-
-    score=0;
-    playing=false;
-}
-
-QRectF TextScreenMessage::boundingRect() const
-{
-    return QRect(x, y, w, h);
-}
-
-void TextScreenMessage::setScore(int _score)
-{
-    this -> score = _score;
-}
-
-void TextScreenMessage::setGameWon(bool _game_won)
-{
-    this -> game_won= _game_won;
-}
-
-void TextScreenMessage::setGameLost(bool _game_lost)
-{
-    this -> game_lost= _game_lost;
 }
 
 void TextScreenMessage::setTextState(QString _textstate)
@@ -54,6 +28,11 @@ void TextScreenMessage::setTextState(QString _textstate)
     {
         qDebug() << "Wrong text state";
     }
+}
+
+QRectF TextScreenMessage::boundingRect() const
+{
+    return QRect(x, y, w, h);
 }
 
 void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

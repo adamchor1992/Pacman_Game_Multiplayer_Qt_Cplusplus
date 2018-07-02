@@ -14,26 +14,29 @@ namespace Ui
 class AskForIP_Interface;
 }
 
+/*! Class responsible for displaying user interface asking for IP address and port number to connect to */
+
 class AskForIP_Interface : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Ui::AskForIP_Interface *ui;
+    /*! Initialize member variables and disable Connect push button*/
     explicit AskForIP_Interface(QWidget *parent = 0);
-    ~AskForIP_Interface();
-
+    /*! Get IP address in form of QHostAddress */
     QHostAddress getIP(){return ext_IP;}
+    /*! Get port number in form of unsigned integer */
     uint getPort(){return ext_Port;}
 
-private slots:
+    ~AskForIP_Interface();
 
+private slots:
     void on_lineEdit_IP_textChanged(const QString &_entered_IP);
     void on_lineEdit_Port_textChanged(const QString &arg1);
     void on_pushButton_Connect_clicked();
 
 private:
-
+    Ui::AskForIP_Interface *ui;
     QTcpSocket testsocket;
 
     QString validated_IP;

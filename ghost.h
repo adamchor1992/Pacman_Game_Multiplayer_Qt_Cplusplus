@@ -27,21 +27,28 @@ private:
     int ghostdirection;
     int nextghostdirection;
 
-public:
-    Ghost();
     void LoadGhostImages();
-    void advance();
-
-    void setGhost_X(int);
-    void setGhost_Y(int);
-    void setIsScared(bool option) {is_scared=option;}
-    void setScaredWhite(bool option) {scared_white=option;}
-    void setGhostDirection(int dir) {ghostdirection=dir;}
-    void setGhostColor(QString col);
-
     //redefined pure virtual methods
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+public:
+    /*! Initialize member variables */
+    Ghost();
+    /*! Increment ghost's animation state */
+    void advance();
+    /*! Set ghost x coordinate */
+    void setGhost_X(int);
+    /*! Set ghost y coordinate */
+    void setGhost_Y(int);
+    /*! Set if ghost is scared blue */
+    void setIsScared(bool option) {is_scared=option;}
+    /*! Set if ghost is scared white */
+    void setScaredWhite(bool option) {scared_white=option;}
+    /*! Set ghost direction of movement */
+    void setGhostDirection(int dir) {ghostdirection=dir;}
+    /*! Set ghost color */
+    void setGhostColor(QString col);
 };
 
 #endif // GHOST_H

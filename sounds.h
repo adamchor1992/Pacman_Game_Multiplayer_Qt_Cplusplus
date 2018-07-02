@@ -6,14 +6,16 @@
 class Sounds
 {
 public:
+     /*! Initialize sounds as QMediaPlayer objects binded to resource files containing proper sounds */
      Sounds();
-
+     /*! Sound played at beginning of game */
      QMediaPlayer beginning_sound;
-     QMediaPlayer eat_sound1;
-     QMediaPlayer eat_sound2;
+     /*! Sound played when foodball is eaten */
+     QMediaPlayer eat_sound;
+     /*! Sound played when pacman eats ghost */
      QMediaPlayer eat_ghost_sound;
+     /*! Sound played when pacman is eaten by ghost */
      QMediaPlayer pacman_death_sound;
-     QMediaPlayer pacman_siren;
 };
 
 #endif // SOUNDS_H
