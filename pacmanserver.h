@@ -70,15 +70,12 @@ private:
     int game_state; //0-not started yet, 1-started and running, 2-paused, 3-to be restarted, 4-pacman wins, 5-ghost wins
     bool player1_ready, player2_ready;
 
-public:
-    explicit PacmanServer(QObject *parent = nullptr);
-
     void ServerStartListening();
     void Player1Move();
     void Player2Move();
 
     void SetUpAndFillMap();
-    
+
     void SetUpAndPlacePlayers();
     void StartGame();
     void PauseGame();
@@ -90,7 +87,11 @@ public:
     void ResetContainersAndVariables();
     void StopAllTimers();
 
-public slots:
+public:
+    /*! Create temporary TCP socket, establish server infrastructure, start listening and create game environment - fill map and place players */
+    explicit PacmanServer(QObject *parent = nullptr);
+
+private slots:
     void AcceptConnection();
     void WaitForPlayerConnection();
     void WaitForPlayerReadySignals();

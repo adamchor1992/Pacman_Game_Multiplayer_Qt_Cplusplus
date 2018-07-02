@@ -10,10 +10,12 @@ private:
     int foodballcount;
     QVector<QPoint> foodballpositions;
     QVector<QPoint> pacmanmapforreference;
-public:
-    FoodBall();
-    QVector<QPoint> getFoodBallPositions() const {return foodballpositions;}
     void CreateFoodballPositionsVector();
+public:
+    /*! Initialize member variables and fill foodballpositions vector with QPoints representing foodballs coordinates on map */
+    FoodBall();
+    /*! Get generated foodballpositions vector in form of QVector<QPoint> */
+    QVector<QPoint> getFoodBallPositions() const {return foodballpositions;}
 };
 
 #endif // FOODBALL_H
