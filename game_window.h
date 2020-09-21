@@ -28,8 +28,12 @@ class GameWindow : public QMainWindow
 {
     Q_OBJECT
 
+public:
+    explicit GameWindow(QWidget *parent = 0, QHostAddress address = QHostAddress("0"));
+    ~GameWindow();
+
 private:
-    Ui::Game_window *ui;
+    Ui::Game_window* ui;
 
     QGraphicsScene m_Scene;
 
@@ -64,11 +68,10 @@ private:
 
     int m_FoodballItemsCount;
     int m_PowerballItemsCount;
+
     int m_GameState; //0-not started yet, 1-started and running, 2-paused, 3-to be restarted, 4-pacman wins, 5-ghost wins
     bool m_WaitingForRestartKey;
     bool m_RestartPending;
-
-    const int GAME_PORT = 5000;
 
     void GenerateMap();
     void PopulateMap();
@@ -80,9 +83,7 @@ private:
     void HideSceneItems();
     void RestartGame();
 
-public:
-    explicit GameWindow(QWidget *parent = 0, QHostAddress address = QHostAddress("0"));
-    ~GameWindow();
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void StartGame();
@@ -90,7 +91,4 @@ private slots:
     void Updater();
     void UpdateCoordinatesFromServer();
     void UpdateScene();
-
-protected:
-    void keyPressEvent(QKeyEvent *event);
 };

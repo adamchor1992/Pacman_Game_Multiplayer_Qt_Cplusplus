@@ -9,15 +9,15 @@ ConnectionDialogWindow::ConnectionDialogWindow(QWidget *parent) : QMainWindow(pa
     ui->pushButton_Connect->setEnabled(false);
 }
 
-void ConnectionDialogWindow::on_lineEdit_IP_textChanged(const QString &entered_IP)
+void ConnectionDialogWindow::on_lineEdit_IP_textChanged(const QString &enteredIpAddress)
 {
     QRegularExpression IP_validation_pattern("^(\\d){1,3}\\.(\\d){1,3}\\.(\\d){1,3}\\.(\\d){1,3}$");
-    QRegularExpressionMatch matchIP = IP_validation_pattern.match(entered_IP);
+    QRegularExpressionMatch matchIP = IP_validation_pattern.match(enteredIpAddress);
 
     if(matchIP.hasMatch())
     {
         m_IsValidIpAddress = true;
-        m_ValidatedIpAddressString = entered_IP;
+        m_ValidatedIpAddressString = enteredIpAddress;
 
         if(m_IsValidIpAddress)
         {

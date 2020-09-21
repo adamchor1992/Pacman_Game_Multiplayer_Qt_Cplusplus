@@ -11,18 +11,13 @@ TextScreenMessage::TextScreenMessage()
 
     m_CurrentTextState = 0;
     SetTextState("start");
-
-    m_W=600;
-    m_H=200;
-    m_X=614/2-m_W/2;
-    m_Y=714/2-m_H/2;
 }
 
-void TextScreenMessage::SetTextState(QString _textstate)
+void TextScreenMessage::SetTextState(QString textState)
 {
-    if(m_TextStates.contains(_textstate))
+    if(m_TextStates.contains(textState))
     {
-        m_CurrentTextState = m_TextStates.value(_textstate);
+        m_CurrentTextState = m_TextStates.value(textState);
     }
     else
     {
@@ -32,16 +27,16 @@ void TextScreenMessage::SetTextState(QString _textstate)
 
 QRectF TextScreenMessage::boundingRect() const
 {
-    return QRect(m_X, m_Y, m_W, m_H);
+    return QRect(X, Y, WIDTH, HEIGHT);
 }
 
-void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void TextScreenMessage::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
-    QPen pen_red(Qt::red);
-    QPen pen_yellow(Qt::yellow);
-    QPen pen_magenta(Qt::magenta);
+    QPen redPen(Qt::red);
+    QPen yellowPen(Qt::yellow);
+    QPen magentaPen(Qt::magenta);
 
-    painter->setPen(pen_red);
+    painter->setPen(redPen);
 
     QFont font=painter->font();
     font.setPointSize (25);
@@ -56,11 +51,11 @@ void TextScreenMessage::paint(QPainter *painter, const QStyleOptionGraphicsItem 
         painter->drawText(boundingRect(),Qt::AlignCenter, "PAUSED");
         break;
     case 3:
-        painter->setPen(pen_yellow);
+        painter->setPen(yellowPen);
         painter->drawText(boundingRect(),Qt::AlignCenter, "PACMAN WINS\nPRESS SPACE TO RESTART");
         break;
     case 4:
-        painter->setPen(pen_magenta);
+        painter->setPen(magentaPen);
         painter->drawText(boundingRect(),Qt::AlignCenter, "GHOST WINS\nPRESS SPACE TO RESTART");
         break;
     case 5:

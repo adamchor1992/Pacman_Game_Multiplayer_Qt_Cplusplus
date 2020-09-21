@@ -9,9 +9,10 @@ int main(int argc, char *argv[])
     ConnectionDialogWindow connectionDialogWindow;
     connectionDialogWindow.show();
 
-    app.exec(); //divide program into 2 steps
+    /*Divide program into 2 steps*/
+    app.exec();
 
-    GameWindow w(0, connectionDialogWindow.GetIpAddress());
+    GameWindow w(nullptr, connectionDialogWindow.GetIpAddress());
     w.show();
 
     return app.exec();

@@ -80,7 +80,7 @@ void ClientConnection::ShowMessageFromServer()
         m_pStatusBar->showMessage("Game started", 3000);
         disconnect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()));
         //start game
-        emit(GameStarted_signal());
+        emit(GameStarted());
         connect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ReadCoordinatesFromServer()), Qt::UniqueConnection);
     }
 }

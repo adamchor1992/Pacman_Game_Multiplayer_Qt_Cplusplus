@@ -19,7 +19,7 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
     //passing status bar and game state so clientconnection object can write messages directly to status bar
     m_pClientConnection = new ClientConnection(ui->statusbar, &m_GameState, this);
 
-    m_pClientConnection->RequestConnection(address, GAME_PORT);
+    m_pClientConnection->RequestConnection(address, ClientConnection::GAME_PORT);
 
     GenerateMap();
     PopulateMap();
@@ -30,7 +30,7 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
     PrepareGameToStart();
 
     connect(&m_SceneUpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateScene()), Qt::UniqueConnection);
-    connect(m_pClientConnection, SIGNAL(GameStarted_signal()), this, SLOT(StartGame()), Qt::UniqueConnection);
+    connect(m_pClientConnection, SIGNAL(GameStarted()), this, SLOT(StartGame()), Qt::UniqueConnection);
 
     m_SceneUpdateTimer.start(10);
 }
@@ -48,13 +48,13 @@ void GameWindow::PopulateMap()
     m_FoodballItemsCount = m_FoodballPositions.size();
     m_PowerballItemsCount = m_PowerballPositions.size();
 
-    for(int i=0; i <m_FoodballPositions.size(); i++)
+    for(int i=0; i < m_FoodballPositions.size(); i++)
     {
         //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
         m_FoodballGraphicalItemsTableDict.insert(QString(QString::number(m_FoodballPositions.at(i).x()) + "," + QString::number(m_FoodballPositions.at(i).y())), m_Scene.addEllipse(m_FoodballPositions.at(i).x(),m_FoodballPositions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
     }
 
-    for(int i=0; i <m_PowerballPositions.size(); i++)
+    for(int i=0; i < m_PowerballPositions.size(); i++)
     {
         //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
         m_PowerballGraphicalItemsTableDict.insert(QString(QString::number(m_PowerballPositions.at(i).x()) + "," + QString::number(m_PowerballPositions.at(i).y())), m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5,m_PowerballPositions.at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
@@ -227,10 +227,10 @@ void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement usin
 void GameWindow::UpdateCoordinatesFromServer()
 {
     QByteArray data_received = m_pClientConnection->GetCoordinates();
-    QString player1_x_part;
-    QString player1_y_part;
-    QString player2_x_part;
-    QString player2_y_part;
+    QString player1X;
+    QString player1Y;
+    QString player2X;
+    QString player2Y;
 
     QRegularExpression coordinates_pattern("{D1(0|1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(0|1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[S:(0|1|2|3|4|5)\\],\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.+)'}}");
 
@@ -241,17 +241,17 @@ void GameWindow::UpdateCoordinatesFromServer()
 
     if(match.hasMatch())
     {
-        player1_x_part = match.captured(2);
-        player1_y_part = match.captured(3);
-        player2_x_part = match.captured(5);
-        player2_y_part = match.captured(6);
+        player1X = match.captured(2);
+        player1Y = match.captured(3);
+        player2X = match.captured(5);
+        player2Y = match.captured(6);
 
-        m_Pacman.SetX(player1_x_part.toInt());
-        m_Pacman.SetY(player1_y_part.toInt());
+        m_Pacman.SetX(player1X.toInt());
+        m_Pacman.SetY(player1Y.toInt());
         m_Pacman.SetDirection(match.captured(1).toInt());
 
-        m_Ghostplayer.SetX(player2_x_part.toInt());
-        m_Ghostplayer.SetY(player2_y_part.toInt());
+        m_Ghostplayer.SetX(player2X.toInt());
+        m_Ghostplayer.SetY(player2Y.toInt());
         m_Ghostplayer.SetDirection(match.captured(4).toInt());
 
         if(match.captured(7) == "0")

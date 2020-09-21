@@ -4,14 +4,19 @@
 
 PowerBall::PowerBall()
 {
-    QPoint powerballposition1 = QPoint(35,75);
-    QPoint powerballposition2 = QPoint(579,75);
-    QPoint powerballposition3 = QPoint(35,514);
-    QPoint powerballposition4 = QPoint(579,514);
+    const int POWERBALL_X_1 = 35;
+    const int POWERBALL_X_2 = 579;
+    const int POWERBALL_Y_1 = 75;
+    const int POWERBALL_Y_2 = 514;
 
-    m_PowerballPositions.push_back(powerballposition1);
-    m_PowerballPositions.push_back(powerballposition2);
-    m_PowerballPositions.push_back(powerballposition3);
-    m_PowerballPositions.push_back(powerballposition4);
+    QPoint powerballPosition1 = QPoint(POWERBALL_X_1, POWERBALL_Y_1);
+    QPoint powerballPosition2 = QPoint(POWERBALL_X_2, POWERBALL_Y_1);
+    QPoint powerballPosition3 = QPoint(POWERBALL_X_1, POWERBALL_Y_2);
+    QPoint powerballPosition4 = QPoint(POWERBALL_X_2, POWERBALL_Y_2);
+
+    m_PowerballPositions.push_back(powerballPosition1);
+    m_PowerballPositions.push_back(powerballPosition2);
+    m_PowerballPositions.push_back(powerballPosition3);
+    m_PowerballPositions.push_back(powerballPosition4);
 }
 

@@ -5,65 +5,70 @@ Ghost::Ghost()
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    m_GhostDirection=1;
-    m_IsScared=false;
-    m_IsScaredWhite=false;
+    m_Direction = 1;
+    m_IsScaredBlue = false;
+    m_IsScaredWhite = false;
 
-    LoadGhostImages();
+    LoadImages();
 }
 
 QRectF Ghost::boundingRect() const
 {
-    return QRect(m_GhostX-15,m_GhostY-15,20,20);
+    return QRect(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT);
 }
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if(!m_IsScared)
+    const int X_OFFSET = 15;
+    const int Y_OFFSET = 15;
+    const int WIDTH = 30;
+    const int HEIGHT = 30;
+
+    if(!m_IsScaredBlue)
     {
-        switch(m_GhostDirection)
+        switch(m_Direction)
         {
         case 0:
-            painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down1);
+            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down1Pixmap);
             break;
         case 1:
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,left1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,left2);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left2Pixmap);
             }
             break;
         case 4:
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,right1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,right2);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right2Pixmap);
             }
             break;
         case 3:
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down2);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down2Pixmap);
             }
             break;
         case 2:
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,up1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,up2);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up2Pixmap);
             }
             break;
         }
@@ -72,43 +77,43 @@ void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWi
     {
         if(m_IsScaredWhite)
         {
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredwhite);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredWhite1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredwhite1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredWhite2Pixmap);
             }
         }
         else
         {
-            if(m_AnimationState==0)
+            if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredblue);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredBlue1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredblue1);
+                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredBlue2Pixmap);
             }
         }
     }
 }
 
-void Ghost::LoadGhostImages()
+void Ghost::LoadImages()
 {
-    right1.load(":/ghosts/images/ghost_images/ghostright1.png");
-    right2.load(":/ghosts/images/ghost_images/ghostright2.png");
-    up1.load(":/ghosts/images/ghost_images/ghostup1.png");
-    up2.load(":/ghosts/images/ghost_images/ghostup2.png");
-    down1.load(":/ghosts/images/ghost_images/ghostdown1.png");
-    down2.load(":/ghosts/images/ghost_images/ghostdown2.png");
-    left1.load(":/ghosts/images/ghost_images/ghostleft1.png");
-    left2.load(":/ghosts/images/ghost_images/ghostleft2.png");
-    scaredblue.load(":/ghosts/images/ghost_images/ghostscaredblue1.png");
-    scaredblue1.load(":/ghosts/images/ghost_images/ghostscaredblue2.png");
-    scaredwhite.load(":/ghosts/images/ghost_images/ghostscaredwhite1.png");
-    scaredwhite1.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
+    m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostright1.png");
+    m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostright2.png");
+    m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostup1.png");
+    m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostup2.png");
+    m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdown1.png");
+    m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdown2.png");
+    m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleft1.png");
+    m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleft2.png");
+    m_ScaredBlue1Pixmap.load(":/ghosts/images/ghost_images/ghostscaredblue1.png");
+    m_ScaredBlue2Pixmap.load(":/ghosts/images/ghost_images/ghostscaredblue2.png");
+    m_ScaredWhite1Pixmap.load(":/ghosts/images/ghost_images/ghostscaredwhite1.png");
+    m_ScaredWhite2Pixmap.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
 }
 
 void Ghost::AdvanceAnimation()
@@ -125,47 +130,47 @@ void Ghost::AdvanceAnimation()
 
 void Ghost::SetX(int x)
 {
-    m_GhostX = x;
+    m_X = x;
 }
 
 void Ghost::SetY(int y)
 {
-    m_GhostY = y;
+    m_Y = y;
 }
 
-void Ghost::SetColor(QString col)
+void Ghost::SetColor(QString color)
 {
-    if(col == "blue")
+    if(color == "blue")
     {
-        right1.load(":/ghosts/images/ghost_images/ghostrightblue1.png");
-        right2.load(":/ghosts/images/ghost_images/ghostrightblue2.png");
-        up1.load(":/ghosts/images/ghost_images/ghostupblue1.png");
-        up2.load(":/ghosts/images/ghost_images/ghostupblue2.png");
-        down1.load(":/ghosts/images/ghost_images/ghostdownblue1.png");
-        down2.load(":/ghosts/images/ghost_images/ghostdownblue2.png");
-        left1.load(":/ghosts/images/ghost_images/ghostleftblue1.png");
-        left2.load(":/ghosts/images/ghost_images/ghostleftblue2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightblue1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightblue2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostupblue1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostupblue2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownblue1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownblue2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftblue1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftblue2.png");
     }
-    else if(col == "orange")
+    else if(color == "orange")
     {
-        right1.load(":/ghosts/images/ghost_images/ghostrightorange1.png");
-        right2.load(":/ghosts/images/ghost_images/ghostrightorange2.png");
-        up1.load(":/ghosts/images/ghost_images/ghostuporange1.png");
-        up2.load(":/ghosts/images/ghost_images/ghostuporange2.png");
-        down1.load(":/ghosts/images/ghost_images/ghostdownorange1.png");
-        down2.load(":/ghosts/images/ghost_images/ghostdownorange2.png");
-        left1.load(":/ghosts/images/ghost_images/ghostleftorange1.png");
-        left2.load(":/ghosts/images/ghost_images/ghostleftorange2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightorange1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightorange2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostuporange1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostuporange2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownorange1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownorange2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftorange1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftorange2.png");
     }
-    else if(col == "red")
+    else if(color == "red")
     {
-        right1.load(":/ghosts/images/ghost_images/ghostrightred1.png");
-        right2.load(":/ghosts/images/ghost_images/ghostrightred2.png");
-        up1.load(":/ghosts/images/ghost_images/ghostupred1.png");
-        up2.load(":/ghosts/images/ghost_images/ghostupred2.png");
-        down1.load(":/ghosts/images/ghost_images/ghostdownred1.png");
-        down2.load(":/ghosts/images/ghost_images/ghostdownred2.png");
-        left1.load(":/ghosts/images/ghost_images/ghostleftred1.png");
-        left2.load(":/ghosts/images/ghost_images/ghostleftred2.png");
+        m_Right1Pixmap.load(":/ghosts/images/ghost_images/ghostrightred1.png");
+        m_Right2Pixmap.load(":/ghosts/images/ghost_images/ghostrightred2.png");
+        m_Up1Pixmap.load(":/ghosts/images/ghost_images/ghostupred1.png");
+        m_Up2Pixmap.load(":/ghosts/images/ghost_images/ghostupred2.png");
+        m_Down1Pixmap.load(":/ghosts/images/ghost_images/ghostdownred1.png");
+        m_Down2Pixmap.load(":/ghosts/images/ghost_images/ghostdownred2.png");
+        m_Left1Pixmap.load(":/ghosts/images/ghost_images/ghostleftred1.png");
+        m_Left2Pixmap.load(":/ghosts/images/ghost_images/ghostleftred2.png");
     }
 }

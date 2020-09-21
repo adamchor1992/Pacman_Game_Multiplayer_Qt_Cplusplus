@@ -8,15 +8,20 @@
 
 class TextScreenMessage : public QGraphicsItem
 {
+public:
+    TextScreenMessage();
+    void SetTextState(QString textState);
+
 private:
-    QMap <QString,int> m_TextStates;
+    QMap <QString, int> m_TextStates;
     int m_CurrentTextState;
-    int m_X, m_Y, m_W, m_H;
+
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-public:
-    TextScreenMessage();
-    void SetTextState(QString _textstate);
+    static constexpr int WIDTH = 600;
+    static constexpr int HEIGHT = 200;
+    static constexpr int X = 614 / 2 - WIDTH / 2;
+    static constexpr int Y = 714 / 2 - HEIGHT / 2;
 };

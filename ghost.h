@@ -5,40 +5,41 @@
 
 class Ghost : public QGraphicsItem
 {
+public:
+    Ghost();
+    void AdvanceAnimation();
+    void SetX(int x);
+    void SetY(int y);
+    void SetScaredStateBlue(bool option) {m_IsScaredBlue = option;}
+    void SetScaredStateWhite(bool option) {m_IsScaredWhite = option;}
+    void SetDirection(int direction) {m_Direction = direction;}
+    void SetColor(QString color);
+
 private:
-    QPixmap m_GhostPixmap;
-    QPixmap m_GhostScaredBluePixmap;
-    QPixmap m_GhostScaredWhitePixmap;
+    const int IMAGE_OFFSET_X = 15;
+    const int IMAGE_OFFSET_Y = 15;
+    const int IMAGE_WIDTH = 30;
+    const int IMAGE_HEIGHT = 30;
 
-    QPixmap left1,left2;
-    QPixmap up1,up2;
-    QPixmap down1,down2;
-    QPixmap right1,right2;
-    QPixmap scaredblue, scaredblue1;
-    QPixmap scaredwhite, scaredwhite1;
+    QPixmap m_Pixmap;
+    QPixmap m_Left1Pixmap, m_Left2Pixmap;
+    QPixmap m_Up1Pixmap, m_Up2Pixmap;
+    QPixmap m_Down1Pixmap, m_Down2Pixmap;
+    QPixmap m_Right1Pixmap, m_Right2Pixmap;
+    QPixmap m_ScaredBlue1Pixmap, m_ScaredBlue2Pixmap;
+    QPixmap m_ScaredWhite1Pixmap, m_ScaredWhite2Pixmap;
 
-    bool m_IsScared;
+    bool m_IsScaredBlue;
     bool m_IsScaredWhite;
 
     int m_AnimationState;
     int m_AnimationModifyFactor;
 
-    int m_GhostX, m_GhostY;
-    int m_GhostDirection;
-    int m_NextGhostDirection;
+    int m_X, m_Y;
+    int m_Direction, m_NextDirection;
 
-    void LoadGhostImages();
+    void LoadImages();
 
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-public:
-    Ghost();
-    void AdvanceAnimation();
-    void SetX(int);
-    void SetY(int);
-    void SetScaredStateBlue(bool option) {m_IsScared = option;}
-    void SetScaredStateWhite(bool option) {m_IsScaredWhite = option;}
-    void SetDirection(int dir) {m_GhostDirection = dir;}
-    void SetColor(QString col);
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 };

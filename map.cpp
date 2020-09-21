@@ -97,50 +97,45 @@ void Map::LoadMapImage()
     m_MapBackgroundPicture.load(":/images/pac_map.png");
 }
 
-QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every updatertimer cycle
-{
-    return QRect(0,0,614,740);
-}
-
-void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
+void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
 {
     QPoint p;
 
-    if (x_begin == x_end) //vertical line condition
+    if (startX == endX) //vertical line condition
     {
-        if (y_begin < y_end) //vertical line from y_begin to y_end
+        if (startY < endY) //vertical line from y_begin to y_end
         {
-            for (int y=y_begin; y<=y_end; y++)
+            for (int y = startY; y <= endY; y++)
             {
-                p.setX(x_begin);
+                p.setX(startX);
                 p.setY(y);
-                if (! m_PacmanPaths.contains(p))
+                if (!m_PacmanPaths.contains(p))
                 {
                     m_PacmanPaths.push_front(p);
                 }
             }
         }
 
-        else if(y_begin==y_end) //single point
+        else if(startY == endY) //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! m_PacmanPaths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (!m_PacmanPaths.contains(p))
                 {
                     m_PacmanPaths.push_front(p);
                 }
         }
     }
 
-    if (y_begin == y_end) //horizontal line condition
+    if (startY == endY) //horizontal line condition
     {
-        if (x_begin < x_end) //horizontal line from x_begin to x_end
+        if (startX < endX) //horizontal line from x_begin to x_end
         {
-            for (int x=x_begin; x<=x_end; x++)
+            for (int x = startX; x <= endX; x++)
             {
                 p.setX(x);
-                p.setY(y_begin);
-                if (! m_PacmanPaths.contains(p))
+                p.setY(startY);
+                if (!m_PacmanPaths.contains(p))
                 {
                     m_PacmanPaths.push_front(p);
                 }
@@ -148,9 +143,9 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
         }
         else //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! m_PacmanPaths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (!m_PacmanPaths.contains(p))
                 {
                     m_PacmanPaths.push_front(p);
                 }
