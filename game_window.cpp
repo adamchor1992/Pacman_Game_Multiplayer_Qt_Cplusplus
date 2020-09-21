@@ -1,9 +1,9 @@
-#include "Game_window.h"
+#include "game_window.h"
 #include "ui_Game_window.h"
 #include "map.h"
 #include "powerball.h"
 
-Game_window::Game_window(QWidget *parent, QHostAddress _address, uint _port) : QMainWindow(parent), ui(new Ui::Game_window)
+GameWindow::GameWindow(QWidget *parent, QHostAddress _address) : QMainWindow(parent), ui(new Ui::Game_window)
 {
     ui->setupUi(this);
 
@@ -19,7 +19,7 @@ Game_window::Game_window(QWidget *parent, QHostAddress _address, uint _port) : Q
     //passing status bar and game state so clientconnection object can write messages directly to status bar
     clientconnection = new ClientConnection(ui->statusbar, &game_state, this);
 
-    clientconnection->RequestConnection(_address,_port);
+    clientconnection->RequestConnection(_address, GAME_PORT);
 
     GenerateMap();
     PopulateMap();
@@ -35,12 +35,12 @@ Game_window::Game_window(QWidget *parent, QHostAddress _address, uint _port) : Q
     sceneupdate_timer.start(10);
 }
 
-void Game_window::GenerateMap()
+void GameWindow::GenerateMap()
 {
     map_item = scene.addPixmap(pac_map.getMap_Background_Picture());
 }
 
-void Game_window::PopulateMap()
+void GameWindow::PopulateMap()
 {
     powerball_positions = power_ball.getPowerBallPositions();
     foodball_positions = food_ball.getFoodBallPositions();
@@ -66,7 +66,7 @@ void Game_window::PopulateMap()
     qDebug("Foodball positions size: %d", foodball_positions.size());
 }
 
-void Game_window::GenerateAndPlacePacman()
+void GameWindow::GenerateAndPlacePacman()
 {
     pac_man.setDirection(0); //pacman does not move after game start
 
@@ -76,7 +76,7 @@ void Game_window::GenerateAndPlacePacman()
     scene.addItem(&pac_man);
 }
 
-void Game_window::GenerateAndPlaceGhosts()
+void GameWindow::GenerateAndPlaceGhosts()
 {
     ghostplayer.setGhostDirection(0); //pacman does not move after game start
 
@@ -86,13 +86,13 @@ void Game_window::GenerateAndPlaceGhosts()
     scene.addItem(&ghostplayer);
 }
 
-void Game_window::PrepareGameToStart()
+void GameWindow::PrepareGameToStart()
 {
     connect(&updatertimer, SIGNAL(timeout()), this,SLOT(updater()), Qt::UniqueConnection);
     connect(&updatecoordinates_timer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
 }
 
-void Game_window::ResetVariablesandContainers()
+void GameWindow::ResetVariablesandContainers()
 {
     foodball_positions.clear();
     foodball_positions.squeeze();
@@ -107,7 +107,7 @@ void Game_window::ResetVariablesandContainers()
     powerball_graphical_items_table_dict.clear();
 }
 
-void Game_window::HideSceneItems()
+void GameWindow::HideSceneItems()
 {
     map_item->hide();
     pac_man.hide();
@@ -127,7 +127,7 @@ void Game_window::HideSceneItems()
     }
 }
 
-void Game_window::RestartGame()
+void GameWindow::RestartGame()
 {
     pac_man.setDirection(0); //pacman does not move after game start
     pac_man.setPac_X(320);
@@ -158,7 +158,7 @@ void Game_window::RestartGame()
 }
 
 //SLOTS
-void Game_window::StartGame()
+void GameWindow::StartGame()
 {
     sounds.beginning_sound.play();
 
@@ -168,7 +168,7 @@ void Game_window::StartGame()
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
-void Game_window::CheckForRestartGameSignal()
+void GameWindow::CheckForRestartGameSignal()
 {
     qDebug() << "Waiting for restart signal from server";
     if(game_state == 1 && restartpending) //1 is game is running again (set by server)
@@ -184,7 +184,7 @@ void Game_window::CheckForRestartGameSignal()
     }
 }
 
-void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement using WSAD and directional keys
+void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement using WSAD and directional keys
 {
     switch(event->key())
     {
@@ -224,7 +224,7 @@ void Game_window::keyPressEvent(QKeyEvent *event) //supports pacman movement usi
     }
 }
 
-void Game_window::UpdateCoordinatesFromServer()
+void GameWindow::UpdateCoordinatesFromServer()
 {
     QByteArray data_received = clientconnection->getCoordinates();
     QString player1_x_part;
@@ -320,12 +320,12 @@ void Game_window::UpdateCoordinatesFromServer()
     }
 }
 
-void Game_window::UpdateScene()
+void GameWindow::UpdateScene()
 {
     scene.update(scene.sceneRect());
 }
 
-void Game_window::updater()
+void GameWindow::updater()
 {
     //PACMAN WINS
     if((game_state == 4) && (!waitingforrestartkey))
@@ -371,7 +371,7 @@ void Game_window::updater()
     ghostplayer.advance();
 }
 
-Game_window::~Game_window()
+GameWindow::~GameWindow()
 {
     delete ui;
     delete clientconnection;

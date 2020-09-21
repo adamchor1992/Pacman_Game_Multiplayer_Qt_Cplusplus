@@ -6,12 +6,12 @@
 #include "powerball.h"
 #include "foodball.h"
 #include "ghost.h"
-#include "textscreenmessage.h"
+#include "text_screen_message.h"
 #include "sounds.h"
-#include "clientconnection.h"
+#include "client_connection.h"
 #include "assert.h"
 
-#include "askforipinterface.h"
+#include "ask_for_ip_interface.h"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -26,7 +26,7 @@ namespace Ui
 class Game_window;
 }
 
-class Game_window : public QMainWindow
+class GameWindow : public QMainWindow
 {
     Q_OBJECT
 
@@ -70,6 +70,8 @@ private:
     bool waitingforrestartkey;
     bool restartpending;
 
+    const int GAME_PORT = 5000;
+
     void GenerateMap();
     void PopulateMap();
     void GenerateAndPlacePacman();
@@ -82,9 +84,9 @@ private:
 
 public:
     /*! Initialize member variables, create game window and scene, populate the scene, connect to server and prepare game to start */
-    explicit Game_window(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"), uint _port = 0);
+    explicit GameWindow(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"));
     /*! Delete dynamically allocated objects */
-    ~Game_window();
+    ~GameWindow();
 
 private slots:
     void StartGame();

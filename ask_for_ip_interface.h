@@ -32,7 +32,6 @@ public:
 
 private slots:
     void on_lineEdit_IP_textChanged(const QString &_entered_IP);
-    void on_lineEdit_Port_textChanged(const QString &arg1);
     void on_pushButton_Connect_clicked();
 
 private:
@@ -46,7 +45,6 @@ private:
     uint ext_Port; //final port number to be transferred to GameWindow class
 
     bool valid_IP;
-    bool valid_Port;
 };
 
 #endif // AskForIP_Interface_H

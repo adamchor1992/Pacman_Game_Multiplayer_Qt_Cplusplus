@@ -1,4 +1,4 @@
-#include "clientconnection.h"
+#include "client_connection.h"
 
 ClientConnection::ClientConnection(QStatusBar *_statusbar, int *_game_state, QObject *parent) : QObject(parent)
 {

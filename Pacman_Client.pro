@@ -27,33 +27,33 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    ask_for_ip_interface.cpp \
+    client_connection.cpp \
+    game_window.cpp \
         main.cpp \
-        Game_window.cpp \
     ghost.cpp \
     map.cpp \
     pacman.cpp \
     foodball.cpp \
     powerball.cpp \
-    clientconnection.cpp \
     sounds.cpp \
-    textscreenmessage.cpp \
-    askforipinterface.cpp
+    text_screen_message.cpp
 
 HEADERS += \
-        Game_window.h \
+    ask_for_ip_interface.h \
+    client_connection.h \
+    game_window.h \
     ghost.h \
     map.h \
     pacman.h \
     foodball.h \
     powerball.h \
-    clientconnection.h \
     sounds.h \
-    textscreenmessage.h \
-    askforipinterface.h
+    text_screen_message.h
 
 FORMS += \
-    Game_window.ui \
-    askforipinterface.ui
+    ask_for_ip_interface.ui \
+    game_window.ui
 
 RESOURCES += \
     images.qrc \

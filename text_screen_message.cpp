@@ -1,4 +1,4 @@
-#include "textscreenmessage.h"
+#include "text_screen_message.h"
 
 TextScreenMessage::TextScreenMessage()
 {

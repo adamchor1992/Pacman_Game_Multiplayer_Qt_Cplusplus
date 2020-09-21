@@ -1,4 +1,4 @@
-#include "askforipinterface.h"
+#include "ask_for_ip_interface.h"
 #include "ui_askforipinterface.h"
 
 AskForIP_Interface::AskForIP_Interface(QWidget *parent) : QMainWindow(parent), ui(new Ui::AskForIP_Interface)
@@ -6,7 +6,6 @@ AskForIP_Interface::AskForIP_Interface(QWidget *parent) : QMainWindow(parent), u
     ui->setupUi(this);
 
     valid_IP = false;
-    valid_Port = false;
     ui->pushButton_Connect->setEnabled(false);
 }
 
@@ -20,7 +19,7 @@ void AskForIP_Interface::on_lineEdit_IP_textChanged(const QString &entered_IP)
         valid_IP = true;
         validated_IP = entered_IP;
 
-        if(valid_IP && valid_Port)
+        if(valid_IP)
         {
             ui->pushButton_Connect->setEnabled(true);
         }
@@ -32,42 +31,15 @@ void AskForIP_Interface::on_lineEdit_IP_textChanged(const QString &entered_IP)
     else
     {
         valid_IP = false;
-        ui->statusbar->showMessage("Wrong connection data");
-        ui->pushButton_Connect->setEnabled(false);
-    }
-}
-
-void AskForIP_Interface::on_lineEdit_Port_textChanged(const QString &entered_Port)
-{
-    QRegularExpression Port_validation_pattern("^(\\d){1,5}$");
-    QRegularExpressionMatch matchPort = Port_validation_pattern.match(entered_Port);
-
-    if(matchPort.hasMatch())
-    {
-        valid_Port = true;
-        validated_Port = entered_Port;
-
-        if(valid_IP && valid_Port)
-        {
-            ui->pushButton_Connect->setEnabled(true);
-        }
-        else
-        {
-            ui->pushButton_Connect->setEnabled(false);
-        }
-    }
-    else
-    {
-        valid_Port = false;
-        ui->statusbar->showMessage("Wrong connection data");
+        ui->statusBar->showMessage("Wrong connection data");
         ui->pushButton_Connect->setEnabled(false);
     }
 }
 
 void AskForIP_Interface::on_pushButton_Connect_clicked()
 {
-    ext_IP = validated_IP;
-    ext_Port= validated_Port.toUInt();
+    ext_IP.setAddress(validated_IP);
+    ext_Port = validated_Port.toUInt();
 
     this->close();
 }

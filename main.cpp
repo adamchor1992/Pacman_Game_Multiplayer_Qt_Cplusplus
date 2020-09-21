@@ -1,5 +1,5 @@
-#include "Game_window.h"
-#include "askforipinterface.h"
+#include "game_window.h"
+#include "ask_for_ip_interface.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     app.exec(); //divide program into 2 steps
 
-    Game_window w(0, AskForIP_Interface_window.getIP(), AskForIP_Interface_window.getPort());
+    GameWindow w(0, AskForIP_Interface_window.getIP());
     w.show();
 
     return app.exec();
