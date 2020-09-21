@@ -1,14 +1,14 @@
-#ifndef GHOST_H
-#define GHOST_H
+#pragma once
+
 #include <QGraphicsItem>
 #include <QPainter>
 
 class Ghost : public QGraphicsItem
 {
 private:
-    QPixmap ghost_pixmap;
-    QPixmap ghost_scared_blue;
-    QPixmap ghost_scared_white;
+    QPixmap m_GhostPixmap;
+    QPixmap m_GhostScaredBluePixmap;
+    QPixmap m_GhostScaredWhitePixmap;
 
     QPixmap left1,left2;
     QPixmap up1,up2;
@@ -17,38 +17,28 @@ private:
     QPixmap scaredblue, scaredblue1;
     QPixmap scaredwhite, scaredwhite1;
 
-    bool is_scared;
-    bool scared_white;
+    bool m_IsScared;
+    bool m_IsScaredWhite;
 
-    int animestate;
-    int animation_modify_factor;
+    int m_AnimationState;
+    int m_AnimationModifyFactor;
 
-    int ghost_x,ghost_y;
-    int ghostdirection;
-    int nextghostdirection;
+    int m_GhostX, m_GhostY;
+    int m_GhostDirection;
+    int m_NextGhostDirection;
 
     void LoadGhostImages();
-    //redefined pure virtual methods
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 public:
-    /*! Initialize member variables */
     Ghost();
-    /*! Increment ghost's animation state */
-    void advance();
-    /*! Set ghost x coordinate */
-    void setGhost_X(int);
-    /*! Set ghost y coordinate */
-    void setGhost_Y(int);
-    /*! Set if ghost is scared blue */
-    void setIsScared(bool option) {is_scared=option;}
-    /*! Set if ghost is scared white */
-    void setScaredWhite(bool option) {scared_white=option;}
-    /*! Set ghost direction of movement */
-    void setGhostDirection(int dir) {ghostdirection=dir;}
-    /*! Set ghost color */
-    void setGhostColor(QString col);
+    void AdvanceAnimation();
+    void SetX(int);
+    void SetY(int);
+    void SetScaredStateBlue(bool option) {m_IsScared = option;}
+    void SetScaredStateWhite(bool option) {m_IsScaredWhite = option;}
+    void SetDirection(int dir) {m_GhostDirection = dir;}
+    void SetColor(QString col);
 };
-
-#endif // GHOST_H

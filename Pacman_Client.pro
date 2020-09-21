@@ -27,8 +27,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    ask_for_ip_interface.cpp \
     client_connection.cpp \
+    connection_dialog_window.cpp \
     game_window.cpp \
         main.cpp \
     ghost.cpp \
@@ -40,8 +40,8 @@ SOURCES += \
     text_screen_message.cpp
 
 HEADERS += \
-    ask_for_ip_interface.h \
     client_connection.h \
+    connection_dialog_window.h \
     game_window.h \
     ghost.h \
     map.h \
@@ -52,7 +52,7 @@ HEADERS += \
     text_screen_message.h
 
 FORMS += \
-    ask_for_ip_interface.ui \
+    connection_dialog_window.ui \
     game_window.ui
 
 RESOURCES += \

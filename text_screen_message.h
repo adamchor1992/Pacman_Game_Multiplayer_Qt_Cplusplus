@@ -1,5 +1,4 @@
-#ifndef TEXTSCREENMESSAGE_H
-#define TEXTSCREENMESSAGE_H
+#pragma once
 
 #include <QMap>
 #include <QDebug>
@@ -7,23 +6,17 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
-/*! Class responsible for displaying result of game */
-
 class TextScreenMessage : public QGraphicsItem
 {
 private:
-    QMap <QString,int> text_states;
-    int current_text_state;
-    int x,y,w,h;
+    QMap <QString,int> m_TextStates;
+    int m_CurrentTextState;
+    int m_X, m_Y, m_W, m_H;
 
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 public:
-    /*! Initialize states of all member variables */
     TextScreenMessage();
-    /*! Set what is supposed to be displayed by class */
-    void setTextState(QString _textstate);
+    void SetTextState(QString _textstate);
 };
-
-#endif // TEXTSCREENMESSAGE_H

@@ -2,94 +2,94 @@
 
 Ghost::Ghost()
 {
-    animestate = 0;
-    animation_modify_factor = 6;
+    m_AnimationState = 0;
+    m_AnimationModifyFactor = 6;
 
-    ghostdirection=1;
-    is_scared=false;
-    scared_white=false;
+    m_GhostDirection=1;
+    m_IsScared=false;
+    m_IsScaredWhite=false;
 
     LoadGhostImages();
 }
 
 QRectF Ghost::boundingRect() const
 {
-    return QRect(ghost_x-15,ghost_y-15,20,20);
+    return QRect(m_GhostX-15,m_GhostY-15,20,20);
 }
 
 void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-    if(!is_scared)
+    if(!m_IsScared)
     {
-        switch(ghostdirection)
+        switch(m_GhostDirection)
         {
         case 0:
-            painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down1);
+            painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down1);
             break;
         case 1:
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,left1);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,left2);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,left2);
             }
             break;
         case 4:
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,right1);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,right2);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,right2);
             }
             break;
         case 3:
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down1);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,down2);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,down2);
             }
             break;
         case 2:
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,up1);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,up2);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,up2);
             }
             break;
         }
     }
     else
     {
-        if(scared_white)
+        if(m_IsScaredWhite)
         {
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,scaredwhite);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredwhite);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,scaredwhite1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredwhite1);
             }
         }
         else
         {
-            if(animestate==0)
+            if(m_AnimationState==0)
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,scaredblue);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredblue);
             }
             else
             {
-                painter->drawPixmap(ghost_x-15,ghost_y-15,30,30,scaredblue1);
+                painter->drawPixmap(m_GhostX-15,m_GhostY-15,30,30,scaredblue1);
             }
         }
     }
@@ -111,31 +111,31 @@ void Ghost::LoadGhostImages()
     scaredwhite1.load(":/ghosts/images/ghost_images/ghostscaredwhite2.png");
 }
 
-void Ghost::advance()
+void Ghost::AdvanceAnimation()
 {
-    if(animestate>2)
+    if(m_AnimationState > 2)
     {
-        animestate=0;
+        m_AnimationState = 0;
     }
     else
     {
-        animestate++;
+        m_AnimationState++;
     }
 }
 
-void Ghost::setGhost_X(int x)
+void Ghost::SetX(int x)
 {
-    ghost_x=x;
+    m_GhostX = x;
 }
 
-void Ghost::setGhost_Y(int y)
+void Ghost::SetY(int y)
 {
-    ghost_y=y;
+    m_GhostY = y;
 }
 
-void Ghost::setGhostColor(QString col)
+void Ghost::SetColor(QString col)
 {
-    if(col=="blue")
+    if(col == "blue")
     {
         right1.load(":/ghosts/images/ghost_images/ghostrightblue1.png");
         right2.load(":/ghosts/images/ghost_images/ghostrightblue2.png");
@@ -146,7 +146,7 @@ void Ghost::setGhostColor(QString col)
         left1.load(":/ghosts/images/ghost_images/ghostleftblue1.png");
         left2.load(":/ghosts/images/ghost_images/ghostleftblue2.png");
     }
-    else if(col=="orange")
+    else if(col == "orange")
     {
         right1.load(":/ghosts/images/ghost_images/ghostrightorange1.png");
         right2.load(":/ghosts/images/ghost_images/ghostrightorange2.png");
@@ -157,7 +157,7 @@ void Ghost::setGhostColor(QString col)
         left1.load(":/ghosts/images/ghost_images/ghostleftorange1.png");
         left2.load(":/ghosts/images/ghost_images/ghostleftorange2.png");
     }
-    else if(col=="red")
+    else if(col == "red")
     {
         right1.load(":/ghosts/images/ghost_images/ghostrightred1.png");
         right2.load(":/ghosts/images/ghost_images/ghostrightred2.png");

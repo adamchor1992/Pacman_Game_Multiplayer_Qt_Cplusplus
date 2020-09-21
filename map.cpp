@@ -94,7 +94,7 @@ Map::Map()
 
 void Map::LoadMapImage()
 {
-    map_background_picture.load(":/images/pac_map.png");
+    m_MapBackgroundPicture.load(":/images/pac_map.png");
 }
 
 QRectF Map::boundingRect() const //sets map bounding rect which will be updated and redrawn every updatertimer cycle
@@ -114,9 +114,9 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
             {
                 p.setX(x_begin);
                 p.setY(y);
-                if (! pacman_paths.contains(p))
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
@@ -125,9 +125,9 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
         {
                 p.setX(x_begin);
                 p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }
@@ -140,9 +140,9 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
             {
                 p.setX(x);
                 p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
@@ -150,9 +150,9 @@ void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //onl
         {
                 p.setX(x_begin);
                 p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                if (! m_PacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }

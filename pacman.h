@@ -1,40 +1,32 @@
-#ifndef PACMAN_H
-#define PACMAN_H
+#pragma once
 
 #include <QGraphicsItem>
 
 class Pacman : public QGraphicsItem
 {
 private:
-    int pac_x;
-    int pac_y;
-    int direction;
-    int animestate;
-    int animation_modify_factor;
+    int m_X;
+    int m_Y;
+    int m_Direction;
+    int m_AnimationState;
+    int m_AnimationModifyFactor;
 
-    QPixmap pacman_pixmap;
+    QPixmap m_PacmanPixmap;
 
-    QPixmap left1,left2,left3,left4;
-    QPixmap up1,up2,up3,up4;
-    QPixmap down1,down2,down3,down4;
-    QPixmap right1,right2,right3,right4;
+    QPixmap m_Left1Pixmap, m_Left2Pixmap, m_Left3Pixmap, m_Left4Pixmap;
+    QPixmap m_Up1Pixmap, m_Up2Pixmap, m_Up3Pixmap, m_Up4Pixmap;
+    QPixmap m_Down1Pixmap, m_Down2Pixmap, m_Down3Pixmap, m_Down4Pixmap;
+    QPixmap m_Right1Pixmap, m_Right2Pixmap, m_Right3Pixmap, m_Right4Pixmap;
 
     void LoadPacmanImages();
-    //redefined pure virtual methods
-    QRectF boundingRect() const;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 public:
-    /*! Initialize member variables and load pacman images */
     Pacman();
-    /*! Increment pacman's animation state */
-    void advance();
-    /*! Set pacman x coordinate */
-    void setPac_X(int);
-    /*! Set pacman y coordinate */
-    void setPac_Y(int);
-    /*! Set pacman direction of movement */
-    void setDirection(int dir);
+    void AdvanceAnimation();
+    void SetX(int);
+    void SetY(int);
+    void SetDirection(int dir);
 };
-
-#endif // PACMAN_H

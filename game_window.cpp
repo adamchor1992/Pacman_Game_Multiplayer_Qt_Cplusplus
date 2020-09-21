@@ -1,25 +1,25 @@
 #include "game_window.h"
-#include "ui_Game_window.h"
+#include "ui_game_window.h"
 #include "map.h"
 #include "powerball.h"
 
-GameWindow::GameWindow(QWidget *parent, QHostAddress _address) : QMainWindow(parent), ui(new Ui::Game_window)
+GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(parent), ui(new Ui::Game_window)
 {
     ui->setupUi(this);
 
-    ui->gameplay_area->setScene(&scene);
+    ui->gameplay_area->setScene(&m_Scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
-    scene.setSceneRect(0,0,614,740);
-    ui->gameplay_area->setSceneRect(scene.sceneRect());
+    m_Scene.setSceneRect(0,0,614,740);
+    ui->gameplay_area->setSceneRect(m_Scene.sceneRect());
 
-    game_state = 0;
-    waitingforrestartkey = false;
-    restartpending = false;
+    m_GameState = 0;
+    m_WaitingForRestartKey = false;
+    m_RestartPending = false;
 
     //passing status bar and game state so clientconnection object can write messages directly to status bar
-    clientconnection = new ClientConnection(ui->statusbar, &game_state, this);
+    m_pClientConnection = new ClientConnection(ui->statusbar, &m_GameState, this);
 
-    clientconnection->RequestConnection(_address, GAME_PORT);
+    m_pClientConnection->RequestConnection(address, GAME_PORT);
 
     GenerateMap();
     PopulateMap();
@@ -29,112 +29,112 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress _address) : QMainWindow(par
 
     PrepareGameToStart();
 
-    connect(&sceneupdate_timer, SIGNAL(timeout()), this, SLOT(UpdateScene()), Qt::UniqueConnection);
-    connect(clientconnection, SIGNAL(GameStarted_signal()), this, SLOT(StartGame()), Qt::UniqueConnection);
+    connect(&m_SceneUpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateScene()), Qt::UniqueConnection);
+    connect(m_pClientConnection, SIGNAL(GameStarted_signal()), this, SLOT(StartGame()), Qt::UniqueConnection);
 
-    sceneupdate_timer.start(10);
+    m_SceneUpdateTimer.start(10);
 }
 
 void GameWindow::GenerateMap()
 {
-    map_item = scene.addPixmap(pac_map.getMap_Background_Picture());
+    m_pMapItem = m_Scene.addPixmap(m_Pacmap.GetMapBackgroundPicture());
 }
 
 void GameWindow::PopulateMap()
 {
-    powerball_positions = power_ball.getPowerBallPositions();
-    foodball_positions = food_ball.getFoodBallPositions();
+    m_PowerballPositions = m_Powerball.GetPowerBallPositions();
+    m_FoodballPositions = m_FoodBall.GetFoodBallPositions();
 
-    foodball_items_count = foodball_positions.size();
-    powerball_items_count = powerball_positions.size();
+    m_FoodballItemsCount = m_FoodballPositions.size();
+    m_PowerballItemsCount = m_PowerballPositions.size();
 
-    for(int i=0;i<foodball_positions.size();i++)
+    for(int i=0; i <m_FoodballPositions.size(); i++)
     {
         //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
-        foodball_graphical_items_table_dict.insert(QString(QString::number(foodball_positions.at(i).x()) + "," + QString::number(foodball_positions.at(i).y())), scene.addEllipse(foodball_positions.at(i).x(),foodball_positions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
+        m_FoodballGraphicalItemsTableDict.insert(QString(QString::number(m_FoodballPositions.at(i).x()) + "," + QString::number(m_FoodballPositions.at(i).y())), m_Scene.addEllipse(m_FoodballPositions.at(i).x(),m_FoodballPositions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
     }
 
-    for(int i=0;i<powerball_positions.size();i++)
+    for(int i=0; i <m_PowerballPositions.size(); i++)
     {
         //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
-        powerball_graphical_items_table_dict.insert(QString(QString::number(powerball_positions.at(i).x()) + "," + QString::number(powerball_positions.at(i).y())), scene.addEllipse(powerball_positions.at(i).x()-5,powerball_positions.at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
+        m_PowerballGraphicalItemsTableDict.insert(QString(QString::number(m_PowerballPositions.at(i).x()) + "," + QString::number(m_PowerballPositions.at(i).y())), m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5,m_PowerballPositions.at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
     }
 
-    assert(powerball_positions.size() == powerball_graphical_items_table_dict.size());
-    assert(foodball_positions.size() == foodball_graphical_items_table_dict.size());
+    assert(m_PowerballPositions.size() == m_PowerballGraphicalItemsTableDict.size());
+    assert(m_FoodballPositions.size() == m_FoodballGraphicalItemsTableDict.size());
 
-    qDebug("Foodball positions size: %d", foodball_positions.size());
+    qDebug("Foodball positions size: %d", m_FoodballPositions.size());
 }
 
 void GameWindow::GenerateAndPlacePacman()
 {
-    pac_man.setDirection(0); //pacman does not move after game start
+    m_Pacman.SetDirection(0); //pacman does not move after game start
 
-    pac_man.setPac_X(320);
-    pac_man.setPac_Y(514);
+    m_Pacman.SetX(320);
+    m_Pacman.SetY(514);
 
-    scene.addItem(&pac_man);
+    m_Scene.addItem(&m_Pacman);
 }
 
 void GameWindow::GenerateAndPlaceGhosts()
 {
-    ghostplayer.setGhostDirection(0); //pacman does not move after game start
+    m_Ghostplayer.SetDirection(0); //pacman does not move after game start
 
-    ghostplayer.setGhost_X(307);
-    ghostplayer.setGhost_Y(252);
+    m_Ghostplayer.SetX(307);
+    m_Ghostplayer.SetY(252);
 
-    scene.addItem(&ghostplayer);
+    m_Scene.addItem(&m_Ghostplayer);
 }
 
 void GameWindow::PrepareGameToStart()
 {
-    connect(&updatertimer, SIGNAL(timeout()), this,SLOT(updater()), Qt::UniqueConnection);
-    connect(&updatecoordinates_timer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
+    connect(&m_UpdaterTimer, SIGNAL(timeout()), this,SLOT(Updater()), Qt::UniqueConnection);
+    connect(&m_IpdateCoordinatesTimer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
 }
 
 void GameWindow::ResetVariablesandContainers()
 {
-    foodball_positions.clear();
-    foodball_positions.squeeze();
-    foodball_graphical_items_table.clear();
-    foodball_graphical_items_table.squeeze();
-    foodball_graphical_items_table_dict.clear();
+    m_FoodballPositions.clear();
+    m_FoodballPositions.squeeze();
+    m_FoodballGraphicalItemsTable.clear();
+    m_FoodballGraphicalItemsTable.squeeze();
+    m_FoodballGraphicalItemsTableDict.clear();
 
-    powerball_positions.clear();
-    powerball_positions.squeeze();
-    powerball_graphical_items_table.clear();
-    powerball_graphical_items_table.squeeze();
-    powerball_graphical_items_table_dict.clear();
+    m_PowerballPositions.clear();
+    m_PowerballPositions.squeeze();
+    m_PowerballGraphicalItemsTable.clear();
+    m_PowerballGraphicalItemsTable.squeeze();
+    m_PowerballGraphicalItemsTableDict.clear();
 }
 
 void GameWindow::HideSceneItems()
 {
-    map_item->hide();
-    pac_man.hide();
-    ghostplayer.hide();
+    m_pMapItem->hide();
+    m_Pacman.hide();
+    m_Ghostplayer.hide();
 
-    scene.removeItem(&pac_man);
-    scene.removeItem(&ghostplayer);
+    m_Scene.removeItem(&m_Pacman);
+    m_Scene.removeItem(&m_Ghostplayer);
 
-    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = foodball_graphical_items_table_dict.begin() ; iter1 != foodball_graphical_items_table_dict.end() ;iter1++)
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableDict.begin() ; iter1 != m_FoodballGraphicalItemsTableDict.end() ;iter1++)
     {
-        foodball_graphical_items_table_dict.value(iter1.key())->hide();
+        m_FoodballGraphicalItemsTableDict.value(iter1.key())->hide();
     }
 
-    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = powerball_graphical_items_table_dict.begin() ; iter2 != powerball_graphical_items_table_dict.end() ;iter2++)
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableDict.begin() ; iter2 != m_PowerballGraphicalItemsTableDict.end() ;iter2++)
     {
-        powerball_graphical_items_table_dict.value(iter2.key())->hide();
+        m_PowerballGraphicalItemsTableDict.value(iter2.key())->hide();
     }
 }
 
 void GameWindow::RestartGame()
 {
-    pac_man.setDirection(0); //pacman does not move after game start
-    pac_man.setPac_X(320);
-    pac_man.setPac_Y(514);
+    m_Pacman.SetDirection(0); //pacman does not move after game start
+    m_Pacman.SetX(320);
+    m_Pacman.SetY(514);
 
-    textscreenmessage.hide();
-    scene.removeItem(&textscreenmessage);
+    m_TextScreenMessage.hide();
+    m_Scene.removeItem(&m_TextScreenMessage);
 
     qDebug() << "Restarting game";
 
@@ -142,17 +142,17 @@ void GameWindow::RestartGame()
     PopulateMap();
     PrepareGameToStart();
 
-    map_item->show();
-    scene.addItem(&pac_man);
-    pac_man.show();
-    scene.addItem(&ghostplayer);
-    ghostplayer.show();
+    m_pMapItem->show();
+    m_Scene.addItem(&m_Pacman);
+    m_Pacman.show();
+    m_Scene.addItem(&m_Ghostplayer);
+    m_Ghostplayer.show();
 
-    sounds.beginning_sound.play();
+    m_Sounds.m_BeginningSound.play();
 
     ui->statusbar->showMessage("Game started", 3000);
-    updatertimer.start(6);
-    updatecoordinates_timer.start(6);
+    m_UpdaterTimer.start(6);
+    m_IpdateCoordinatesTimer.start(6);
 
     this->setFocus(); //gives the keyboard input focus to this widget
 }
@@ -160,26 +160,26 @@ void GameWindow::RestartGame()
 //SLOTS
 void GameWindow::StartGame()
 {
-    sounds.beginning_sound.play();
+    m_Sounds.m_BeginningSound.play();
 
     ui->statusbar->showMessage("Game started", 3000);
-    updatertimer.start(6);
-    updatecoordinates_timer.start(6);
+    m_UpdaterTimer.start(6);
+    m_IpdateCoordinatesTimer.start(6);
     this->setFocus(); //gives the keyboard input focus to this widget
 }
 
 void GameWindow::CheckForRestartGameSignal()
 {
     qDebug() << "Waiting for restart signal from server";
-    if(game_state == 1 && restartpending) //1 is game is running again (set by server)
+    if(m_GameState == 1 && m_RestartPending) //1 is game is running again (set by server)
     {
-        restartpending = false;
-        waitingforrestartkey = false;
+        m_RestartPending = false;
+        m_WaitingForRestartKey = false;
 
         RestartGame();
-        wait_for_restart_key_timer.stop();
+        m_WaitForRestartKeyTimer.stop();
 
-        disconnect(&wait_for_restart_key_timer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()));
+        disconnect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()));
         qDebug() << "GAME RESTARTED on client side";
     }
 }
@@ -190,32 +190,32 @@ void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement usin
     {
     case Qt::Key_A:
     case Qt::Key_Left:
-        clientconnection->SendPressedKeyToServer('a');
+        m_pClientConnection->SendPressedKeyToServer('a');
         break;
 
     case Qt::Key_D:
     case Qt::Key_Right:
-        clientconnection->SendPressedKeyToServer('d');
+        m_pClientConnection->SendPressedKeyToServer('d');
         break;
 
     case Qt::Key_S:
     case Qt::Key_Down:
-        clientconnection->SendPressedKeyToServer('s');
+        m_pClientConnection->SendPressedKeyToServer('s');
         break;
 
     case Qt::Key_W:
     case Qt::Key_Up:
-        clientconnection->SendPressedKeyToServer('w');
+        m_pClientConnection->SendPressedKeyToServer('w');
         break;
 
     case Qt::Key_Space:
-        if(game_state == 4 || game_state == 5)
+        if(m_GameState == 4 || m_GameState == 5)
         {
-            clientconnection->SendPressedKeyToServer('7');
+            m_pClientConnection->SendPressedKeyToServer('7');
         }
         else
         {
-            clientconnection->SendPressedKeyToServer('5');
+            m_pClientConnection->SendPressedKeyToServer('5');
         }
         break;
 
@@ -226,7 +226,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement usin
 
 void GameWindow::UpdateCoordinatesFromServer()
 {
-    QByteArray data_received = clientconnection->getCoordinates();
+    QByteArray data_received = m_pClientConnection->GetCoordinates();
     QString player1_x_part;
     QString player1_y_part;
     QString player2_x_part;
@@ -246,52 +246,52 @@ void GameWindow::UpdateCoordinatesFromServer()
         player2_x_part = match.captured(5);
         player2_y_part = match.captured(6);
 
-        pac_man.setPac_X(player1_x_part.toInt());
-        pac_man.setPac_Y(player1_y_part.toInt());
-        pac_man.setDirection(match.captured(1).toInt());
+        m_Pacman.SetX(player1_x_part.toInt());
+        m_Pacman.SetY(player1_y_part.toInt());
+        m_Pacman.SetDirection(match.captured(1).toInt());
 
-        ghostplayer.setGhost_X(player2_x_part.toInt());
-        ghostplayer.setGhost_Y(player2_y_part.toInt());
-        ghostplayer.setGhostDirection(match.captured(4).toInt());
+        m_Ghostplayer.SetX(player2_x_part.toInt());
+        m_Ghostplayer.SetY(player2_y_part.toInt());
+        m_Ghostplayer.SetDirection(match.captured(4).toInt());
 
         if(match.captured(7) == "0")
         {
-            game_state = 0;
+            m_GameState = 0;
         }
         else if(match.captured(7) == "1")
         {
-            game_state = 1;
+            m_GameState = 1;
         }
         else if(match.captured(7) == "2")
         {
-            game_state = 2;
+            m_GameState = 2;
         }
         else if(match.captured(7) == "3")
         {
-            game_state = 3;
+            m_GameState = 3;
         }
         else if(match.captured(7) == "4")
         {
-            game_state = 4;
+            m_GameState = 4;
         }
         else if(match.captured(7) == "5")
         {
-            game_state = 5;
+            m_GameState = 5;
         }
 
         if(match.captured(8) == "S")
         {
-            ghostplayer.setIsScared(true);
-            ghostplayer.setScaredWhite(false);
+            m_Ghostplayer.SetScaredStateBlue(true);
+            m_Ghostplayer.SetScaredStateWhite(false);
         }
         else if(match.captured(8) == "W")
         {
-            ghostplayer.setScaredWhite(true);
+            m_Ghostplayer.SetScaredStateWhite(true);
         }
         else if(match.captured(8) == "N")
         {
-            ghostplayer.setIsScared(false);
-            ghostplayer.setScaredWhite(false);
+            m_Ghostplayer.SetScaredStateBlue(false);
+            m_Ghostplayer.SetScaredStateWhite(false);
         }
     }
     else
@@ -303,76 +303,76 @@ void GameWindow::UpdateCoordinatesFromServer()
     if(match2.hasMatch())
     {
         QString coordinates_of_object_to_remove = match2.captured(1);
-        QMap<QString,QGraphicsEllipseItem*>::iterator iter1 = foodball_graphical_items_table_dict.find(coordinates_of_object_to_remove);
-        QMap<QString,QGraphicsEllipseItem*>::iterator iter2 = powerball_graphical_items_table_dict.find(coordinates_of_object_to_remove);
+        QMap<QString,QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);
+        QMap<QString,QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);
 
-        if(iter1 != foodball_graphical_items_table_dict.end())
+        if(iter1 != m_FoodballGraphicalItemsTableDict.end())
         {
-            foodball_graphical_items_table_dict.value(iter1.key())->hide();
-            foodball_graphical_items_table_dict.remove(iter1.key());
-            sounds.eat_sound.play();
+            m_FoodballGraphicalItemsTableDict.value(iter1.key())->hide();
+            m_FoodballGraphicalItemsTableDict.remove(iter1.key());
+            m_Sounds.m_EatSound.play();
         }
-        else if(iter2 != powerball_graphical_items_table_dict.end())
+        else if(iter2 != m_PowerballGraphicalItemsTableDict.end())
         {
-            powerball_graphical_items_table_dict.value(iter2.key())->hide();
-            powerball_graphical_items_table_dict.remove(iter2.key());
+            m_PowerballGraphicalItemsTableDict.value(iter2.key())->hide();
+            m_PowerballGraphicalItemsTableDict.remove(iter2.key());
         }
     }
 }
 
 void GameWindow::UpdateScene()
 {
-    scene.update(scene.sceneRect());
+    m_Scene.update(m_Scene.sceneRect());
 }
 
-void GameWindow::updater()
+void GameWindow::Updater()
 {
     //PACMAN WINS
-    if((game_state == 4) && (!waitingforrestartkey))
+    if((m_GameState == 4) && (!m_WaitingForRestartKey))
     {
-        restartpending = true;
+        m_RestartPending = true;
         HideSceneItems();
 
-        textscreenmessage.setTextState("end_pacman");
-        scene.addItem(&textscreenmessage);
-        textscreenmessage.show();
+        m_TextScreenMessage.SetTextState("end_pacman");
+        m_Scene.addItem(&m_TextScreenMessage);
+        m_TextScreenMessage.show();
 
         qDebug() << "Pacman wins";
         ui->statusbar->showMessage("PACMAN WINS");
-        updatertimer.stop();
+        m_UpdaterTimer.stop();
 
-        connect(&wait_for_restart_key_timer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
-        wait_for_restart_key_timer.start(500);
+        connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
+        m_WaitForRestartKeyTimer.start(500);
 
-        waitingforrestartkey = true;
+        m_WaitingForRestartKey = true;
     }
 
     //GHOST WINS
-    if((game_state == 5) && (!waitingforrestartkey))
+    if((m_GameState == 5) && (!m_WaitingForRestartKey))
     {
-        restartpending = true;
+        m_RestartPending = true;
         HideSceneItems();
 
-        textscreenmessage.setTextState("end_ghost");
-        scene.addItem(&textscreenmessage);
-        textscreenmessage.show();
+        m_TextScreenMessage.SetTextState("end_ghost");
+        m_Scene.addItem(&m_TextScreenMessage);
+        m_TextScreenMessage.show();
 
         qDebug() << "Ghost wins";
         ui->statusbar->showMessage("GHOST WINS");
-        updatertimer.stop();
+        m_UpdaterTimer.stop();
 
-        connect(&wait_for_restart_key_timer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
-        wait_for_restart_key_timer.start(500);
+        connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
+        m_WaitForRestartKeyTimer.start(500);
 
-        waitingforrestartkey = true;
+        m_WaitingForRestartKey = true;
     }
 
-    pac_man.advance();
-    ghostplayer.advance();
+    m_Pacman.AdvanceAnimation();
+    m_Ghostplayer.AdvanceAnimation();
 }
 
 GameWindow::~GameWindow()
 {
     delete ui;
-    delete clientconnection;
+    delete m_pClientConnection;
 }

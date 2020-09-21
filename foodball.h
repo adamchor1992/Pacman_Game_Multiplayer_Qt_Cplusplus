@@ -1,5 +1,4 @@
-#ifndef FOODBALL_H
-#define FOODBALL_H
+#pragma once
 
 #include <QVector>
 #include <QPoint>
@@ -7,16 +6,12 @@
 class FoodBall
 {
 private:
-    int foodballcount;
-    QVector<QPoint> foodballpositions;
-    QVector<QPoint> pacmanmapforreference;
+    int m_FoodbalCount;
+    QVector<QPoint> m_FoodballPositions;
+    QVector<QPoint> m_PacmanMapForReference;
     void CreateFoodballPositionsVector();
 
 public:
-    /*! Initialize member variables and fill foodballpositions vector with QPoints representing foodballs coordinates on map */
     FoodBall();
-    /*! Get generated foodballpositions vector in form of QVector<QPoint> */
-    QVector<QPoint> getFoodBallPositions() {return foodballpositions;}
+    QVector<QPoint> GetFoodBallPositions() {return m_FoodballPositions;}
 };
-
-#endif // FOODBALL_H

@@ -1,5 +1,4 @@
-#ifndef GAME_WINDOW_H
-#define GAME_WINDOW_H
+#pragma once
 
 #include "map.h"
 #include "pacman.h"
@@ -10,8 +9,7 @@
 #include "sounds.h"
 #include "client_connection.h"
 #include "assert.h"
-
-#include "ask_for_ip_interface.h"
+#include "connection_dialog_window.h"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -33,42 +31,42 @@ class GameWindow : public QMainWindow
 private:
     Ui::Game_window *ui;
 
-    QGraphicsScene scene;
+    QGraphicsScene m_Scene;
 
-    QTimer updatertimer;
-    QTimer sceneupdate_timer;
-    QTimer updatecoordinates_timer;
-    QTimer wait_for_restart_key_timer;
-    QTimer wait_for_game_restart_timer;
+    QTimer m_UpdaterTimer;
+    QTimer m_SceneUpdateTimer;
+    QTimer m_IpdateCoordinatesTimer;
+    QTimer m_WaitForRestartKeyTimer;
+    QTimer m_WaitForGameRestartTimer;
 
-    PowerBall power_ball;
-    FoodBall food_ball;
+    PowerBall m_Powerball;
+    FoodBall m_FoodBall;
 
-    ClientConnection *clientconnection;
+    ClientConnection* m_pClientConnection;
 
-    TextScreenMessage textscreenmessage;
+    TextScreenMessage m_TextScreenMessage;
 
-    Map pac_map;
-    Pacman pac_man;
-    Ghost ghostplayer;
-    Sounds sounds;
+    Map m_Pacmap;
+    Pacman m_Pacman;
+    Ghost m_Ghostplayer;
+    Sounds m_Sounds;
 
-    QGraphicsPixmapItem *map_item;
+    QGraphicsPixmapItem* m_pMapItem;
 
-    QVector<QPoint> powerball_positions;
-    QVector<QPoint> foodball_positions;
+    QVector<QPoint> m_PowerballPositions;
+    QVector<QPoint> m_FoodballPositions;
 
-    QVector<QGraphicsEllipseItem*> foodball_graphical_items_table;
-    QVector<QGraphicsEllipseItem*> powerball_graphical_items_table;
+    QVector<QGraphicsEllipseItem*> m_FoodballGraphicalItemsTable;
+    QVector<QGraphicsEllipseItem*> m_PowerballGraphicalItemsTable;
 
-    QMap<QString, QGraphicsEllipseItem*> powerball_graphical_items_table_dict;
-    QMap<QString, QGraphicsEllipseItem*> foodball_graphical_items_table_dict;
+    QMap<QString, QGraphicsEllipseItem*> m_PowerballGraphicalItemsTableDict;
+    QMap<QString, QGraphicsEllipseItem*> m_FoodballGraphicalItemsTableDict;
 
-    int foodball_items_count;
-    int powerball_items_count;
-    int game_state; //0-not started yet, 1-started and running, 2-paused, 3-to be restarted, 4-pacman wins, 5-ghost wins
-    bool waitingforrestartkey;
-    bool restartpending;
+    int m_FoodballItemsCount;
+    int m_PowerballItemsCount;
+    int m_GameState; //0-not started yet, 1-started and running, 2-paused, 3-to be restarted, 4-pacman wins, 5-ghost wins
+    bool m_WaitingForRestartKey;
+    bool m_RestartPending;
 
     const int GAME_PORT = 5000;
 
@@ -83,20 +81,16 @@ private:
     void RestartGame();
 
 public:
-    /*! Initialize member variables, create game window and scene, populate the scene, connect to server and prepare game to start */
-    explicit GameWindow(QWidget *parent = 0, QHostAddress _address = QHostAddress("0"));
-    /*! Delete dynamically allocated objects */
+    explicit GameWindow(QWidget *parent = 0, QHostAddress address = QHostAddress("0"));
     ~GameWindow();
 
 private slots:
     void StartGame();
     void CheckForRestartGameSignal();
-    void updater();
+    void Updater();
     void UpdateCoordinatesFromServer();
     void UpdateScene();
 
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
-
-#endif // GAME_WINDOW_H
