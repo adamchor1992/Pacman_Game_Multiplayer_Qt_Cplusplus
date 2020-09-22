@@ -12,12 +12,11 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
     m_Scene.setSceneRect(0,0,614,740);
     ui->gameplay_area->setSceneRect(m_Scene.sceneRect());
 
-    m_GameState = 0;
+    m_GameState = GameState::BeforeFirstRun;
     m_WaitingForRestartKey = false;
     m_RestartPending = false;
 
-    //passing status bar and game state so clientconnection object can write messages directly to status bar
-    m_pClientConnection = new ClientConnection(ui->statusbar, &m_GameState, this);
+    m_pClientConnection = new ClientConnection(ui->statusbar, this);
 
     m_pClientConnection->RequestConnection(address, ClientConnection::GAME_PORT);
 
@@ -171,7 +170,7 @@ void GameWindow::StartGame()
 void GameWindow::CheckForRestartGameSignal()
 {
     qDebug() << "Waiting for restart signal from server";
-    if(m_GameState == 1 && m_RestartPending) //1 is game is running again (set by server)
+    if(m_GameState == GameState::Running && m_RestartPending) //1 is game is running again (set by server)
     {
         m_RestartPending = false;
         m_WaitingForRestartKey = false;
@@ -209,7 +208,7 @@ void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement usin
         break;
 
     case Qt::Key_Space:
-        if(m_GameState == 4 || m_GameState == 5)
+        if(m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin)
         {
             m_pClientConnection->SendPressedKeyToServer('7');
         }
@@ -256,27 +255,27 @@ void GameWindow::UpdateCoordinatesFromServer()
 
         if(match.captured(7) == "0")
         {
-            m_GameState = 0;
+            m_GameState = GameState::BeforeFirstRun;
         }
         else if(match.captured(7) == "1")
         {
-            m_GameState = 1;
+            m_GameState = GameState::Running;
         }
         else if(match.captured(7) == "2")
         {
-            m_GameState = 2;
+            m_GameState = GameState::Paused;
         }
         else if(match.captured(7) == "3")
         {
-            m_GameState = 3;
+            m_GameState =GameState::Aborted;
         }
         else if(match.captured(7) == "4")
         {
-            m_GameState = 4;
+            m_GameState = GameState::PacmanWin;
         }
         else if(match.captured(7) == "5")
         {
-            m_GameState = 5;
+            m_GameState = GameState::GhostWin;
         }
 
         if(match.captured(8) == "S")
@@ -327,8 +326,7 @@ void GameWindow::UpdateScene()
 
 void GameWindow::Updater()
 {
-    //PACMAN WINS
-    if((m_GameState == 4) && (!m_WaitingForRestartKey))
+    if((m_GameState == GameState::PacmanWin) && (!m_WaitingForRestartKey))
     {
         m_RestartPending = true;
         HideSceneItems();
@@ -347,8 +345,7 @@ void GameWindow::Updater()
         m_WaitingForRestartKey = true;
     }
 
-    //GHOST WINS
-    if((m_GameState == 5) && (!m_WaitingForRestartKey))
+    if((m_GameState == GameState::GhostWin) && (!m_WaitingForRestartKey))
     {
         m_RestartPending = true;
         HideSceneItems();

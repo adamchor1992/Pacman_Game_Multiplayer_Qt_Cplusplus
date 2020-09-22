@@ -1,9 +1,8 @@
 #include "client_connection.h"
 
-ClientConnection::ClientConnection(QStatusBar* pStatusBar, int* pGameState, QObject *parent) : QObject(parent)
+ClientConnection::ClientConnection(QStatusBar* statusbar, QObject *parent) : QObject(parent)
 {
-    m_pStatusBar = pStatusBar;
-    m_pGameState = pGameState; //client connection is now writing game_state directly to Game_window object
+    m_pStatusBar = statusbar;
     m_pClientSocket = new QTcpSocket(this);
 
     //connect slots
