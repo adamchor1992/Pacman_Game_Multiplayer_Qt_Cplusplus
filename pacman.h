@@ -6,10 +6,10 @@ class Pacman : public QGraphicsItem
 {
 public:
     Pacman();
+    void SetX(int x) {m_X = x;}
+    void SetY(int y) {m_Y = y;}
+    void SetDirection(int direction) {m_Direction = direction;};
     void AdvanceAnimation();
-    void SetX(int x);
-    void SetY(int y);
-    void SetDirection(int direction);
 
 private:
     const int IMAGE_OFFSET_X = 15;
@@ -17,8 +17,7 @@ private:
     const int IMAGE_WIDTH = 30;
     const int IMAGE_HEIGHT = 30;
 
-    int m_X;
-    int m_Y;
+    int m_X, m_Y;
     int m_Direction;
     int m_AnimationState;
     int m_AnimationModifyFactor;

@@ -138,20 +138,3 @@ void Pacman::LoadPacmanImages()
     m_Left3Pixmap.load(":/pacman/images/pacman_images/pacopen2l.png");
     m_Left4Pixmap.load(":/pacman/images/pacman_images/pacopen3l.png");
 }
-
-void Pacman::SetX(int x)
-{
-    m_X = x;
-}
-
-void Pacman::SetY(int y)
-{
-    m_Y = y;
-}
-
-void Pacman::SetDirection(int direction)
-{
-    m_Direction = direction;
-}
-
-

@@ -91,7 +91,7 @@ void GameWindow::PrepareGameToStart()
     connect(&m_IpdateCoordinatesTimer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
 }
 
-void GameWindow::ResetVariablesandContainers()
+void GameWindow::ResetVariablesAndContainers()
 {
     m_FoodballPositions.clear();
     m_FoodballPositions.squeeze();
@@ -137,7 +137,7 @@ void GameWindow::RestartGame()
 
     qDebug() << "Restarting game";
 
-    ResetVariablesandContainers();
+    ResetVariablesAndContainers();
     PopulateMap();
     PrepareGameToStart();
 

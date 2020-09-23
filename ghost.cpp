@@ -128,16 +128,6 @@ void Ghost::AdvanceAnimation()
     }
 }
 
-void Ghost::SetX(int x)
-{
-    m_X = x;
-}
-
-void Ghost::SetY(int y)
-{
-    m_Y = y;
-}
-
 void Ghost::SetColor(QString color)
 {
     if(color == "blue")

@@ -78,7 +78,7 @@ private:
     void GenerateAndPlaceGhosts();
     void InitializeSounds();
     void PrepareGameToStart();
-    void ResetVariablesandContainers();
+    void ResetVariablesAndContainers();
     void HideSceneItems();
     void RestartGame();
 
