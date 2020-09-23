@@ -1,18 +1,14 @@
-#ifndef POWERBALL_H
-#define POWERBALL_H
+#pragma once
 
 #include <QVector>
 #include <QPoint>
 
-class PowerBall
+class Powerball
 {
-private:
-    QVector<QPoint> powerballpositions;
 public:
-    /*! Fill powerballpositions vector with powerball positions represented as QPoints  */
-    PowerBall();
-    /*! Get powerball coordinates in form of QVector<QPoint> */
-    QVector<QPoint> getPowerBallPositions() const {return powerballpositions;}
-};
+    Powerball();
+    QVector<QPoint> GetPowerballPositions() const {return m_PowerballPositions;}
 
-#endif // POWERBALL_H
+private:
+    QVector<QPoint> m_PowerballPositions;
+};

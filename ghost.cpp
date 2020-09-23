@@ -2,22 +2,22 @@
 
 Ghost::Ghost()
 {
-    setGhost_X(307);
-    setGhost_Y(252);
-    setGhostDirection(0); //ghost does not move after game start
-    setNextGhostDirection(0);
-    setIsScared(false);
-    setScaredWhite(false);
-    setScarestate(0);
+    SetX(307);
+    SetY(252);
+    SetDirection(0); //ghost does not move after game start
+    SetNextDirection(0);
+    SetScaredBlue(false);
+    SetScaredWhite(false);
+    SetScaredStateTimer(0);
 }
 
 void Ghost::Reset()
 {
-    setGhost_X(307);
-    setGhost_Y(252);
-    setGhostDirection(0); //ghost does not move after game start
-    setNextGhostDirection(0);
-    setIsScared(false);
-    setScaredWhite(false);
-    setScarestate(0);
+    SetX(307);
+    SetY(252);
+    SetDirection(0); //ghost does not move after game start
+    SetNextDirection(0);
+    SetScaredBlue(false);
+    SetScaredWhite(false);
+    SetScaredStateTimer(0);
 }

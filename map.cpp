@@ -90,67 +90,67 @@ Map::Map()
     CreatePathPoints(579, 580, 579, 645);
 }
 
-void Map::CreatePathPoints(int x_begin, int y_begin, int x_end, int y_end) //only left-right and up-down lines
+void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
 {
     QPoint p;
 
-    if (x_begin == x_end) //vertical line condition
+    if (startX == endX) //vertical line condition
     {
-        if (y_begin < y_end) //vertical line from y_begin to y_end
+        if (startY < endY) //vertical line from y_begin to y_end
         {
-            for (int y=y_begin; y<=y_end; y++)
+            for (int y = startY; y <= endY; y++)
             {
-                p.setX(x_begin);
+                p.setX(startX);
                 p.setY(y);
-                if (! pacman_paths.contains(p))
+                if (!pacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    pacmanPaths.push_front(p);
                 }
             }
         }
 
-        else if(y_begin==y_end) //single point
+        else if(startY == endY) //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (!pacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    pacmanPaths.push_front(p);
                 }
         }
     }
 
-    if (y_begin == y_end) //horizontal line condition
+    if (startY == endY) //horizontal line condition
     {
-        if (x_begin < x_end) //horizontal line from x_begin to x_end
+        if (startX < endX) //horizontal line from x_begin to x_end
         {
-            for (int x=x_begin; x<=x_end; x++)
+            for (int x = startX; x <= endX; x++)
             {
                 p.setX(x);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setY(startY);
+                if (!pacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    pacmanPaths.push_front(p);
                 }
             }
         }
         else //single point
         {
-                p.setX(x_begin);
-                p.setY(y_begin);
-                if (! pacman_paths.contains(p))
+                p.setX(startX);
+                p.setY(startY);
+                if (!pacmanPaths.contains(p))
                 {
-                    pacman_paths.push_front(p);
+                    pacmanPaths.push_front(p);
                 }
         }
     }
 }
 
-bool Map::IsPointAvailable(QPoint point) //checks if given point is accessible for Pacman (is present in pacman_paths vector)
+bool Map::IsPointAvailable(QPoint point)
 {
-    for(int i=0;i<pacman_paths.size();i++)
+    for(int i = 0; i < pacmanPaths.size(); i++)
     {
-        if(pacman_paths[i]==point)
+        if(pacmanPaths[i] == point)
         {
              return true;
         }

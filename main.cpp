@@ -1,5 +1,5 @@
 #include <QCoreApplication>
-#include "pacmanserver.h"
+#include "pacman_server.h"
 
 
 int main(int argc, char *argv[])
