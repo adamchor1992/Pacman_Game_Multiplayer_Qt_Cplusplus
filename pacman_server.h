@@ -66,7 +66,6 @@ private:
     int m_FoodballItemsCount;
     int m_PowerballItemsCount;
 
-    int m_GameState; //0-not started yet, 1-started and running, 2-paused, 3-to be restarted, 4-pacman wins, 5-ghost wins
     bool m_Player1Ready, m_Player2Ready;
 
     void ServerStartListening();
@@ -82,6 +81,16 @@ private:
     void DisconnectAllSignals();
     void ResetContainersAndVariables();
     void StopAllTimers();
+
+    enum class GameState
+    {
+        BeforeFirstRun = 0,
+        Running = 1,
+        Paused = 2,
+        Aborted = 3,
+        PacmanWin = 4,
+        GhostWin = 5
+    } m_GameState;
 
 private slots:
     void AcceptConnection();

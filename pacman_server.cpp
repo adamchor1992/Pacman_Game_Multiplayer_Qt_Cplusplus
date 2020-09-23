@@ -15,7 +15,7 @@ PacmanServer::PacmanServer(QObject *parent) : QObject(parent)
     SetUpAndFillMap();
     SetUpAndPlacePlayers();
 
-    m_GameState = 0;
+    m_GameState = GameState::BeforeFirstRun;
 }
 
 void PacmanServer::ServerStartListening()
@@ -64,19 +64,17 @@ void PacmanServer::StartGame()
 
     qDebug() << "Game started";
 
-    m_GameState = 1;
+    m_GameState = GameState::Running;
 }
 
 void PacmanServer::PauseGame()
 {
-    m_GameState = 2;
-    //updatertimer->stop();
+    m_GameState = GameState::Paused;
 }
 
 void PacmanServer::ResumeGame()
 {
-    m_GameState = 1;
-    //updatertimer->start(5);
+    m_GameState = GameState::Running;
 }
 
 void PacmanServer::StopAllTimers()
@@ -108,34 +106,34 @@ void PacmanServer::ResetContainersAndVariables()
     QByteArray player2XCoordinatePacked = "D2" + player2Direction + "[x2:"+player2X+",";
     QByteArray player2YCoordinatePacked = "y2:" + player2Y + "]},";
 
-    if(m_GameState == 0) //game not started
+    if(m_GameState == GameState::BeforeFirstRun)
     {
         m_GameStatePacked = "{[S:0],";
     }
-    else if(m_GameState == 1) //game running
+    else if(m_GameState == GameState::Running)
     {
         m_GameStatePacked = "{[S:1],";
     }
-    else if(m_GameState == 2) //game paused
+    else if(m_GameState == GameState::Paused)
     {
         m_GameStatePacked = "{[S:2],";
     }
-    else if(m_GameState == 3) //game aborted, to be restarted
+    else if(m_GameState == GameState::Aborted)
     {
         m_GameStatePacked = "{[S:3],";
     }
-    else if(m_GameState == 4) //pacman wins
+    else if(m_GameState == GameState::PacmanWin)
     {
         m_GameStatePacked = "{[S:4],";
         m_UpdaterTimer.stop();
     }
-    else if(m_GameState == 5) //ghost wins
+    else if(m_GameState == GameState::GhostWin)
     {
         m_GameStatePacked = "{[S:5],";
         m_UpdaterTimer.stop();
     }
 
-    if(m_GhostPlayer.GetScaredBlue()) //scared
+    if(m_GhostPlayer.GetScaredBlue())
     {
         if(!m_GhostPlayer.GetScaredWhite()) //scared blue
         {
@@ -146,7 +144,6 @@ void PacmanServer::ResetContainersAndVariables()
             m_IsGhostScaredWhitePacked = "[G:W],";
         }
     }
-
     else //no scared
     {
         m_IsGhostScaredWhitePacked = "[G:N],";
@@ -294,28 +291,28 @@ void PacmanServer::PackDataToSendToClients()
         QByteArray player2XCoordinatePacked = "D2" + player2Direction + "[x2:"+player2X+",";
         QByteArray player2YCoordinatePacked = "y2:" + player2Y + "]},";
 
-        if(m_GameState == 0) //game not started
+        if(m_GameState == GameState::BeforeFirstRun)
         {
             m_GameStatePacked = "{[S:0],";
         }
-        else if(m_GameState == 1) //game running
+        else if(m_GameState == GameState::Running)
         {
             m_GameStatePacked = "{[S:1],";
         }
-        else if(m_GameState == 2) //game paused
+        else if(m_GameState == GameState::Paused)
         {
             m_GameStatePacked = "{[S:2],";
         }
-        else if(m_GameState == 3) //game aborted, to be restarted
+        else if(m_GameState == GameState::Aborted)
         {
             m_GameStatePacked = "{[S:3],";
         }
-        else if(m_GameState == 4) //pacman wins
+        else if(m_GameState == GameState::PacmanWin)
         {
             m_GameStatePacked = "{[S:4],";
             m_UpdaterTimer.stop();
         }
-        else if(m_GameState == 5) //ghost wins
+        else if(m_GameState == GameState::GhostWin)
         {
             m_GameStatePacked = "{[S:5],";
             m_UpdaterTimer.stop();
@@ -587,7 +584,7 @@ void PacmanServer::CheckCollision()
         if(m_GhostPlayer.GetScaredBlue() == true)
         {
             //PACMAN WINS
-            m_GameState = 4;
+            m_GameState = GameState::PacmanWin;
             qDebug() << "Pacman wins";
 
             //RESET PACMAN AND GHOST POSITIONS
@@ -600,7 +597,7 @@ void PacmanServer::CheckCollision()
         else
         {
             //GHOST WINS
-            m_GameState = 5;
+            m_GameState = GameState::GhostWin;
             qDebug() << "Ghost wins";
 
             //RESET PACMAN AND GHOST POSITIONS
@@ -666,7 +663,7 @@ void PacmanServer::Updater()
     if(m_FoodballItemsCount == 0)
     {
         //PACMAN WINS
-        m_GameState = 4;
+        m_GameState = GameState::PacmanWin;
         qDebug() << "Pacman wins";
 
         //RESET PACMAN AND GHOST POSITIONS
@@ -708,25 +705,25 @@ void PacmanServer::ReadDirectionFromClient1()
     m_DirectionReceivedFromClient1 = m_ServerSocket1->readAll();
     m_DirectionReceivedFromClient1.resize(1);
 
-    if((m_GameState == 0 || m_GameState == 4 || m_GameState == 5) && m_DirectionReceivedFromClient1.toInt() == 5) // 5 is ready signal
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && m_DirectionReceivedFromClient1.toInt() == 5) // 5 is ready signal
     {
         m_Player1Ready = true;
         return;
     }
 
-    if((m_GameState == 4 || m_GameState == 5) && m_DirectionReceivedFromClient1.toInt() == 7) // 5 is ready signal
+    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && m_DirectionReceivedFromClient1.toInt() == 7) // 5 is ready signal
     {
         m_Player1Ready = true;
         return;
     }
 
-    if(m_GameState==1 && m_DirectionReceivedFromClient1.toInt() == 6) // 6 is pause signal
+    if(m_GameState == GameState::Running && m_DirectionReceivedFromClient1.toInt() == 6) // 6 is pause signal
     {
         PauseGame();
         return;
     }
 
-    if(m_GameState==2 && m_DirectionReceivedFromClient1.toInt() == 6) // 6 is pause signal
+    if(m_GameState == GameState::Paused && m_DirectionReceivedFromClient1.toInt() == 6) // 6 is pause signal
     {
         ResumeGame();
         return;
@@ -752,25 +749,25 @@ void PacmanServer::ReadDirectionFromClient2()
     m_DirectionReceivedFromClient2 = m_ServerSocket2->readAll();
     m_DirectionReceivedFromClient2.resize(1);
 
-    if((m_GameState == 0 || m_GameState == 4 || m_GameState == 5) && m_DirectionReceivedFromClient2.toInt() == 5) // 5 is ready signal
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && m_DirectionReceivedFromClient2.toInt() == 5) // 5 is ready signal
     {
         m_Player2Ready = true;
         return;
     }
 
-    if((m_GameState == 4 || m_GameState == 5) && m_DirectionReceivedFromClient2.toInt() == 7) // 5 is ready signal
+    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && m_DirectionReceivedFromClient2.toInt() == 7) // 5 is ready signal
     {
         m_Player2Ready = true;
         return;
     }
 
-    if(m_GameState==1 && m_DirectionReceivedFromClient2.toInt() == 6) // 6 is pause signal
+    if(m_GameState == GameState::Running && m_DirectionReceivedFromClient2.toInt() == 6) // 6 is pause signal
     {
         PauseGame();
         return;
     }
 
-    if(m_GameState==2 && m_DirectionReceivedFromClient2.toInt() == 6) // 6 is pause signal
+    if(m_GameState == GameState::Paused && m_DirectionReceivedFromClient2.toInt() == 6) // 6 is pause signal
     {
         ResumeGame();
         return;
