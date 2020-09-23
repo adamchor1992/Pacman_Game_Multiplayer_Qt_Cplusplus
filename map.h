@@ -7,10 +7,10 @@ class Map
 {
 public:
     Map();
+    QVector<QPoint> GetPacmanPaths() const {return m_PacmanPaths;}
     bool IsPointAvailable(QPoint point);
-    QVector<QPoint> getPacmanPaths() const {return pacmanPaths;}
 
 private:
-    QVector<QPoint> pacmanPaths;
+    QVector<QPoint> m_PacmanPaths;
     void CreatePathPoints(int startX, int startY, int endX, int endY);
 };

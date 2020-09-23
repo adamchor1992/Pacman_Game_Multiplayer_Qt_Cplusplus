@@ -6,8 +6,8 @@ Ghost::Ghost()
     SetY(252);
     SetDirection(0); //ghost does not move after game start
     SetNextDirection(0);
-    SetScaredBlue(false);
-    SetScaredWhite(false);
+    SetScaredStateBlue(false);
+    SetScaredStateWhite(false);
     SetScaredStateTimer(0);
 }
 
@@ -17,7 +17,7 @@ void Ghost::Reset()
     SetY(252);
     SetDirection(0); //ghost does not move after game start
     SetNextDirection(0);
-    SetScaredBlue(false);
-    SetScaredWhite(false);
+    SetScaredStateBlue(false);
+    SetScaredStateWhite(false);
     SetScaredStateTimer(0);
 }

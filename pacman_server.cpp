@@ -33,7 +33,7 @@ void PacmanServer::ServerStartListening()
 
 void PacmanServer::SetUpAndFillMap()
 {
-    m_FoodballPositions = m_Foodball.GetFoodballPositions(); //writing foodball positions
+    m_FoodballPositions = m_Foodball.GetFoodballPositions();
     m_PowerballPositions = m_Powerball.GetPowerballPositions();
 
     m_FoodballItemsCount = m_FoodballPositions.size();
@@ -659,7 +659,7 @@ void PacmanServer::Updater()
             --m_PowerballItemsCount;
             m_PowerballPositions.remove(i);
 
-            m_GhostPlayer.SetScaredBlue(true);
+            m_GhostPlayer.SetScaredStateBlue(true);
         }
     }
 
@@ -683,13 +683,13 @@ void PacmanServer::Updater()
 
         if(m_GhostPlayer.GetScaredStateTimer() == 750)
         {
-            m_GhostPlayer.SetScaredWhite(true);
+            m_GhostPlayer.SetScaredStateWhite(true);
         }
 
         if(m_GhostPlayer.GetScaredStateTimer() == 1000)
         {
-            m_GhostPlayer.SetScaredBlue(false);
-            m_GhostPlayer.SetScaredWhite(false);
+            m_GhostPlayer.SetScaredStateBlue(false);
+            m_GhostPlayer.SetScaredStateWhite(false);
 
             m_GhostPlayer.SetScaredStateTimer(0);
         }

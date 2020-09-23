@@ -7,11 +7,12 @@ class Foodball
 {
 public:
     Foodball();
-    QVector<QPoint> GetFoodballPositions() const {return foodballPositions;}
+    QVector<QPoint> GetFoodballPositions() {return m_FoodballPositions;}
 
 private:
-    int foodballCount;
-    QVector<QPoint> foodballPositions;
-    QVector<QPoint> pacmanMapForReference;
+    int m_FoodballCount;
+    QVector<QPoint> m_FoodballPositions;
+    QVector<QPoint> m_PacmanMapForReference;
     void CreateFoodballPositionsVector();
 };
+

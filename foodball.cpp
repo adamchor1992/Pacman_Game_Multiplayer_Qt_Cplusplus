@@ -3,10 +3,10 @@
 
 Foodball::Foodball()
 {
-    foodballCount = 0;
+    m_FoodballCount = 0;
 
     Map referencemap;
-    pacmanMapForReference = referencemap.getPacmanPaths();
+    m_PacmanMapForReference = referencemap.GetPacmanPaths();
 
     CreateFoodballPositionsVector();
 }
@@ -20,14 +20,14 @@ void Foodball::CreateFoodballPositionsVector()
     {
         for(int j=0; j < 10; j++)
         {
-                if(pacmanMapForReference.contains(QPoint(VerticalLinesX[i], HorizontalLinesY[j])))
+                if(m_PacmanMapForReference.contains(QPoint(VerticalLinesX[i], HorizontalLinesY[j])))
                 {
                     /*Skip points where powerballs are*/
                     if((VerticalLinesX[i] == 35 && HorizontalLinesY[j] == 514) || (VerticalLinesX[i] == 579 && HorizontalLinesY[j] == 514))
                     {
                         continue;
                     }
-                    foodballPositions.push_back(QPoint(VerticalLinesX[i], HorizontalLinesY[j]));
+                    m_FoodballPositions.push_back(QPoint(VerticalLinesX[i], HorizontalLinesY[j]));
                 }
         }
     }
@@ -35,13 +35,13 @@ void Foodball::CreateFoodballPositionsVector()
     // Create a new vector without the duplicates
     QVector<QPoint> unique_foodballpositions;
 
-    for (QVector<QPoint>::iterator iter = foodballPositions.begin(); iter != foodballPositions.end(); iter++)
+    for (QVector<QPoint>::iterator iter = m_FoodballPositions.begin(); iter != m_FoodballPositions.end(); iter++)
     {
         if(std::find(unique_foodballpositions.begin(),unique_foodballpositions.end(), *iter) == unique_foodballpositions.end())
         {
             unique_foodballpositions.push_back(*iter);
-            ++foodballCount;
+            ++m_FoodballCount;
         }
     }
-    std::swap( foodballPositions, unique_foodballpositions );
+    std::swap( m_FoodballPositions, unique_foodballpositions );
 }

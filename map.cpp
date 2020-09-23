@@ -102,9 +102,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
             {
                 p.setX(startX);
                 p.setY(y);
-                if (!pacmanPaths.contains(p))
+                if (!m_PacmanPaths.contains(p))
                 {
-                    pacmanPaths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
@@ -113,9 +113,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
         {
                 p.setX(startX);
                 p.setY(startY);
-                if (!pacmanPaths.contains(p))
+                if (!m_PacmanPaths.contains(p))
                 {
-                    pacmanPaths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }
@@ -128,9 +128,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
             {
                 p.setX(x);
                 p.setY(startY);
-                if (!pacmanPaths.contains(p))
+                if (!m_PacmanPaths.contains(p))
                 {
-                    pacmanPaths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
             }
         }
@@ -138,9 +138,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
         {
                 p.setX(startX);
                 p.setY(startY);
-                if (!pacmanPaths.contains(p))
+                if (!m_PacmanPaths.contains(p))
                 {
-                    pacmanPaths.push_front(p);
+                    m_PacmanPaths.push_front(p);
                 }
         }
     }
@@ -148,9 +148,9 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
 
 bool Map::IsPointAvailable(QPoint point)
 {
-    for(int i = 0; i < pacmanPaths.size(); i++)
+    for(int i = 0; i < m_PacmanPaths.size(); i++)
     {
-        if(pacmanPaths[i] == point)
+        if(m_PacmanPaths[i] == point)
         {
              return true;
         }
