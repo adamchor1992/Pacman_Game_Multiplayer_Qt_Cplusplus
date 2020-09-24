@@ -53,8 +53,6 @@ private:
 
     QByteArray m_InfoPackageForClientsPacked;
     QByteArray m_MessageToWrite;
-    QByteArray m_DirectionReceivedFromClient1;
-    QByteArray m_DirectionReceivedFromClient2;
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;
 

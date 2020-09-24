@@ -27,9 +27,11 @@ SOURCES += main.cpp \
     pacman_server.cpp
 
 HEADERS += \
+    ../common/common.h \
     foodball.h \
     map.h \
     pacman.h \
     powerball.h \
     ghost.h \
     pacman_server.h
+    ../common/common.h

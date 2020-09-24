@@ -5,15 +5,15 @@ Pacman::Pacman()
 {
     SetX(320);
     SetY(514);
-    SetDirection(0); //pacman does not move after game start
-    SetNextDirection(0);
+    SetDirection(Direction::NO_DIRECTION);
+    SetNextDirection(Direction::NO_DIRECTION);
 }
 
 void Pacman::Reset()
 {
     SetX(320);
     SetY(514);
-    SetDirection(0); //pacman does not move after game start
-    SetNextDirection(0);
+    SetDirection(Direction::NO_DIRECTION);
+    SetNextDirection(Direction::NO_DIRECTION);
 }
 
