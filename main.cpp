@@ -4,16 +4,18 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    QApplication application(argc, argv);
 
     ConnectionDialogWindow connectionDialogWindow;
     connectionDialogWindow.show();
 
     /*Divide program into 2 steps*/
-    app.exec();
+    application.exec();
 
-    GameWindow w(nullptr, connectionDialogWindow.GetIpAddress());
-    w.show();
+    GameWindow gameWindow(nullptr, connectionDialogWindow.GetIpAddress());
+    gameWindow.show();
 
-    return app.exec();
+    application.exec();
+
+    return 0;
 }

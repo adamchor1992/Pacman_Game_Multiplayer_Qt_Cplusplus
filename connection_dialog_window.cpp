@@ -40,7 +40,10 @@ void ConnectionDialogWindow::on_pushButton_Connect_clicked()
 {
     m_ValidatedIpAddress.setAddress(m_ValidatedIpAddressString);
 
-    this->close();
+    this->hide();
+
+    /*Returns from application.exec event loop in main function*/
+    QCoreApplication::exit(0);
 }
 
 ConnectionDialogWindow::~ConnectionDialogWindow()
@@ -50,5 +53,8 @@ ConnectionDialogWindow::~ConnectionDialogWindow()
 
 void ConnectionDialogWindow::closeEvent(QCloseEvent* event)
 {
+    qDebug() << "CLOSE EVENT";
+
+    /*Closes program*/
     exit(0);
 }
