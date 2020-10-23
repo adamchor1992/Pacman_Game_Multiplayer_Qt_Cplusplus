@@ -47,3 +47,8 @@ ConnectionDialogWindow::~ConnectionDialogWindow()
 {
     delete ui;
 }
+
+void ConnectionDialogWindow::closeEvent(QCloseEvent* event)
+{
+    exit(0);
+}

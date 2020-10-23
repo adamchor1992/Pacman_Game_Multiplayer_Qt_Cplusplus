@@ -18,7 +18,7 @@ class ConnectionDialogWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit ConnectionDialogWindow(QWidget* parent = 0);
+    explicit ConnectionDialogWindow(QWidget* parent = nullptr);
     QHostAddress GetIpAddress(){return m_ValidatedIpAddress;}
     ~ConnectionDialogWindow();
 
@@ -28,6 +28,8 @@ private:
     QString m_ValidatedIpAddressString;
     QHostAddress m_ValidatedIpAddress;
     bool m_IsValidIpAddress;
+
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void on_lineEdit_IP_textChanged(const QString& enteredIpAddress);
