@@ -4,9 +4,11 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication application(argc, argv);
 
     PacmanServer pacmanserver;
 
-    return a.exec();
+    application.exec();
+
+    return 0;
 }

@@ -7,6 +7,8 @@ QT += widgets
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
+TARGET = ../../Server/executable/Pacman_Server
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -27,11 +29,10 @@ SOURCES += main.cpp \
     pacman_server.cpp
 
 HEADERS += \
-    ../common/common.h \
     foodball.h \
     map.h \
     pacman.h \
     powerball.h \
     ghost.h \
-    pacman_server.h
-    ../common/common.h
+    pacman_server.h \
+    common.h
