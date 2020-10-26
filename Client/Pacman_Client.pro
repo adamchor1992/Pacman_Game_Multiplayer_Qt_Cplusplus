@@ -11,7 +11,7 @@ QT += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ../../Client/executable/Pacman_Client
+TARGET = ../../PacmanMultiplayer/Client/executable/Pacman_Client
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
