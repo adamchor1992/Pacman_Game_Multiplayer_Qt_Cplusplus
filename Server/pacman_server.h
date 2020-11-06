@@ -9,8 +9,8 @@
 #include "map.h"
 #include "pacman.h"
 #include "ghost.h"
-#include "foodball.h"
-#include "powerball.h"
+#include "../common/foodball.h"
+#include "../common/powerball.h"
 
 class PacmanServer : public QObject
 {

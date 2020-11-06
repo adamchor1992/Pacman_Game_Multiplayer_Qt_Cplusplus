@@ -21,18 +21,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
-    foodball.cpp \
     map.cpp \
     pacman.cpp \
-    powerball.cpp \
     ghost.cpp \
-    pacman_server.cpp
+    pacman_server.cpp \
+    ../common/foodball.cpp \
+    ../common/powerball.cpp
 
 HEADERS += \
-    foodball.h \
     map.h \
     pacman.h \
-    powerball.h \
     ghost.h \
     pacman_server.h \
-    common.h
+    ../common/common.h \
+    ../common/foodball.h \
+    ../common/powerball.h

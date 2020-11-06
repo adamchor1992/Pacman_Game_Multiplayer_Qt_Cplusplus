@@ -1,15 +1,17 @@
 #include "foodball.h"
 #include "map.h"
 
-FoodBall::FoodBall()
+Foodball::Foodball()
 {
+    m_FoodballCount = 0;
+
     Map referenceMap;
     m_PacmanMapForReference = referenceMap.GetPacmanPaths();
 
     CreateFoodballPositionsVector();
 }
 
-void FoodBall::CreateFoodballPositionsVector()
+void Foodball::CreateFoodballPositionsVector()
 {
     int verticalLinesX[10]={35, 79, 144, 209, 274, 340, 406, 470, 536, 579};
     int horizontalLinesY[10]={35, 121, 187, 252, 318, 384, 449, 514, 580, 645};
@@ -37,7 +39,7 @@ void FoodBall::CreateFoodballPositionsVector()
         if(std::find(unique_foodballpositions.begin(),unique_foodballpositions.end(), *iter)==unique_foodballpositions.end())
         {
             unique_foodballpositions.push_back( *iter );
-            m_FoodbalCount++;
+            m_FoodballCount++;
         }
     }
     std::swap( m_FoodballPositions, unique_foodballpositions );

@@ -15,4 +15,3 @@ private:
     QVector<QPoint> m_PacmanMapForReference;
     void CreateFoodballPositionsVector();
 };
-

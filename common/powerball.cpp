@@ -2,7 +2,7 @@
 #include <QPoint>
 #include <QVector>
 
-PowerBall::PowerBall()
+Powerball::Powerball()
 {
     const int POWERBALL_X_1 = 35;
     const int POWERBALL_X_2 = 579;

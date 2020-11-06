@@ -2,8 +2,8 @@
 
 #include "map.h"
 #include "pacman.h"
-#include "powerball.h"
-#include "foodball.h"
+#include "../common/powerball.h"
+#include "../common/foodball.h"
 #include "ghost.h"
 #include "text_screen_message.h"
 #include "sounds.h"
@@ -43,8 +43,8 @@ private:
     QTimer m_WaitForRestartKeyTimer;
     QTimer m_WaitForGameRestartTimer;
 
-    PowerBall m_Powerball;
-    FoodBall m_FoodBall;
+    Powerball m_Powerball;
+    Foodball m_FoodBall;
 
     ClientConnection* m_pClientConnection;
 

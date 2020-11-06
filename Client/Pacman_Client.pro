@@ -27,17 +27,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
+    main.cpp \
     client_connection.cpp \
     connection_dialog_window.cpp \
     game_window.cpp \
-        main.cpp \
     ghost.cpp \
     map.cpp \
     pacman.cpp \
-    foodball.cpp \
-    powerball.cpp \
     sounds.cpp \
-    text_screen_message.cpp
+    text_screen_message.cpp \
+    ../common/foodball.cpp \
+    ../common/powerball.cpp
 
 HEADERS += \
     client_connection.h \
@@ -46,10 +46,11 @@ HEADERS += \
     ghost.h \
     map.h \
     pacman.h \
-    foodball.h \
-    powerball.h \
     sounds.h \
-    text_screen_message.h
+    text_screen_message.h \
+    ../common/common.h \
+    ../common/foodball.h \
+    ../common/powerball.h
 
 FORMS += \
     connection_dialog_window.ui \
