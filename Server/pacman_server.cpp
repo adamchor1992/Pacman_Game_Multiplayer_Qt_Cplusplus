@@ -20,14 +20,16 @@ PacmanServer::PacmanServer(QObject *parent) : QObject(parent)
 
 void PacmanServer::ServerStartListening()
 {
-    if(m_Server.listen(QHostAddress::Any, 5000))
+    if(m_Server.listen(QHostAddress::Any, PORT_NUMBER))
     {
         qDebug() << "Server started, awaiting connections";
     }
     else
     {
         qDebug() << "Server could not start: " << m_Server.errorString();
-        qDebug() << "Please restart application";
+        qDebug() << "Please restart server";
+
+        exit(0);
     }
 }
 

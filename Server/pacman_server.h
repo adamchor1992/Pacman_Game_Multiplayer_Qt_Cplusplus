@@ -17,6 +17,8 @@ class PacmanServer : public QObject
     Q_OBJECT
 
 public:
+    const int PORT_NUMBER = 5000;
+
     explicit PacmanServer(QObject* parent = nullptr);
 
 private:
