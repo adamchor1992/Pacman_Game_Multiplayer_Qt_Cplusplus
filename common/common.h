@@ -9,6 +9,16 @@ enum class Direction
     RIGHT = 4
 };
 
-const int SIGNAL_READY = 5;
-const int SIGNAL_PAUSE = 6;
-const int SIGNAL_RESTART = 7;
+enum class GameState
+{
+    BeforeFirstRun = 0,
+    Running = 1,
+    Paused = 2,
+    Aborted = 3,
+    PacmanWin = 4,
+    GhostWin = 5
+};
+
+static const int SIGNAL_READY = 5;
+static const int SIGNAL_PAUSE = 6;
+static const int SIGNAL_RESTART = 7;

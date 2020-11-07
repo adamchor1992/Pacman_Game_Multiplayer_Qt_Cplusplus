@@ -52,7 +52,7 @@ private:
     Foodball m_Foodball;
     Powerball m_Powerball;
 
-    QByteArray m_InfoPackageForClientsPacked;
+    QByteArray m_dataPacketForClient;
     QByteArray m_MessageToWrite;
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;
@@ -82,15 +82,7 @@ private:
     void StopAllTimers();
     void ReadDirection(QTcpSocket *tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
 
-    enum class GameState
-    {
-        BeforeFirstRun = 0,
-        Running = 1,
-        Paused = 2,
-        Aborted = 3,
-        PacmanWin = 4,
-        GhostWin = 5
-    } m_GameState;
+    GameState m_GameState;
 
 private slots:
     void AcceptConnection();
