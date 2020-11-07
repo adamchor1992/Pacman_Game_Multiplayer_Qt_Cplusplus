@@ -19,6 +19,9 @@ public:
     QByteArray GetCoordinates() {return m_Coordinates;}
 
 private:
+    const int CONNECTION_TIMEOUT = 500;
+    const int MESSAGE_TIMEOUT = 3000;
+
     QTcpSocket* m_pClientSocket;
     QStatusBar* m_pStatusBar;
 

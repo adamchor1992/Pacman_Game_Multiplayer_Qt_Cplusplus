@@ -5,6 +5,9 @@
 class Ghost
 {
 public:
+    static const int SCARED_WHITE_THRESHOLD = 750;
+    static const int SCARED_TIMEOUT = 1000;
+
     Ghost();
     void SetX(int x) {m_X = x;}
     void SetY(int y) {m_Y = y;}

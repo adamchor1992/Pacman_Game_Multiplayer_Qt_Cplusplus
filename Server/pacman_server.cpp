@@ -273,7 +273,7 @@ void PacmanServer::SendcoordinatesToClient1()
 void PacmanServer::SendcoordinatesToClient2()
 {
     m_ServerSocket2->write(m_InfoPackageForClientsPacked);
-    emit(PrepareNextCoordinatesPackage());
+    emit PrepareNextCoordinatesPackage();
 }
 
 void PacmanServer::PackDataToSendToClients()
@@ -453,12 +453,14 @@ void PacmanServer::Player1Move()
         break;
     }
 
-    if(player1X == 0 && player1Y == 318) //teleportation when reached left boundary of middle horizontal line
+    /*Teleportation when reached left boundary of middle horizontal line*/
+    if(player1X == 0 && player1Y == 318)
     {
         player1X = 613;
     }
 
-    if(player1X == 614 && player1Y == 318) //teleportation when reached right boundary of middle horizontal line
+    /*Teleportation when reached right boundary of middle horizontal line*/
+    if(player1X == 614 && player1Y == 318)
     {
         player1X = 1;
     }
@@ -580,12 +582,14 @@ void PacmanServer::Player2Move()
         break;
     }
 
-    if(player2X == 0 && player2Y == 318) //teleportation when reached left boundary of middle horizontal line
+    /*Teleportation when reached left boundary of middle horizontal line*/
+    if(player2X == 0 && player2Y == 318)
     {
         player2X = 613;
     }
 
-    if(player2X == 614 && player2Y == 318) //teleportation when reached right boundary of middle horizontal line
+    /*Teleportation when reached left boundary of middle horizontal line*/
+    if(player2X == 614 && player2Y == 318)
     {
         player2X = 1;
     }
@@ -695,12 +699,12 @@ void PacmanServer::Updater()
     {
         m_GhostPlayer.IncrementScaredStateTimer();
 
-        if(m_GhostPlayer.GetScaredStateTimer() == 750)
+        if(m_GhostPlayer.GetScaredStateTimer() == Ghost::SCARED_WHITE_THRESHOLD)
         {
             m_GhostPlayer.SetScaredStateWhite(true);
         }
 
-        if(m_GhostPlayer.GetScaredStateTimer() == 1000)
+        if(m_GhostPlayer.GetScaredStateTimer() == Ghost::SCARED_TIMEOUT)
         {
             m_GhostPlayer.SetScaredStateBlue(false);
             m_GhostPlayer.SetScaredStateWhite(false);
@@ -724,25 +728,25 @@ void PacmanServer::ReadDirectionFromClient1()
 
     int keyInputReceivedFromClient1 = dataReceivedFromClient1.toInt();
 
-    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == 5) // 5 is ready signal
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == SIGNAL_READY)
     {
         m_Player1Ready = true;
         return;
     }
 
-    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == 7) // 5 is ready signal
+    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == SIGNAL_RESTART)
     {
         m_Player1Ready = true;
         return;
     }
 
-    if(m_GameState == GameState::Running && keyInputReceivedFromClient1 == 6) // 6 is pause signal
+    if(m_GameState == GameState::Running && keyInputReceivedFromClient1 == SIGNAL_PAUSE)
     {
         PauseGame();
         return;
     }
 
-    if(m_GameState == GameState::Paused && keyInputReceivedFromClient1 == 6) // 6 is pause signal
+    if(m_GameState == GameState::Paused && keyInputReceivedFromClient1 == SIGNAL_PAUSE)
     {
         ResumeGame();
         return;
@@ -759,25 +763,24 @@ void PacmanServer::ReadDirectionFromClient2()
 
     int keyInputReceivedFromClient2 = dataReceivedFromClient2.toInt();
 
-    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == 5) // 5 is ready signal
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == SIGNAL_READY)
     {
         m_Player2Ready = true;
         return;
     }
 
-    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == 7) // 5 is ready signal
-    {
-        m_Player2Ready = true;
+    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == SIGNAL_RESTART)
+    {m_Player2Ready = true;
         return;
     }
 
-    if(m_GameState == GameState::Running && keyInputReceivedFromClient2 == 6) // 6 is pause signal
+    if(m_GameState == GameState::Running && keyInputReceivedFromClient2 == SIGNAL_PAUSE)
     {
         PauseGame();
         return;
     }
 
-    if(m_GameState == GameState::Paused && keyInputReceivedFromClient2 == 6) // 6 is pause signal
+    if(m_GameState == GameState::Paused && keyInputReceivedFromClient2 == SIGNAL_PAUSE)
     {
         ResumeGame();
         return;

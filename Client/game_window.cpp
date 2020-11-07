@@ -9,7 +9,7 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
 
     ui->gameplay_area->setScene(&m_Scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
-    m_Scene.setSceneRect(0,0,614,740);
+    m_Scene.setSceneRect(0, 0, 614, 740);
     ui->gameplay_area->setSceneRect(m_Scene.sceneRect());
 
     m_GameState = GameState::BeforeFirstRun;

@@ -15,7 +15,7 @@ void ClientConnection::RequestConnection(QHostAddress address, uint port)
 {
     m_pClientSocket->connectToHost(address, port);
 
-    if(!m_pClientSocket->waitForConnected(500))
+    if(!m_pClientSocket->waitForConnected(CONNECTION_TIMEOUT))
     {
         m_pStatusBar->showMessage("Connection failed, please restart client");
         qDebug() << "Failed to connect from client side: " << m_pClientSocket->errorString();
@@ -63,7 +63,7 @@ void ClientConnection::SendPressedKeyToServer(char key)
 
 void ClientConnection::connected()
 {
-    m_pStatusBar->showMessage("Successfully connected from client side", 3000);
+    m_pStatusBar->showMessage("Successfully connected from client side", MESSAGE_TIMEOUT);
     qDebug() << "Successfully connected from client side";
 }
 
@@ -76,10 +76,10 @@ void ClientConnection::ShowMessageFromServer()
     if(m_MessageFromServer == "Game started")
     {
         m_pStatusBar->clearMessage();
-        m_pStatusBar->showMessage("Game started", 3000);
+        m_pStatusBar->showMessage("Game started", MESSAGE_TIMEOUT);
         disconnect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()));
         //start game
-        emit(GameStarted());
+        emit GameStarted();
         connect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ReadCoordinatesFromServer()), Qt::UniqueConnection);
     }
 }
