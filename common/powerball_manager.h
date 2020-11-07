@@ -3,10 +3,10 @@
 #include <QVector>
 #include <QPoint>
 
-class Powerball
+class PowerballManager
 {
 public:
-    Powerball();
+    PowerballManager();
     QVector<QPoint> GetPowerballPositions() const {return m_PowerballPositions;}
 
 private:

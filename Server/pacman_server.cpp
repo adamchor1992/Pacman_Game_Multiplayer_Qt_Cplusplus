@@ -36,8 +36,8 @@ void PacmanServer::ServerStartListening()
 
 void PacmanServer::SetUpAndFillMap()
 {
-    m_FoodballPositions = m_Foodball.GetFoodballPositions();
-    m_PowerballPositions = m_Powerball.GetPowerballPositions();
+    m_FoodballPositions = m_FoodballManager.GetFoodballPositions();
+    m_PowerballPositions = m_PowerballManager.GetPowerballPositions();
 
     m_FoodballItemsCount = m_FoodballPositions.size();
     m_PowerballItemsCount = m_PowerballPositions.size();
@@ -161,11 +161,11 @@ void PacmanServer::ResetContainersAndVariables()
 
     m_FoodballPositions.clear();
     m_FoodballPositions.squeeze();
-    m_FoodballPositions = m_Foodball.GetFoodballPositions();
+    m_FoodballPositions = m_FoodballManager.GetFoodballPositions();
 
     m_PowerballPositions.clear();
     m_PowerballPositions.squeeze();
-    m_PowerballPositions = m_Powerball.GetPowerballPositions();
+    m_PowerballPositions = m_PowerballManager.GetPowerballPositions();
 
     m_FoodballItemsCount = m_FoodballPositions.size();
     m_PowerballItemsCount = m_PowerballPositions.size();

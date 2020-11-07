@@ -3,10 +3,10 @@
 #include <QVector>
 #include <QPoint>
 
-class Foodball
+class FoodballManager
 {
 public:
-    Foodball();
+    FoodballManager();
     QVector<QPoint> GetFoodballPositions() {return m_FoodballPositions;}
 
 private:

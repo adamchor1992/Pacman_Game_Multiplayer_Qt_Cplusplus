@@ -9,8 +9,8 @@
 #include "map.h"
 #include "pacman.h"
 #include "ghost.h"
-#include "../common/foodball.h"
-#include "../common/powerball.h"
+#include "../common/foodball_manager.h"
+#include "../common/powerball_manager.h"
 
 class PacmanServer : public QObject
 {
@@ -49,8 +49,8 @@ private:
     Map m_Map;
     Pacman m_Pacman;
     Ghost m_Ghost;
-    Foodball m_Foodball;
-    Powerball m_Powerball;
+    FoodballManager m_FoodballManager;
+    PowerballManager m_PowerballManager;
 
     QByteArray m_dataPacketForClient;
     QByteArray m_MessageToWrite;

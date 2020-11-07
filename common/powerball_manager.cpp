@@ -1,8 +1,8 @@
-#include "powerball.h"
+#include "powerball_manager.h"
 #include <QPoint>
 #include <QVector>
 
-Powerball::Powerball()
+PowerballManager::PowerballManager()
 {
     const int POWERBALL_X_1 = 35;
     const int POWERBALL_X_2 = 579;

@@ -1,7 +1,7 @@
-#include "foodball.h"
+#include "foodball_manager.h"
 #include "map.h"
 
-Foodball::Foodball()
+FoodballManager::FoodballManager()
 {
     m_FoodballCount = 0;
 
@@ -11,7 +11,7 @@ Foodball::Foodball()
     CreateFoodballPositionsVector();
 }
 
-void Foodball::CreateFoodballPositionsVector()
+void FoodballManager::CreateFoodballPositionsVector()
 {
     int verticalLinesX[10]={35, 79, 144, 209, 274, 340, 406, 470, 536, 579};
     int horizontalLinesY[10]={35, 121, 187, 252, 318, 384, 449, 514, 580, 645};

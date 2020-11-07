@@ -1,7 +1,7 @@
 #include "game_window.h"
 #include "ui_game_window.h"
 #include "map.h"
-#include "../common/powerball.h"
+#include "../common/powerball_manager.h"
 
 GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(parent), ui(new Ui::Game_window)
 {
@@ -41,8 +41,8 @@ void GameWindow::GenerateMap()
 
 void GameWindow::PopulateMap()
 {
-    m_PowerballPositions = m_Powerball.GetPowerballPositions();
-    m_FoodballPositions = m_FoodBall.GetFoodballPositions();
+    m_PowerballPositions = m_PowerballManager.GetPowerballPositions();
+    m_FoodballPositions = m_FoodBallManager.GetFoodballPositions();
 
     m_FoodballItemsCount = m_FoodballPositions.size();
     m_PowerballItemsCount = m_PowerballPositions.size();

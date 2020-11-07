@@ -27,8 +27,8 @@ SOURCES += main.cpp \
     pacman.cpp \
     ghost.cpp \
     pacman_server.cpp \
-    ../common/foodball.cpp \
-    ../common/powerball.cpp
+    ../common/foodball_manager.cpp \
+    ../common/powerball_manager.cpp
 
 HEADERS += \
     data_packet.h \
@@ -38,5 +38,5 @@ HEADERS += \
     ghost.h \
     pacman_server.h \
     ../common/common.h \
-    ../common/foodball.h \
-    ../common/powerball.h
+    ../common/foodball_manager.h \
+    ../common/powerball_manager.h
