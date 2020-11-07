@@ -22,41 +22,9 @@ void ClientConnection::RequestConnection(QHostAddress address, uint port)
     }
 }
 
-void ClientConnection::SendPressedKeyToServer(char key)
+void ClientConnection::SendPressedKeyToServer(char controlKey)
 {
-    switch(key)
-    {
-    case 'a':
-        m_pClientSocket->putChar('1');
-        break;
-
-    case 'w':
-        m_pClientSocket->putChar('2');
-        break;
-
-    case 's':
-        m_pClientSocket->putChar('3');
-        break;
-
-    case 'd':
-        m_pClientSocket->putChar('4');
-        break;
-
-    case '5':
-        m_pClientSocket->putChar('5');
-        break;
-
-    case '6':
-        m_pClientSocket->putChar('6');
-        break;
-    case '7':
-        m_pClientSocket->putChar('7');
-        break;
-
-    default:
-        qDebug("Unrecognized or wrong key");
-        break;
-    }
+    m_pClientSocket->putChar(controlKey);
 }
 
 //SLOTS

@@ -184,38 +184,38 @@ void GameWindow::CheckForRestartGameSignal()
     }
 }
 
-void GameWindow::keyPressEvent(QKeyEvent *event) //supports pacman movement using WSAD and directional keys
+void GameWindow::keyPressEvent(QKeyEvent* event)
 {
     switch(event->key())
     {
     case Qt::Key_A:
     case Qt::Key_Left:
-        m_pClientConnection->SendPressedKeyToServer('a');
+        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_LEFT);
         break;
 
     case Qt::Key_D:
     case Qt::Key_Right:
-        m_pClientConnection->SendPressedKeyToServer('d');
+        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_RIGHT);
         break;
 
     case Qt::Key_S:
     case Qt::Key_Down:
-        m_pClientConnection->SendPressedKeyToServer('s');
+        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_DOWN);
         break;
 
     case Qt::Key_W:
     case Qt::Key_Up:
-        m_pClientConnection->SendPressedKeyToServer('w');
+        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_UP);
         break;
 
     case Qt::Key_Space:
         if(m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin)
         {
-            m_pClientConnection->SendPressedKeyToServer('7');
+            m_pClientConnection->SendPressedKeyToServer(SIGNAL_RESTART);
         }
         else
         {
-            m_pClientConnection->SendPressedKeyToServer('5');
+            m_pClientConnection->SendPressedKeyToServer(SIGNAL_READY);
         }
         break;
 

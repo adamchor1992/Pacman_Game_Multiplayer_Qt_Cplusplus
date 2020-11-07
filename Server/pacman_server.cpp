@@ -432,7 +432,7 @@ void PacmanServer::ReadDirection(QTcpSocket* tcpSocket, MovableCharacter& movabl
     QByteArray dataReceivedFromClient = tcpSocket->readAll();
     dataReceivedFromClient.resize(1);
 
-    int keyInputReceivedFromClient = dataReceivedFromClient.toInt();
+    char keyInputReceivedFromClient = dataReceivedFromClient.at(0);
 
     if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_READY)
     {
@@ -458,7 +458,7 @@ void PacmanServer::ReadDirection(QTcpSocket* tcpSocket, MovableCharacter& movabl
         return;
     }
 
-    movableCharacter.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient));
+    movableCharacter.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient - '0'));
 }
 
 void PacmanServer::connected1()

@@ -19,9 +19,13 @@ enum class GameState
     GhostWin = 5
 };
 
-static const int SIGNAL_READY = 5;
-static const int SIGNAL_PAUSE = 6;
-static const int SIGNAL_RESTART = 7;
+static const char MOVEMENT_LEFT = '1';
+static const char MOVEMENT_UP = '2';
+static const char MOVEMENT_DOWN = '3';
+static const char MOVEMENT_RIGHT = '4';
+static const char SIGNAL_READY = '5';
+static const char SIGNAL_PAUSE = '6';
+static const char SIGNAL_RESTART = '7';
 static const int PACMAN_START_X = 320;
 static const int PACMAN_START_Y = 514;
 static const int GHOST_START_X = 307;

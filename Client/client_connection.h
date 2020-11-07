@@ -15,7 +15,7 @@ public:
 
     explicit ClientConnection(QStatusBar* statusbar, QObject* parent = nullptr);
     void RequestConnection(QHostAddress address, uint port);
-    void SendPressedKeyToServer(char key);
+    void SendPressedKeyToServer(char controlKey);
     QByteArray GetCoordinates() {return m_Coordinates;}
 
 private:
