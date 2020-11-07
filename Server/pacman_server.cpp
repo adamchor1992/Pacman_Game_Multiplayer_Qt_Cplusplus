@@ -4,7 +4,7 @@ PacmanServer::PacmanServer(QObject *parent) : QObject(parent)
 {
     //setting up temporary socket
 
-    m_ServerSocket1 = &m_TempSocket;
+    m_pServerSocket1 = &m_TempSocket;
 
     ServerStartListening();
 
@@ -189,28 +189,28 @@ void PacmanServer::PrepareRestart()
 void PacmanServer::AcceptConnection()
 {
     //if there is new connection
-    if(m_ServerSocket1->state() == QAbstractSocket::UnconnectedState)
+    if(m_pServerSocket1->state() == QAbstractSocket::UnconnectedState)
     {
-        m_ServerSocket1 = m_Server.nextPendingConnection();
+        m_pServerSocket1 = m_Server.nextPendingConnection();
 
-        m_ConnectionObject_Socket1Connected = connect(m_ServerSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
-        m_ConnectionObject_Socket1Disconnected = connect(m_ServerSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
-        m_ConnectionObject_Socket1ReadyRead = connect(m_ServerSocket1, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient1, Qt::UniqueConnection);
+        m_ConnectionObject_Socket1Connected = connect(m_pServerSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
+        m_ConnectionObject_Socket1Disconnected = connect(m_pServerSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
+        m_ConnectionObject_Socket1ReadyRead = connect(m_pServerSocket1, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient1, Qt::UniqueConnection);
 
         //set up timer waiting for players signals
         m_ConnectionObject_WaitForPlayerConnectionTimer = connect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection, Qt::UniqueConnection);
         m_WaitForPlayerConnectionTimer.start(3000);
 
         qDebug() << "Connection assigned to socket 1 - PACMAN";
-        m_ServerSocket1->write("You are PLAYER 1 - PACMAN");
+        m_pServerSocket1->write("You are PLAYER 1 - PACMAN");
     }
     else
     {
-        m_ServerSocket2 = m_Server.nextPendingConnection();
+        m_pServerSocket2 = m_Server.nextPendingConnection();
 
-        m_ConnectionObject_Socket2Connected = connect(m_ServerSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
-        m_ConnectionObject_Socket2Disconnected = connect(m_ServerSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
-        m_ConnectionObject_Socket2ReadyRead = connect(m_ServerSocket2, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient2, Qt::UniqueConnection);
+        m_ConnectionObject_Socket2Connected = connect(m_pServerSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
+        m_ConnectionObject_Socket2Disconnected = connect(m_pServerSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
+        m_ConnectionObject_Socket2ReadyRead = connect(m_pServerSocket2, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient2, Qt::UniqueConnection);
 
         m_WaitForPlayerConnectionTimer.stop();
         disconnect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection); //disconnect unneccesary signal
@@ -219,14 +219,14 @@ void PacmanServer::AcceptConnection()
         m_WaitForPlayerReadySignalTimer.start(2000);
 
         qDebug() << "Connection assigned to socket 2 - GHOST";
-        m_ServerSocket2->write("You are PLAYER 2 - GHOST");
+        m_pServerSocket2->write("You are PLAYER 2 - GHOST");
     }
 }
 
 void PacmanServer::WaitForPlayerConnection()
 {
     qDebug() << "Waiting for player 2";
-    m_ServerSocket1->write("You are connected, waiting for another player");
+    m_pServerSocket1->write("You are connected, waiting for another player");
 }
 
 void PacmanServer::WaitForPlayerReadySignals()
@@ -234,22 +234,22 @@ void PacmanServer::WaitForPlayerReadySignals()
     if(!m_Player1Ready && !m_Player2Ready)
     {
         qDebug("Waiting for players ready signals");
-        m_ServerSocket1->write("You are not ready, please press space");
-        m_ServerSocket2->write("You are not ready, please press space");
+        m_pServerSocket1->write("You are not ready, please press space");
+        m_pServerSocket2->write("You are not ready, please press space");
     }
 
     if(m_Player1Ready && !m_Player2Ready)
     {
         qDebug("Player 1 - ready Player 2 - NOT READY");
-        m_ServerSocket1->write("You are ready, awaiting other player connection");
-        m_ServerSocket2->write("You are not ready, please press space");
+        m_pServerSocket1->write("You are ready, awaiting other player connection");
+        m_pServerSocket2->write("You are not ready, please press space");
     }
 
     if(!m_Player1Ready && m_Player2Ready)
     {
         qDebug("Player 2 - NOT READY Player 1 - ready");
-        m_ServerSocket1->write("You are not ready, please press space");
-        m_ServerSocket2->write("You are ready, awaiting other player connection");
+        m_pServerSocket1->write("You are not ready, please press space");
+        m_pServerSocket2->write("You are ready, awaiting other player connection");
     }
 
     if(m_Player1Ready && m_Player2Ready)
@@ -257,8 +257,8 @@ void PacmanServer::WaitForPlayerReadySignals()
         qDebug("Player 1 and Player 2 ready");
 
         StartGame();
-        m_ServerSocket1->write("Game started");
-        m_ServerSocket2->write("Game started");
+        m_pServerSocket1->write("Game started");
+        m_pServerSocket2->write("Game started");
 
         m_WaitForPlayerReadySignalTimer.stop();
         disconnect(&m_WaitForPlayerReadySignalTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerReadySignals);
@@ -267,12 +267,12 @@ void PacmanServer::WaitForPlayerReadySignals()
 
 void PacmanServer::SendcoordinatesToClient1()
 {
-    m_ServerSocket1->write(m_InfoPackageForClientsPacked);
+    m_pServerSocket1->write(m_InfoPackageForClientsPacked);
 }
 
 void PacmanServer::SendcoordinatesToClient2()
 {
-    m_ServerSocket2->write(m_InfoPackageForClientsPacked);
+    m_pServerSocket2->write(m_InfoPackageForClientsPacked);
     emit PrepareNextCoordinatesPackage();
 }
 
@@ -401,7 +401,7 @@ void PacmanServer::Updater()
     m_FoodballItemsCount = m_FoodballPositions.size();
     m_PowerballItemsCount = m_PowerballPositions.size();
 
-    //eating foodballs
+    /*Eating foodballs*/
     for(int i = 0; i < m_FoodballItemsCount; i++)
     {
         if(player1X == m_FoodballPositions.at(i).x() && player1Y == m_FoodballPositions.at(i).y())
@@ -413,7 +413,7 @@ void PacmanServer::Updater()
         }
     }
 
-    //eating powerballs
+    /*Eating powerballs*/
     for(int i=0; i < m_PowerballItemsCount; i++)
     {
         if(player1X == m_PowerballPositions.at(i).x() && player1Y == m_PowerballPositions.at(i).y())
@@ -466,74 +466,50 @@ void PacmanServer::Updater()
 }
 
 //SLOTS
-/*Socket 1*/
+/*Socket 1 wrapper*/
 void PacmanServer::ReadDirectionFromClient1()
 {
-    QByteArray dataReceivedFromClient1 = m_ServerSocket1->readAll();
-    dataReceivedFromClient1.resize(1);
-
-    int keyInputReceivedFromClient1 = dataReceivedFromClient1.toInt();
-
-    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == SIGNAL_READY)
-    {
-        m_Player1Ready = true;
-        return;
-    }
-
-    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient1 == SIGNAL_RESTART)
-    {
-        m_Player1Ready = true;
-        return;
-    }
-
-    if(m_GameState == GameState::Running && keyInputReceivedFromClient1 == SIGNAL_PAUSE)
-    {
-        PauseGame();
-        return;
-    }
-
-    if(m_GameState == GameState::Paused && keyInputReceivedFromClient1 == SIGNAL_PAUSE)
-    {
-        ResumeGame();
-        return;
-    }
-
-    m_Pacman.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient1));
+    ReadDirection(m_pServerSocket1, m_Pacman, m_Player1Ready);
 }
 
-/*Socket 2*/
+/*Socket 2 wrapper*/
 void PacmanServer::ReadDirectionFromClient2()
 {
-    QByteArray dataReceivedFromClient2 = m_ServerSocket2->readAll();
-    dataReceivedFromClient2.resize(1);
+    ReadDirection(m_pServerSocket2, m_Ghost, m_Player2Ready);
+}
 
-    int keyInputReceivedFromClient2 = dataReceivedFromClient2.toInt();
+void PacmanServer::ReadDirection(QTcpSocket* tcpSocket, MovableCharacter& movableCharacter, bool& playerReady)
+{
+    QByteArray dataReceivedFromClient = tcpSocket->readAll();
+    dataReceivedFromClient.resize(1);
 
-    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == SIGNAL_READY)
+    int keyInputReceivedFromClient = dataReceivedFromClient.toInt();
+
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_READY)
     {
-        m_Player2Ready = true;
+        playerReady = true;
         return;
     }
 
-    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == SIGNAL_RESTART)
+    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_RESTART)
     {
-        m_Player2Ready = true;
+        playerReady = true;
         return;
     }
 
-    if(m_GameState == GameState::Running && keyInputReceivedFromClient2 == SIGNAL_PAUSE)
+    if(m_GameState == GameState::Running && keyInputReceivedFromClient == SIGNAL_PAUSE)
     {
         PauseGame();
         return;
     }
 
-    if(m_GameState == GameState::Paused && keyInputReceivedFromClient2 == SIGNAL_PAUSE)
+    if(m_GameState == GameState::Paused && keyInputReceivedFromClient == SIGNAL_PAUSE)
     {
         ResumeGame();
         return;
     }
 
-    m_Ghost.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient2));
+    movableCharacter.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient));
 }
 
 void PacmanServer::connected1()
@@ -543,8 +519,7 @@ void PacmanServer::connected1()
 
 void PacmanServer::disconnected1()
 {
-    qDebug() << "Client 1 Disconnected!";
-    exit(1);
+    qDebug() << "Client 1 Disconnected! Please restart application";
 }
 
 void PacmanServer::connected2()
@@ -554,6 +529,5 @@ void PacmanServer::connected2()
 
 void PacmanServer::disconnected2()
 {
-    qDebug() << "Client 2 Disconnected!";
-    exit(2);
+    qDebug() << "Client 2 Disconnected! Please restart application";
 }

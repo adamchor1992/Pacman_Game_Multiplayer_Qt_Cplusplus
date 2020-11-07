@@ -23,8 +23,8 @@ public:
 
 private:
     QTcpServer m_Server;
-    QTcpSocket* m_ServerSocket1;
-    QTcpSocket* m_ServerSocket2;
+    QTcpSocket* m_pServerSocket1;
+    QTcpSocket* m_pServerSocket2;
     QTcpSocket m_TempSocket;
 
     QMetaObject::Connection m_ConnectionObject_NewConnection;
@@ -81,6 +81,7 @@ private:
     void DisconnectAllSignals();
     void ResetContainersAndVariables();
     void StopAllTimers();
+    void ReadDirection(QTcpSocket *tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
 
     enum class GameState
     {
