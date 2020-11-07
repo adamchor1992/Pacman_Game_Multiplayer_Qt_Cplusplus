@@ -31,7 +31,6 @@ private:
     QMetaObject::Connection m_ConnectionObject_WaitForPlayerConnectionTimer;
     QMetaObject::Connection m_ConnectionObject_WaitForPlayerReadySignalTimer;
     QMetaObject::Connection m_ConnectionObject_UpdaterTimer;
-    QMetaObject::Connection m_ConnectionObject_PackDataToSendToClients;
     QMetaObject::Connection m_ConnectionObject_SendCoordinatesPlayer1Timer;
     QMetaObject::Connection m_ConnectionObject_SendCoordinatesPlayer2Timer;
     QMetaObject::Connection m_ConnectionObject_Socket1Connected;
@@ -58,7 +57,7 @@ private:
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;
 
-    int m_Player1Score;
+    int m_PacmanScore;
 
     QVector<QPoint> m_PowerballPositions;
     QVector<QPoint> m_FoodballPositions;
@@ -108,7 +107,4 @@ private slots:
     void disconnected1();
     void connected2();
     void disconnected2();
-
-signals:
-    void PrepareNextCoordinatesPackage();
 };
