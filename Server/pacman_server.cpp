@@ -434,13 +434,7 @@ void PacmanServer::ReadDirection(QTcpSocket* tcpSocket, MovableCharacter& movabl
 
     char keyInputReceivedFromClient = dataReceivedFromClient.at(0);
 
-    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_READY)
-    {
-        playerReady = true;
-        return;
-    }
-
-    if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_RESTART)
+    if((m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient == SIGNAL_START)
     {
         playerReady = true;
         return;

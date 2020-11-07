@@ -209,13 +209,9 @@ void GameWindow::keyPressEvent(QKeyEvent* event)
         break;
 
     case Qt::Key_Space:
-        if(m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin)
+        if(m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin)
         {
-            m_pClientConnection->SendPressedKeyToServer(SIGNAL_RESTART);
-        }
-        else
-        {
-            m_pClientConnection->SendPressedKeyToServer(SIGNAL_READY);
+            m_pClientConnection->SendPressedKeyToServer(SIGNAL_START);
         }
         break;
 
