@@ -9,7 +9,7 @@ PacmanServer::PacmanServer(QObject *parent) : QObject(parent)
     ServerStartListening();
 
     //wait for new connections
-    m_ConnectionObject_NewConnection = connect(&m_Server, SIGNAL(newConnection()), this, SLOT(AcceptConnection()), Qt::UniqueConnection);
+    m_ConnectionObject_NewConnection = connect(&m_Server, &QTcpServer::newConnection, this, &PacmanServer::AcceptConnection, Qt::UniqueConnection);
 
     //create game environment
     SetUpAndFillMap();
@@ -54,11 +54,11 @@ void PacmanServer::SetUpAndPlacePlayers()
 
 void PacmanServer::StartGame()
 {
-    m_ConnectionObject_UpdaterTimer = connect(&m_UpdaterTimer, SIGNAL(timeout()), this, SLOT(Updater()), Qt::UniqueConnection);
+    m_ConnectionObject_UpdaterTimer = connect(&m_UpdaterTimer, &QTimer::timeout, this, &PacmanServer::Updater, Qt::UniqueConnection);
 
-    m_ConnectionObject_PackDataToSendToClients = connect(this, SIGNAL(PrepareNextCoordinatesPackage()), this, SLOT(PackDataToSendToClients()), Qt::UniqueConnection);
-    m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_SendCoordinatesPlayer1Timer, SIGNAL(timeout()), this, SLOT(SendcoordinatesToClient1()), Qt::UniqueConnection);
-    m_ConnectionObject_SendCoordinatesPlayer2Timer = connect(&m_SendCoordinatesPlayer2Timer, SIGNAL(timeout()), this, SLOT(SendcoordinatesToClient2()), Qt::UniqueConnection);
+    m_ConnectionObject_PackDataToSendToClients = connect(this, &PacmanServer::PrepareNextCoordinatesPackage, this, &PacmanServer::PackDataToSendToClients, Qt::UniqueConnection);
+    m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_SendCoordinatesPlayer1Timer, &QTimer::timeout, this, &PacmanServer::SendcoordinatesToClient1, Qt::UniqueConnection);
+    m_ConnectionObject_SendCoordinatesPlayer2Timer = connect(&m_SendCoordinatesPlayer2Timer, &QTimer::timeout, this, &PacmanServer::SendcoordinatesToClient2, Qt::UniqueConnection);
 
     m_UpdaterTimer.start(4);
     m_SendCoordinatesPlayer1Timer.start(5);
@@ -175,7 +175,7 @@ void PacmanServer::PrepareRestart()
 {
     ResetContainersAndVariables();
 
-    m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_WaitForPlayerReadySignalTimer, SIGNAL(timeout()), this, SLOT(WaitForPlayerReadySignals()), Qt::UniqueConnection);
+    m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_WaitForPlayerReadySignalTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerReadySignals, Qt::UniqueConnection);
     m_WaitForPlayerReadySignalTimer.start(2000);
 
     m_Player1Ready = false;
@@ -193,12 +193,12 @@ void PacmanServer::AcceptConnection()
     {
         m_ServerSocket1 = m_Server.nextPendingConnection();
 
-        m_ConnectionObject_Socket1Connected = connect(m_ServerSocket1, SIGNAL(connected()), this, SLOT(connected1()), Qt::UniqueConnection);
-        m_ConnectionObject_Socket1Disconnected = connect(m_ServerSocket1, SIGNAL(disconnected()), this, SLOT(disconnected1()), Qt::UniqueConnection);
-        m_ConnectionObject_Socket1ReadyRead = connect(m_ServerSocket1, SIGNAL(readyRead()), this, SLOT(ReadDirectionFromClient1()), Qt::UniqueConnection);
+        m_ConnectionObject_Socket1Connected = connect(m_ServerSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
+        m_ConnectionObject_Socket1Disconnected = connect(m_ServerSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
+        m_ConnectionObject_Socket1ReadyRead = connect(m_ServerSocket1, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient1, Qt::UniqueConnection);
 
         //set up timer waiting for players signals
-        m_ConnectionObject_WaitForPlayerConnectionTimer = connect(&m_WaitForPlayerConnectionTimer, SIGNAL(timeout()), this, SLOT(WaitForPlayerConnection()), Qt::UniqueConnection);
+        m_ConnectionObject_WaitForPlayerConnectionTimer = connect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection, Qt::UniqueConnection);
         m_WaitForPlayerConnectionTimer.start(3000);
 
         qDebug() << "Connection assigned to socket 1 - PACMAN";
@@ -208,14 +208,14 @@ void PacmanServer::AcceptConnection()
     {
         m_ServerSocket2 = m_Server.nextPendingConnection();
 
-        m_ConnectionObject_Socket2Connected = connect(m_ServerSocket2, SIGNAL(connected()), this, SLOT(connected2()), Qt::UniqueConnection);
-        m_ConnectionObject_Socket2Disconnected = connect(m_ServerSocket2, SIGNAL(disconnected()), this, SLOT(disconnected2()), Qt::UniqueConnection);
-        m_ConnectionObject_Socket2ReadyRead = connect(m_ServerSocket2, SIGNAL(readyRead()), this, SLOT(ReadDirectionFromClient2()), Qt::UniqueConnection);
+        m_ConnectionObject_Socket2Connected = connect(m_ServerSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
+        m_ConnectionObject_Socket2Disconnected = connect(m_ServerSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
+        m_ConnectionObject_Socket2ReadyRead = connect(m_ServerSocket2, &QTcpSocket::readyRead, this, &PacmanServer::ReadDirectionFromClient2, Qt::UniqueConnection);
 
         m_WaitForPlayerConnectionTimer.stop();
-        disconnect(&m_WaitForPlayerConnectionTimer, SIGNAL(timeout()), this, SLOT(WaitForPlayerConnection())); //disconnect unneccesary signal
+        disconnect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection); //disconnect unneccesary signal
 
-        m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_WaitForPlayerReadySignalTimer, SIGNAL(timeout()), this, SLOT(WaitForPlayerReadySignals()), Qt::UniqueConnection);
+        m_ConnectionObject_WaitForPlayerReadySignalTimer = connect(&m_WaitForPlayerReadySignalTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerReadySignals, Qt::UniqueConnection);
         m_WaitForPlayerReadySignalTimer.start(2000);
 
         qDebug() << "Connection assigned to socket 2 - GHOST";
@@ -261,7 +261,7 @@ void PacmanServer::WaitForPlayerReadySignals()
         m_ServerSocket2->write("Game started");
 
         m_WaitForPlayerReadySignalTimer.stop();
-        disconnect(&m_WaitForPlayerReadySignalTimer, SIGNAL(timeout()), this, SLOT(WaitForPlayerReadySignals()));
+        disconnect(&m_WaitForPlayerReadySignalTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerReadySignals);
     }
 }
 
@@ -516,7 +516,8 @@ void PacmanServer::ReadDirectionFromClient2()
     }
 
     if((m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin) && keyInputReceivedFromClient2 == SIGNAL_RESTART)
-    {m_Player2Ready = true;
+    {
+        m_Player2Ready = true;
         return;
     }
 
