@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../common/common.h"
+#include <map.h>
 
 class MovableCharacter
 {
@@ -14,6 +15,7 @@ public:
     int GetY() const {return m_Y;}
     Direction GetDirection() const {return m_Direction;}
     Direction GetNextDirection() const {return m_NextDirection;}
+    void Move(Map const& map);
 
     virtual void Reset() = 0;
 

@@ -17,7 +17,7 @@ public:
     bool GetScaredBlue() const {return m_IsScaredBlue;}
     bool GetScaredWhite() const {return m_IsScaredWhite;}
 
-    void Reset();
+    void Reset() override;
 
 private:
     const int START_X = 307;

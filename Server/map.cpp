@@ -146,7 +146,7 @@ void Map::CreatePathPoints(int startX, int startY, int endX, int endY)
     }
 }
 
-bool Map::IsPointAvailable(QPoint point)
+bool Map::IsPointAvailable(QPoint point) const
 {
     for(int i = 0; i < m_PacmanPaths.size(); i++)
     {

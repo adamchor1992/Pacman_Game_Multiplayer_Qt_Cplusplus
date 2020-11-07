@@ -47,9 +47,9 @@ private:
     QTimer m_SendCoordinatesPlayer1Timer;
     QTimer m_SendCoordinatesPlayer2Timer;
 
-    Pacman m_Pacman;
     Map m_Map;
-    Ghost m_GhostPlayer;
+    Pacman m_Pacman;
+    Ghost m_Ghost;
     Foodball m_Foodball;
     Powerball m_Powerball;
 

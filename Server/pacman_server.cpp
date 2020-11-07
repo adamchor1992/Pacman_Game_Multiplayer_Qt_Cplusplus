@@ -45,7 +45,7 @@ void PacmanServer::SetUpAndFillMap()
 void PacmanServer::SetUpAndPlacePlayers()
 {
     m_Pacman.Reset();
-    m_GhostPlayer.Reset();
+    m_Ghost.Reset();
 
     m_Player1Score = 0;
     m_Player1Ready = false;
@@ -91,7 +91,7 @@ void PacmanServer::StopAllTimers()
 void PacmanServer::ResetContainersAndVariables()
 {
     m_Pacman.Reset();
-    m_GhostPlayer.Reset();
+    m_Ghost.Reset();
 
     QByteArray player1Direction = QByteArray::number(0);
     QByteArray player2Direction = QByteArray::number(0);
@@ -99,8 +99,8 @@ void PacmanServer::ResetContainersAndVariables()
     QByteArray player1X = QByteArray::number(m_Pacman.GetX());
     QByteArray player1Y_ = QByteArray::number(m_Pacman.GetY());
 
-    QByteArray player2X = QByteArray::number(m_GhostPlayer.GetX());
-    QByteArray player2Y = QByteArray::number(m_GhostPlayer.GetY());
+    QByteArray player2X = QByteArray::number(m_Ghost.GetX());
+    QByteArray player2Y = QByteArray::number(m_Ghost.GetY());
 
     QByteArray player1XCoordinatePacked = "{{D1" + player1Direction + "[x1:"+player1X+",";
     QByteArray player1YCoordinatePacked = "y1:" + player1Y_ + "];";
@@ -134,9 +134,9 @@ void PacmanServer::ResetContainersAndVariables()
         m_UpdaterTimer.stop();
     }
 
-    if(m_GhostPlayer.GetScaredBlue())
+    if(m_Ghost.GetScaredBlue())
     {
-        if(!m_GhostPlayer.GetScaredWhite()) //scared blue
+        if(!m_Ghost.GetScaredWhite()) //scared blue
         {
             m_IsGhostScaredWhitePacked = "[G:S],";
         }
@@ -279,13 +279,13 @@ void PacmanServer::SendcoordinatesToClient2()
 void PacmanServer::PackDataToSendToClients()
 {
     QByteArray player1Direction = QByteArray::number(static_cast<int>(m_Pacman.GetDirection()));
-    QByteArray player2Direction = QByteArray::number(static_cast<int>(m_GhostPlayer.GetDirection()));
+    QByteArray player2Direction = QByteArray::number(static_cast<int>(m_Ghost.GetDirection()));
 
     QByteArray player1X = QByteArray::number(m_Pacman.GetX());
     QByteArray player1Y = QByteArray::number(m_Pacman.GetY());
 
-    QByteArray player2X = QByteArray::number(m_GhostPlayer.GetX());
-    QByteArray player2Y = QByteArray::number(m_GhostPlayer.GetY());
+    QByteArray player2X = QByteArray::number(m_Ghost.GetX());
+    QByteArray player2Y = QByteArray::number(m_Ghost.GetY());
 
     QByteArray player1XCoordinatePacked = "{{D1" + player1Direction + "[x1:"+player1X+",";
     QByteArray player1YCoordinatePacked = "y1:" + player1Y + "];";
@@ -319,9 +319,9 @@ void PacmanServer::PackDataToSendToClients()
         m_UpdaterTimer.stop();
     }
 
-    if(m_GhostPlayer.GetScaredBlue())
+    if(m_Ghost.GetScaredBlue())
     {
-        if(!m_GhostPlayer.GetScaredWhite())
+        if(!m_Ghost.GetScaredWhite())
         {
             m_IsGhostScaredWhitePacked = "[G:S],";
         }
@@ -344,265 +344,11 @@ void PacmanServer::PackDataToSendToClients()
             m_GameStatePacked + m_IsGhostScaredWhitePacked + pointsPacked + messagePacked;
 }
 
-void PacmanServer::Player1Move()
-{
-    QPoint p;
-
-    int player1X = m_Pacman.GetX();
-    int player1Y = m_Pacman.GetY();
-    Direction player1Direction = m_Pacman.GetDirection();
-    Direction player1NextDirection = m_Pacman.GetNextDirection();
-
-    if(player1NextDirection != player1Direction)
-    {
-        switch(player1NextDirection)
-        {
-        case Direction::LEFT: //left
-            p.setX(player1X - 1);
-            p.setY(player1Y);
-
-            if(m_Map.IsPointAvailable(p))
-            {
-                player1Direction = player1NextDirection;
-            }
-            break;
-
-        case Direction::UP:
-            p.setX(player1X);
-            p.setY(player1Y - 1);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player1Direction = player1NextDirection;
-            }
-            break;
-
-        case Direction::DOWN:
-            p.setX(player1X);
-            p.setY(player1Y + 1);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player1Direction = player1NextDirection;
-            }
-            break;
-
-        case Direction::RIGHT:
-            p.setX(player1X + 1);
-            p.setY(player1Y);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player1Direction = player1NextDirection;
-            }
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    switch(player1Direction)
-    {
-    case Direction::LEFT:
-        p.setX(player1X - 1);
-        p.setY(player1Y);
-        m_Pacman.SetDirection(player1Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player1X = player1X - 1;
-        }
-
-        break;
-
-    case Direction::UP:
-        p.setX(player1X);
-        p.setY(player1Y - 1);
-        m_Pacman.SetDirection(player1Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player1Y= player1Y - 1;
-        }
-
-        break;
-
-    case Direction::DOWN:
-        p.setX(player1X);
-        p.setY(player1Y + 1);
-        m_Pacman.SetDirection(player1Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player1Y= player1Y + 1;
-        }
-
-        break;
-
-    case Direction::RIGHT:
-        p.setX(player1X + 1);
-        p.setY(player1Y);
-        m_Pacman.SetDirection(player1Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player1X = player1X + 1;
-        }
-
-        break;
-
-    default:
-        break;
-    }
-
-    /*Teleportation when reached left boundary of middle horizontal line*/
-    if(player1X == 0 && player1Y == 318)
-    {
-        player1X = 613;
-    }
-
-    /*Teleportation when reached right boundary of middle horizontal line*/
-    if(player1X == 614 && player1Y == 318)
-    {
-        player1X = 1;
-    }
-
-    m_Pacman.SetX(player1X);
-    m_Pacman.SetY(player1Y);
-}
-
-void PacmanServer::Player2Move()
-{
-    QPoint p;
-
-    int player2X = m_GhostPlayer.GetX();
-    int player2Y = m_GhostPlayer.GetY();
-    Direction player2Direction = m_GhostPlayer.GetDirection();
-    Direction player2NextDirection = m_GhostPlayer.GetNextDirection();
-
-    if(player2NextDirection!=player2Direction)
-    {
-        switch(player2NextDirection)
-        {
-        case Direction::LEFT:
-            p.setX(player2X - 1);
-            p.setY(player2Y);
-
-            if(m_Map.IsPointAvailable(p))
-            {
-                player2Direction = player2NextDirection;
-            }
-
-            break;
-
-        case Direction::UP:
-            p.setX(player2X);
-            p.setY(player2Y - 1);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player2Direction = player2NextDirection;
-            }
-
-            break;
-
-        case Direction::DOWN:
-            p.setX(player2X);
-            p.setY(player2Y + 1);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player2Direction = player2NextDirection;
-            }
-
-            break;
-
-        case Direction::RIGHT:
-            p.setX(player2X + 1);
-            p.setY(player2Y);
-            if(m_Map.IsPointAvailable(p))
-            {
-                player2Direction = player2NextDirection;
-            }
-
-            break;
-
-        default:
-            break;
-        }
-    }
-
-    switch(player2Direction)
-    {
-    case Direction::LEFT:
-        p.setX(player2X - 1);
-        p.setY(player2Y);
-        m_GhostPlayer.SetDirection(player2Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player2X = player2X - 1;
-        }
-
-        break;
-
-    case Direction::UP:
-        p.setX(player2X);
-        p.setY(player2Y - 1);
-        m_GhostPlayer.SetDirection(player2Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player2Y= player2Y - 1;
-        }
-
-        break;
-
-    case Direction::DOWN:
-        p.setX(player2X);
-        p.setY(player2Y + 1);
-        m_GhostPlayer.SetDirection(player2Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player2Y = player2Y + 1;
-        }
-
-        break;
-
-    case Direction::RIGHT:
-        p.setX(player2X + 1);
-        p.setY(player2Y);
-        m_GhostPlayer.SetDirection(player2Direction);
-
-        if(m_Map.IsPointAvailable(p))
-        {
-            player2X = player2X + 1;
-        }
-
-        break;
-
-    default:
-        break;
-    }
-
-    /*Teleportation when reached left boundary of middle horizontal line*/
-    if(player2X == 0 && player2Y == 318)
-    {
-        player2X = 613;
-    }
-
-    /*Teleportation when reached left boundary of middle horizontal line*/
-    if(player2X == 614 && player2Y == 318)
-    {
-        player2X = 1;
-    }
-
-    m_GhostPlayer.SetX(player2X);
-    m_GhostPlayer.SetY(player2Y);
-}
-
 void PacmanServer::CheckCollision()
 {
-    if((m_Pacman.GetX() == m_GhostPlayer.GetX()) && (m_Pacman.GetY() == m_GhostPlayer.GetY()))
+    if((m_Pacman.GetX() == m_Ghost.GetX()) && (m_Pacman.GetY() == m_Ghost.GetY()))
     {
-        if(m_GhostPlayer.GetScaredBlue() == true)
+        if(m_Ghost.GetScaredBlue() == true)
         {
             //PACMAN WINS
             m_GameState = GameState::PacmanWin;
@@ -677,7 +423,7 @@ void PacmanServer::Updater()
             --m_PowerballItemsCount;
             m_PowerballPositions.remove(i);
 
-            m_GhostPlayer.SetScaredStateBlue(true);
+            m_Ghost.SetScaredStateBlue(true);
         }
     }
 
@@ -695,32 +441,32 @@ void PacmanServer::Updater()
         PrepareRestart();
     }
 
-    if(m_GhostPlayer.GetScaredBlue())
+    if(m_Ghost.GetScaredBlue())
     {
-        m_GhostPlayer.IncrementScaredStateTimer();
+        m_Ghost.IncrementScaredStateTimer();
 
-        if(m_GhostPlayer.GetScaredStateTimer() == Ghost::SCARED_WHITE_THRESHOLD)
+        if(m_Ghost.GetScaredStateTimer() == Ghost::SCARED_WHITE_THRESHOLD)
         {
-            m_GhostPlayer.SetScaredStateWhite(true);
+            m_Ghost.SetScaredStateWhite(true);
         }
 
-        if(m_GhostPlayer.GetScaredStateTimer() == Ghost::SCARED_TIMEOUT)
+        if(m_Ghost.GetScaredStateTimer() == Ghost::SCARED_TIMEOUT)
         {
-            m_GhostPlayer.SetScaredStateBlue(false);
-            m_GhostPlayer.SetScaredStateWhite(false);
+            m_Ghost.SetScaredStateBlue(false);
+            m_Ghost.SetScaredStateWhite(false);
 
-            m_GhostPlayer.SetScaredStateTimer(0);
+            m_Ghost.SetScaredStateTimer(0);
         }
     }
 
-    Player1Move();
-    Player2Move();
+    m_Pacman.Move(m_Map);
+    m_Ghost.Move(m_Map);
 
     CheckCollision();
 }
 
 //SLOTS
-//socket1
+/*Socket 1*/
 void PacmanServer::ReadDirectionFromClient1()
 {
     QByteArray dataReceivedFromClient1 = m_ServerSocket1->readAll();
@@ -755,7 +501,7 @@ void PacmanServer::ReadDirectionFromClient1()
     m_Pacman.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient1));
 }
 
-//socket2
+/*Socket 2*/
 void PacmanServer::ReadDirectionFromClient2()
 {
     QByteArray dataReceivedFromClient2 = m_ServerSocket2->readAll();
@@ -786,7 +532,7 @@ void PacmanServer::ReadDirectionFromClient2()
         return;
     }
 
-    m_GhostPlayer.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient2));
+    m_Ghost.SetNextDirection(static_cast<Direction>(keyInputReceivedFromClient2));
 }
 
 void PacmanServer::connected1()
