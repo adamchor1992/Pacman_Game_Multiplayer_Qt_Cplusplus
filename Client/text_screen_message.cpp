@@ -30,7 +30,7 @@ QRectF TextScreenMessage::boundingRect() const
     return QRect(X, Y, WIDTH, HEIGHT);
 }
 
-void TextScreenMessage::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
+void TextScreenMessage::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
     QPen redPen(Qt::red);
     QPen yellowPen(Qt::yellow);

@@ -12,12 +12,7 @@ Ghost::Ghost()
     LoadImages();
 }
 
-QRectF Ghost::boundingRect() const
-{
-    return QRect(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT);
-}
-
-void Ghost::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Ghost::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
     const int X_OFFSET = 15;
     const int Y_OFFSET = 15;

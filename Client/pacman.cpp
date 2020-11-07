@@ -7,15 +7,10 @@ Pacman::Pacman()
 {
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
-    LoadPacmanImages();
+    LoadImages();
 }
 
-QRectF Pacman::boundingRect() const
-{
-    return QRect(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT);
-}
-
-void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
     const int X_OFFSET = 15;
     const int Y_OFFSET = 15;
@@ -114,10 +109,8 @@ void Pacman::AdvanceAnimation()
     }
 }
 
-void Pacman::LoadPacmanImages()
+void Pacman::LoadImages()
 {
-    //pacman_pixmap.load("://images/pacman_image.png");
-
     m_Right1Pixmap.load(":/pacman/images/pacman_images/pacclose.png");
     m_Right2Pixmap.load(":/pacman/images/pacman_images/pacopen1.png");
     m_Right3Pixmap.load(":/pacman/images/pacman_images/pacopen2.png");

@@ -3,17 +3,16 @@
 
 Pacman::Pacman()
 {
-    SetX(320);
-    SetY(514);
+    SetX(START_X);
+    SetY(START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
 }
 
 void Pacman::Reset()
 {
-    SetX(320);
-    SetY(514);
+    SetX(START_X);
+    SetY(START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
 }
-

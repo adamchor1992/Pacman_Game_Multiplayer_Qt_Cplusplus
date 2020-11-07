@@ -18,7 +18,7 @@ private:
 
 
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
     static constexpr int WIDTH = 600;
     static constexpr int HEIGHT = 200;

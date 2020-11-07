@@ -51,7 +51,7 @@ ConnectionDialogWindow::~ConnectionDialogWindow()
     delete ui;
 }
 
-void ConnectionDialogWindow::closeEvent(QCloseEvent* event)
+void ConnectionDialogWindow::closeEvent(QCloseEvent* /* unused */)
 {
     qDebug() << "CLOSE EVENT";
 

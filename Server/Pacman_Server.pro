@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     map.cpp \
+    movable_character.cpp \
     pacman.cpp \
     ghost.cpp \
     pacman_server.cpp \
@@ -30,6 +31,7 @@ SOURCES += main.cpp \
 
 HEADERS += \
     map.h \
+    movable_character.h \
     pacman.h \
     ghost.h \
     pacman_server.h \

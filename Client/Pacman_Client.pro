@@ -33,6 +33,7 @@ SOURCES += \
     game_window.cpp \
     ghost.cpp \
     map.cpp \
+    movable_character.cpp \
     pacman.cpp \
     sounds.cpp \
     text_screen_message.cpp \
@@ -45,6 +46,7 @@ HEADERS += \
     game_window.h \
     ghost.h \
     map.h \
+    movable_character.h \
     pacman.h \
     sounds.h \
     text_screen_message.h \

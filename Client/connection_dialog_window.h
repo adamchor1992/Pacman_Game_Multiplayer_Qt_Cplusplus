@@ -29,7 +29,7 @@ private:
     QHostAddress m_ValidatedIpAddress;
     bool m_IsValidIpAddress;
 
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent*);
 
 private slots:
     void on_lineEdit_IP_textChanged(const QString& enteredIpAddress);
