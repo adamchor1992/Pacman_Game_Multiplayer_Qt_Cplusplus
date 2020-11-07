@@ -1,6 +1,7 @@
 #include "game_window.h"
 #include "ui_game_window.h"
 #include "map.h"
+#include "../common/common.h"
 #include "../common/powerball_manager.h"
 
 GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(parent), ui(new Ui::Game_window)
@@ -9,7 +10,7 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
 
     ui->gameplay_area->setScene(&m_Scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
-    m_Scene.setSceneRect(0, 0, 614, 740);
+    m_Scene.setSceneRect(0, 0, SCENE_WIDTH, SCENE_HEIGHT);
     ui->gameplay_area->setSceneRect(m_Scene.sceneRect());
 
     m_GameState = GameState::BeforeFirstRun;
@@ -67,20 +68,20 @@ void GameWindow::PopulateMap()
 
 void GameWindow::GenerateAndPlacePacman()
 {
-    m_Pacman.SetDirection(0); //pacman does not move after game start
+    m_Pacman.SetDirection(Direction::NO_DIRECTION);
 
-    m_Pacman.SetX(320);
-    m_Pacman.SetY(514);
+    m_Pacman.SetX(PACMAN_START_X);
+    m_Pacman.SetY(PACMAN_START_Y);
 
     m_Scene.addItem(&m_Pacman);
 }
 
 void GameWindow::GenerateAndPlaceGhosts()
 {
-    m_Ghostplayer.SetDirection(0); //pacman does not move after game start
+    m_Ghostplayer.SetDirection(Direction::NO_DIRECTION);
 
-    m_Ghostplayer.SetX(307);
-    m_Ghostplayer.SetY(252);
+    m_Ghostplayer.SetX(GHOST_START_X);
+    m_Ghostplayer.SetY(GHOST_START_Y);
 
     m_Scene.addItem(&m_Ghostplayer);
 }
@@ -128,9 +129,9 @@ void GameWindow::HideSceneItems()
 
 void GameWindow::RestartGame()
 {
-    m_Pacman.SetDirection(0); //pacman does not move after game start
-    m_Pacman.SetX(320);
-    m_Pacman.SetY(514);
+    m_Pacman.SetDirection(Direction::NO_DIRECTION);
+    m_Pacman.SetX(PACMAN_START_X);
+    m_Pacman.SetY(PACMAN_START_Y);
 
     m_TextScreenMessage.hide();
     m_Scene.removeItem(&m_TextScreenMessage);
@@ -149,7 +150,7 @@ void GameWindow::RestartGame()
 
     m_Sounds.m_BeginningSound.play();
 
-    ui->statusbar->showMessage("Game started", 3000);
+    ui->statusbar->showMessage("Game started", MESSAGE_TIMEOUT);
     m_UpdaterTimer.start(6);
     m_IpdateCoordinatesTimer.start(6);
 
@@ -161,7 +162,7 @@ void GameWindow::StartGame()
 {
     m_Sounds.m_BeginningSound.play();
 
-    ui->statusbar->showMessage("Game started", 3000);
+    ui->statusbar->showMessage("Game started", MESSAGE_TIMEOUT);
     m_UpdaterTimer.start(6);
     m_IpdateCoordinatesTimer.start(6);
     this->setFocus(); //gives the keyboard input focus to this widget
@@ -247,11 +248,11 @@ void GameWindow::UpdateCoordinatesFromServer()
 
         m_Pacman.SetX(player1X.toInt());
         m_Pacman.SetY(player1Y.toInt());
-        m_Pacman.SetDirection(match.captured(1).toInt());
+        m_Pacman.SetDirection(static_cast<Direction>(match.captured(1).toInt()));
 
         m_Ghostplayer.SetX(player2X.toInt());
         m_Ghostplayer.SetY(player2Y.toInt());
-        m_Ghostplayer.SetDirection(match.captured(4).toInt());
+        m_Ghostplayer.SetDirection(static_cast<Direction>(match.captured(4).toInt()));
 
         if(match.captured(7) == "0")
         {

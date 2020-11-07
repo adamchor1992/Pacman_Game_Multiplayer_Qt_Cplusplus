@@ -2,8 +2,8 @@
 
 Ghost::Ghost()
 {
-    SetX(START_X);
-    SetY(START_Y);
+    SetX(GHOST_START_X);
+    SetY(GHOST_START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
     SetScaredStateBlue(false);
@@ -13,8 +13,8 @@ Ghost::Ghost()
 
 void Ghost::Reset()
 {
-    SetX(START_X);
-    SetY(START_Y);
+    SetX(GHOST_START_X);
+    SetY(GHOST_START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
     SetScaredStateBlue(false);

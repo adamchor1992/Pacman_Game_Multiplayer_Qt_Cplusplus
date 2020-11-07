@@ -20,8 +20,6 @@ public:
     void Reset() override;
 
 private:
-    const int START_X = 307;
-    const int START_Y = 252;
     bool m_IsScaredBlue;
     bool m_IsScaredWhite;
     int m_ScaredStateTimer;

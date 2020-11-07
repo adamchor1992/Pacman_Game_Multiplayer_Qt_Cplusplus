@@ -5,7 +5,7 @@ Ghost::Ghost()
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    m_Direction = 1;
+    m_Direction = Direction::LEFT;
     m_IsScaredBlue = false;
     m_IsScaredWhite = false;
 
@@ -14,56 +14,51 @@ Ghost::Ghost()
 
 void Ghost::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
-    const int X_OFFSET = 15;
-    const int Y_OFFSET = 15;
-    const int WIDTH = 30;
-    const int HEIGHT = 30;
-
     if(!m_IsScaredBlue)
     {
         switch(m_Direction)
         {
-        case 0:
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down1Pixmap);
+        case Direction::NO_DIRECTION:
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down1Pixmap);
             break;
-        case 1:
+        case Direction::LEFT:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left2Pixmap);
             }
             break;
-        case 4:
+        case Direction::RIGHT:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right2Pixmap);
             }
             break;
-        case 3:
+        case Direction::DOWN:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down2Pixmap);
             }
             break;
-        case 2:
+        case Direction::UP:
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up2Pixmap);
             }
             break;
         }
@@ -74,22 +69,22 @@ void Ghost::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused *
         {
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredWhite1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredWhite2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite2Pixmap);
             }
         }
         else
         {
             if(m_AnimationState == 0)
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredBlue1Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue1Pixmap);
             }
             else
             {
-                painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, 30, m_ScaredBlue2Pixmap);
+                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue2Pixmap);
             }
         }
     }

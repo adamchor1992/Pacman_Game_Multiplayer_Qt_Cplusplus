@@ -33,6 +33,10 @@ public:
     ~GameWindow();
 
 private:
+    const int SCENE_WIDTH = 614;
+    const int SCENE_HEIGHT = 740;
+    const int MESSAGE_TIMEOUT = 3000;
+
     Ui::Game_window* ui;
 
     QGraphicsScene m_Scene;

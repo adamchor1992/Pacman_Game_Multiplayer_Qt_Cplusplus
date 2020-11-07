@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QGraphicsItem>
+#include "../common/common.h"
 
 class MovableCharacter : public QGraphicsItem
 {
@@ -9,7 +10,7 @@ public:
 
     void SetX(int x) {m_X = x;}
     void SetY(int y) {m_Y = y;}
-    void SetDirection(int direction) {m_Direction = direction;}
+    void SetDirection(Direction direction) {m_Direction = direction;}
     virtual void AdvanceAnimation() = 0;
     virtual void LoadImages() = 0;
 
@@ -22,7 +23,7 @@ protected:
     const int IMAGE_HEIGHT = 30;
 
     int m_X, m_Y;
-    int m_Direction;
+    Direction m_Direction;
     int m_AnimationState;
     int m_AnimationModifyFactor;
 };

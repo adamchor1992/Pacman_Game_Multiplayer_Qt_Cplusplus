@@ -12,86 +12,81 @@ Pacman::Pacman()
 
 void Pacman::paint(QPainter *painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
-    const int X_OFFSET = 15;
-    const int Y_OFFSET = 15;
-    const int WIDTH = 30;
-    const int HEIGHT = 30;
-
     switch(m_Direction)
     {
-    case 0:
-        painter->drawPixmap(m_X - X_OFFSET , m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left1Pixmap);
+    case Direction::NO_DIRECTION:
+        painter->drawPixmap(m_X - IMAGE_OFFSET_X , m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left1Pixmap);
         break;
-    case 1:
+    case Direction::LEFT:
         if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left1Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left1Pixmap);
         }
         else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left2Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left2Pixmap);
         }
         else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left3Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left3Pixmap);
         }
         else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Left4Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Left4Pixmap);
         }
         break;
-    case 4:
+    case Direction::RIGHT:
         if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right1Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right1Pixmap);
         }
         else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right2Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right2Pixmap);
         }
         else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right3Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right3Pixmap);
         }
         else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Right4Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Right4Pixmap);
         }
         break;
-    case 3:
+    case Direction::DOWN:
         if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down1Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down1Pixmap);
         }
         else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down2Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down2Pixmap);
         }
         else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down3Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down3Pixmap);
         }
         else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Down4Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Down4Pixmap);
         }
         break;
-    case 2:
+    case Direction::UP:
         if(m_AnimationState < 2 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up1Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up1Pixmap);
         }
         else if(m_AnimationState < 4 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up2Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up2Pixmap);
         }
         else if(m_AnimationState < 6 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up3Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up3Pixmap);
         }
         else if(m_AnimationState < 8 * m_AnimationModifyFactor)
         {
-            painter->drawPixmap(m_X - X_OFFSET, m_Y - Y_OFFSET, WIDTH, HEIGHT, m_Up4Pixmap);
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, IMAGE_HEIGHT, m_Up4Pixmap);
         }
         break;
     }
