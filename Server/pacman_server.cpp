@@ -61,8 +61,8 @@ void PacmanServer::StartGame()
     m_ConnectionObject_SendCoordinatesPlayer2Timer = connect(&m_SendCoordinatesPlayer2Timer, &QTimer::timeout, this, &PacmanServer::SendcoordinatesToClient2, Qt::UniqueConnection);
 
     m_UpdaterTimer.start(4);
-    m_SendCoordinatesPlayer1Timer.start(5);
-    m_SendCoordinatesPlayer2Timer.start(5);
+    m_SendCoordinatesPlayer1Timer.start(1);
+    m_SendCoordinatesPlayer2Timer.start(1);
 
     qDebug() << "Game started";
 
