@@ -6,24 +6,22 @@
 #include <QTimer>
 #include <QStatusBar>
 
-class ClientConnection : public QObject
+class ServerConnection : public QObject
 {
     Q_OBJECT
 
 public:
     static const int GAME_PORT = 5000;
 
-    explicit ClientConnection(QStatusBar* statusbar, QObject* parent = nullptr);
-    void RequestConnection(QHostAddress address, uint port);
+    explicit ServerConnection();
+    void ConnectToServer(QHostAddress address, uint port);
     void SendPressedKeyToServer(char controlKey);
     QByteArray GetCoordinates() {return m_Coordinates;}
 
 private:
     const int CONNECTION_TIMEOUT = 500;
-    const int MESSAGE_TIMEOUT = 3000;
 
     QTcpSocket* m_pClientSocket;
-    QStatusBar* m_pStatusBar;
 
     QByteArray m_Coordinates;
     QByteArray m_MessageFromServer;

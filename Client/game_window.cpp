@@ -13,13 +13,13 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
     m_Scene.setSceneRect(0, 0, SCENE_WIDTH, SCENE_HEIGHT);
     ui->gameplay_area->setSceneRect(m_Scene.sceneRect());
 
+    StatusBarManager(ui->statusbar);
+
     m_GameState = GameState::BeforeFirstRun;
     m_WaitingForRestartKey = false;
     m_RestartPending = false;
 
-    m_pClientConnection = new ClientConnection(ui->statusbar, this);
-
-    m_pClientConnection->RequestConnection(address, ClientConnection::GAME_PORT);
+    m_ServerConnection.ConnectToServer(address, ServerConnection::GAME_PORT);
 
     GenerateMap();
     PopulateMap();
@@ -30,7 +30,7 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
     PrepareGameToStart();
 
     connect(&m_SceneUpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateScene()), Qt::UniqueConnection);
-    connect(m_pClientConnection, SIGNAL(GameStarted()), this, SLOT(StartGame()), Qt::UniqueConnection);
+    connect(&m_ServerConnection, SIGNAL(GameStarted()), this, SLOT(StartGame()), Qt::UniqueConnection);
 
     m_SceneUpdateTimer.start(10);
 }
@@ -150,11 +150,12 @@ void GameWindow::RestartGame()
 
     m_Sounds.m_BeginningSound.play();
 
-    ui->statusbar->showMessage("Game started", MESSAGE_TIMEOUT);
+    StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
+
     m_UpdaterTimer.start(6);
     m_IpdateCoordinatesTimer.start(6);
 
-    this->setFocus(); //gives the keyboard input focus to this widget
+    this->setFocus();
 }
 
 //SLOTS
@@ -162,10 +163,11 @@ void GameWindow::StartGame()
 {
     m_Sounds.m_BeginningSound.play();
 
-    ui->statusbar->showMessage("Game started", MESSAGE_TIMEOUT);
+    StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
+
     m_UpdaterTimer.start(6);
     m_IpdateCoordinatesTimer.start(6);
-    this->setFocus(); //gives the keyboard input focus to this widget
+    this->setFocus();
 }
 
 void GameWindow::CheckForRestartGameSignal()
@@ -190,28 +192,28 @@ void GameWindow::keyPressEvent(QKeyEvent* event)
     {
     case Qt::Key_A:
     case Qt::Key_Left:
-        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_LEFT);
+        m_ServerConnection.SendPressedKeyToServer(MOVEMENT_LEFT);
         break;
 
     case Qt::Key_D:
     case Qt::Key_Right:
-        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_RIGHT);
+        m_ServerConnection.SendPressedKeyToServer(MOVEMENT_RIGHT);
         break;
 
     case Qt::Key_S:
     case Qt::Key_Down:
-        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_DOWN);
+        m_ServerConnection.SendPressedKeyToServer(MOVEMENT_DOWN);
         break;
 
     case Qt::Key_W:
     case Qt::Key_Up:
-        m_pClientConnection->SendPressedKeyToServer(MOVEMENT_UP);
+        m_ServerConnection.SendPressedKeyToServer(MOVEMENT_UP);
         break;
 
     case Qt::Key_Space:
         if(m_GameState == GameState::BeforeFirstRun || m_GameState == GameState::PacmanWin || m_GameState == GameState::GhostWin)
         {
-            m_pClientConnection->SendPressedKeyToServer(SIGNAL_START);
+            m_ServerConnection.SendPressedKeyToServer(SIGNAL_START);
         }
         break;
 
@@ -222,7 +224,7 @@ void GameWindow::keyPressEvent(QKeyEvent* event)
 
 void GameWindow::UpdateCoordinatesFromServer()
 {
-    QByteArray data_received = m_pClientConnection->GetCoordinates();
+    QByteArray data_received = m_ServerConnection.GetCoordinates();
     QString player1X;
     QString player1Y;
     QString player2X;
@@ -333,7 +335,9 @@ void GameWindow::Updater()
         m_TextScreenMessage.show();
 
         qDebug() << "Pacman wins";
-        ui->statusbar->showMessage("PACMAN WINS");
+
+        StatusBarManager::ShowMessage("PACMAN WINS");
+
         m_UpdaterTimer.stop();
 
         connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
@@ -352,7 +356,9 @@ void GameWindow::Updater()
         m_TextScreenMessage.show();
 
         qDebug() << "Ghost wins";
-        ui->statusbar->showMessage("GHOST WINS");
+
+        StatusBarManager::ShowMessage("GHOST WINS");
+
         m_UpdaterTimer.stop();
 
         connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
@@ -368,5 +374,4 @@ void GameWindow::Updater()
 GameWindow::~GameWindow()
 {
     delete ui;
-    delete m_pClientConnection;
 }

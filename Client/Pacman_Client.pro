@@ -27,32 +27,34 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    ../common/foodball_manager.cpp \
-    ../common/powerball_manager.cpp \
     main.cpp \
-    client_connection.cpp \
     connection_dialog_window.cpp \
     game_window.cpp \
     ghost.cpp \
     map.cpp \
     movable_character.cpp \
     pacman.cpp \
+    server_connection.cpp \
     sounds.cpp \
-    text_screen_message.cpp
+    status_bar_manager.cpp \
+    text_screen_message.cpp \
+    ../common/foodball_manager.cpp \
+    ../common/powerball_manager.cpp
 
 HEADERS += \
-    ../common/foodball_manager.h \
-    ../common/powerball_manager.h \
-    client_connection.h \
     connection_dialog_window.h \
     game_window.h \
     ghost.h \
     map.h \
     movable_character.h \
     pacman.h \
+    server_connection.h \
     sounds.h \
+    status_bar_manager.h \
     text_screen_message.h \
-    ../common/common.h
+    ../common/common.h \
+    ../common/foodball_manager.h \
+    ../common/powerball_manager.h
 
 FORMS += \
     connection_dialog_window.ui \

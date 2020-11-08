@@ -1,8 +1,8 @@
-#include "client_connection.h"
+#include "server_connection.h"
+#include <status_bar_manager.h>
 
-ClientConnection::ClientConnection(QStatusBar* statusbar, QObject *parent) : QObject(parent)
+ServerConnection::ServerConnection() : QObject()
 {
-    m_pStatusBar = statusbar;
     m_pClientSocket = new QTcpSocket(this);
 
     //connect slots
@@ -11,40 +11,41 @@ ClientConnection::ClientConnection(QStatusBar* statusbar, QObject *parent) : QOb
     connect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()), Qt::UniqueConnection);
 }
 
-void ClientConnection::RequestConnection(QHostAddress address, uint port)
+void ServerConnection::ConnectToServer(QHostAddress address, uint port)
 {
     m_pClientSocket->connectToHost(address, port);
 
     if(!m_pClientSocket->waitForConnected(CONNECTION_TIMEOUT))
     {
-        m_pStatusBar->showMessage("Connection failed, please restart client");
+        StatusBarManager::ShowMessage("Connection failed, please restart client");
+
         qDebug() << "Failed to connect from client side: " << m_pClientSocket->errorString();
     }
 }
 
-void ClientConnection::SendPressedKeyToServer(char controlKey)
+void ServerConnection::SendPressedKeyToServer(char controlKey)
 {
     m_pClientSocket->putChar(controlKey);
 }
 
 //SLOTS
 
-void ClientConnection::connected()
+void ServerConnection::connected()
 {
-    m_pStatusBar->showMessage("Successfully connected from client side", MESSAGE_TIMEOUT);
+    StatusBarManager::ShowMessage("Successfully connected from client side", StatusBarManager::MESSAGE_TIMEOUT);
     qDebug() << "Successfully connected from client side";
 }
 
-void ClientConnection::ShowMessageFromServer()
+void ServerConnection::ShowMessageFromServer()
 {
     m_MessageFromServer = m_pClientSocket->readAll();
-    qDebug() << "Message from server: " << m_MessageFromServer;
-    m_pStatusBar->showMessage(m_MessageFromServer);
+
+    StatusBarManager::ShowMessage(m_MessageFromServer);
 
     if(m_MessageFromServer == "Game started")
     {
-        m_pStatusBar->clearMessage();
-        m_pStatusBar->showMessage("Game started", MESSAGE_TIMEOUT);
+        StatusBarManager::ClearMessage();
+        StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
         disconnect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()));
         //start game
         emit GameStarted();
@@ -52,17 +53,13 @@ void ClientConnection::ShowMessageFromServer()
     }
 }
 
-void ClientConnection::ReadCoordinatesFromServer()
+void ServerConnection::ReadCoordinatesFromServer()
 {
     m_Coordinates = m_pClientSocket->readAll();
 }
 
-void ClientConnection::disconnected()
+void ServerConnection::disconnected()
 {
-    m_pStatusBar->showMessage("YOU ARE DISCONNECTED");
+    StatusBarManager::ShowMessage("YOU ARE DISCONNECTED");
     qDebug() << "Disconnected!";
 }
-
-
-
-

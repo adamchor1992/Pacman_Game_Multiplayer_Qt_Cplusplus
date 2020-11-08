@@ -7,9 +7,10 @@
 #include "ghost.h"
 #include "text_screen_message.h"
 #include "sounds.h"
-#include "client_connection.h"
+#include "server_connection.h"
 #include "assert.h"
 #include "connection_dialog_window.h"
+#include "status_bar_manager.h"
 
 #include <QMainWindow>
 #include <QtCore>
@@ -35,7 +36,6 @@ public:
 private:
     const int SCENE_WIDTH = 614;
     const int SCENE_HEIGHT = 740;
-    const int MESSAGE_TIMEOUT = 3000;
 
     Ui::Game_window* ui;
 
@@ -50,7 +50,7 @@ private:
     PowerballManager m_PowerballManager;
     FoodballManager m_FoodBallManager;
 
-    ClientConnection* m_pClientConnection;
+    ServerConnection m_ServerConnection;
 
     TextScreenMessage m_TextScreenMessage;
 
@@ -88,15 +88,7 @@ private:
 
     void keyPressEvent(QKeyEvent *event);
 
-    enum class GameState
-    {
-        BeforeFirstRun = 0,
-        Running = 1,
-        Paused = 2,
-        Aborted = 3,
-        PacmanWin = 4,
-        GhostWin = 5
-    } m_GameState;
+    GameState m_GameState;
 
 private slots:
     void StartGame();
