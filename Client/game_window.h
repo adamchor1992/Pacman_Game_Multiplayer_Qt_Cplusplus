@@ -8,7 +8,6 @@
 #include "text_screen_message.h"
 #include "sounds.h"
 #include "server_connection.h"
-#include "assert.h"
 #include "connection_dialog_window.h"
 #include "status_bar_manager.h"
 
@@ -19,6 +18,7 @@
 #include <QGraphicsScene>
 #include <QList>
 #include "QRegExp"
+#include <cassert>
 
 namespace Ui
 {
@@ -43,7 +43,7 @@ private:
 
     QTimer m_UpdaterTimer;
     QTimer m_SceneUpdateTimer;
-    QTimer m_IpdateCoordinatesTimer;
+    QTimer m_UpdateCoordinatesTimer;
     QTimer m_WaitForRestartKeyTimer;
     QTimer m_WaitForGameRestartTimer;
 

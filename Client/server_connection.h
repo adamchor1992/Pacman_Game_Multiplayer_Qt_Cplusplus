@@ -16,7 +16,7 @@ public:
     explicit ServerConnection();
     void ConnectToServer(QHostAddress address, uint port);
     void SendPressedKeyToServer(char controlKey);
-    QByteArray GetCoordinates() {return m_Coordinates;}
+    QByteArray& GetDataFromServer() {return m_Coordinates;}
 
 private:
     const int CONNECTION_TIMEOUT = 500;
@@ -32,6 +32,6 @@ signals:
 private slots:
     void connected();
     void disconnected();
-    void ReadCoordinatesFromServer();
+    void ReadDataFromServer();
     void ShowMessageFromServer();
 };

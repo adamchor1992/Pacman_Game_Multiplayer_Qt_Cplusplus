@@ -49,11 +49,11 @@ void ServerConnection::ShowMessageFromServer()
         disconnect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ShowMessageFromServer()));
         //start game
         emit GameStarted();
-        connect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ReadCoordinatesFromServer()), Qt::UniqueConnection);
+        connect(m_pClientSocket, SIGNAL(readyRead()), this, SLOT(ReadDataFromServer()), Qt::UniqueConnection);
     }
 }
 
-void ServerConnection::ReadCoordinatesFromServer()
+void ServerConnection::ReadDataFromServer()
 {
     m_Coordinates = m_pClientSocket->readAll();
 }

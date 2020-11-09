@@ -3,6 +3,7 @@
 #include "map.h"
 #include "../common/common.h"
 #include "../common/powerball_manager.h"
+#include "../common/log_manager.h"
 
 GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(parent), ui(new Ui::Game_window)
 {
@@ -89,7 +90,7 @@ void GameWindow::GenerateAndPlaceGhosts()
 void GameWindow::PrepareGameToStart()
 {
     connect(&m_UpdaterTimer, SIGNAL(timeout()), this,SLOT(Updater()), Qt::UniqueConnection);
-    connect(&m_IpdateCoordinatesTimer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
+    connect(&m_UpdateCoordinatesTimer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
 }
 
 void GameWindow::ResetVariablesAndContainers()
@@ -153,7 +154,7 @@ void GameWindow::RestartGame()
     StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
 
     m_UpdaterTimer.start(6);
-    m_IpdateCoordinatesTimer.start(6);
+    m_UpdateCoordinatesTimer.start(6);
 
     this->setFocus();
 }
@@ -166,7 +167,7 @@ void GameWindow::StartGame()
     StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
 
     m_UpdaterTimer.start(6);
-    m_IpdateCoordinatesTimer.start(6);
+    m_UpdateCoordinatesTimer.start(6);
     this->setFocus();
 }
 
@@ -224,69 +225,67 @@ void GameWindow::keyPressEvent(QKeyEvent* event)
 
 void GameWindow::UpdateCoordinatesFromServer()
 {
-    QByteArray data_received = m_ServerConnection.GetCoordinates();
-    QString player1X;
-    QString player1Y;
-    QString player2X;
-    QString player2Y;
+    QByteArray dataReceivedFromServer = m_ServerConnection.GetDataFromServer();
 
-    QRegularExpression coordinates_pattern("{D1(0|1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(0|1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[S:(0|1|2|3|4|5)\\],\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.+)'}}");
+    QRegularExpression coordinatesPattern("{D1(0|1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(0|1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[S:(0|1|2|3|4|5)\\],\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.*)'}}");
 
-    QRegularExpression change_state_pattern("{del:\\[(\\d+,\\d+)\\]}");
+    QRegularExpression changeStatePattern("{del:\\[(\\d+,\\d+)\\]}");
 
-    QRegularExpressionMatch match = coordinates_pattern.match(data_received);
-    QRegularExpressionMatch match2 = change_state_pattern.match(data_received);
+    QRegularExpressionMatch match1 = coordinatesPattern.match(dataReceivedFromServer);
+    QRegularExpressionMatch match2 = changeStatePattern.match(dataReceivedFromServer);
 
-    if(match.hasMatch())
+    if(match1.hasMatch())
     {
-        player1X = match.captured(2);
-        player1Y = match.captured(3);
-        player2X = match.captured(5);
-        player2Y = match.captured(6);
+        LogManager::LogToFile("MATCH 1" + dataReceivedFromServer.toStdString());
 
-        m_Pacman.SetX(player1X.toInt());
-        m_Pacman.SetY(player1Y.toInt());
-        m_Pacman.SetDirection(static_cast<Direction>(match.captured(1).toInt()));
+        QString pacmanX = match1.captured(2);
+        QString pacmanY = match1.captured(3);
+        QString ghostX = match1.captured(5);
+        QString ghostY = match1.captured(6);
 
-        m_Ghostplayer.SetX(player2X.toInt());
-        m_Ghostplayer.SetY(player2Y.toInt());
-        m_Ghostplayer.SetDirection(static_cast<Direction>(match.captured(4).toInt()));
+        m_Pacman.SetX(pacmanX.toInt());
+        m_Pacman.SetY(pacmanY.toInt());
+        m_Pacman.SetDirection(static_cast<Direction>(match1.captured(1).toInt()));
 
-        if(match.captured(7) == "0")
+        m_Ghostplayer.SetX(ghostX.toInt());
+        m_Ghostplayer.SetY(ghostY.toInt());
+        m_Ghostplayer.SetDirection(static_cast<Direction>(match1.captured(4).toInt()));
+
+        if(match1.captured(7) == "0")
         {
             m_GameState = GameState::BeforeFirstRun;
         }
-        else if(match.captured(7) == "1")
+        else if(match1.captured(7) == "1")
         {
             m_GameState = GameState::Running;
         }
-        else if(match.captured(7) == "2")
+        else if(match1.captured(7) == "2")
         {
             m_GameState = GameState::Paused;
         }
-        else if(match.captured(7) == "3")
+        else if(match1.captured(7) == "3")
         {
             m_GameState =GameState::Aborted;
         }
-        else if(match.captured(7) == "4")
+        else if(match1.captured(7) == "4")
         {
             m_GameState = GameState::PacmanWin;
         }
-        else if(match.captured(7) == "5")
+        else if(match1.captured(7) == "5")
         {
             m_GameState = GameState::GhostWin;
         }
 
-        if(match.captured(8) == "S")
+        if(match1.captured(8) == "S")
         {
             m_Ghostplayer.SetScaredStateBlue(true);
             m_Ghostplayer.SetScaredStateWhite(false);
         }
-        else if(match.captured(8) == "W")
+        else if(match1.captured(8) == "W")
         {
             m_Ghostplayer.SetScaredStateWhite(true);
         }
-        else if(match.captured(8) == "N")
+        else if(match1.captured(8) == "N")
         {
             m_Ghostplayer.SetScaredStateBlue(false);
             m_Ghostplayer.SetScaredStateWhite(false);
@@ -294,12 +293,13 @@ void GameWindow::UpdateCoordinatesFromServer()
     }
     else
     {
-        qDebug() << data_received;
-        qDebug() << "PACKAGE LOST: Wrong coordinate package";
+        LogManager::LogToFile("MALFORMED DATA" + dataReceivedFromServer.toStdString());
     }
 
     if(match2.hasMatch())
     {
+        LogManager::LogToFile("MATCH 2" + dataReceivedFromServer.toStdString());
+
         QString coordinates_of_object_to_remove = match2.captured(1);
         QMap<QString,QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);
         QMap<QString,QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);

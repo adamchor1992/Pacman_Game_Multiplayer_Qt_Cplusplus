@@ -39,7 +39,8 @@ SOURCES += \
     status_bar_manager.cpp \
     text_screen_message.cpp \
     ../common/foodball_manager.cpp \
-    ../common/powerball_manager.cpp
+    ../common/powerball_manager.cpp \
+    ../common/log_manager.cpp
 
 HEADERS += \
     connection_dialog_window.h \
@@ -54,7 +55,8 @@ HEADERS += \
     text_screen_message.h \
     ../common/common.h \
     ../common/foodball_manager.h \
-    ../common/powerball_manager.h
+    ../common/powerball_manager.h \
+    ../common/log_manager.h
 
 FORMS += \
     connection_dialog_window.ui \

@@ -2,12 +2,13 @@
 #include "connection_dialog_window.h"
 #include <QApplication>
 #include <fstream>
+#include "../common/log_manager.h"
 
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    std::ofstream logFile("log.txt", std::ios_base::out | std::ios_base::app);
+    LogManager logManager;
 
     /*If no command line arguments were given*/
     if(argc == 1)
@@ -37,11 +38,11 @@ int main(int argc, char *argv[])
 
             if(serverAddress.empty())
             {
-                logFile << "File " << inputFileName << " is empty" << std::endl << "Application will close now" << std::endl;
+                LogManager::LogToFile("File " + inputFileName + " is empt\ny" + "Application will close now\n");
             }
             else
             {
-                logFile << "Starting game in TEST mode" << std::endl;
+                LogManager::LogToFile("Starting game in TEST mode\n");
 
                 GameWindow gameWindow(nullptr, QHostAddress(QString::fromStdString(serverAddress)));
                 gameWindow.show();
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            logFile << "Could not open " << inputFileName << std::endl << "Application will close now" << std::endl;
+            LogManager::LogToFile("Could not open " + inputFileName + "\n" + "Application will close now\n");
             return 0;
         }
     }
