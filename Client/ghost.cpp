@@ -6,15 +6,14 @@ Ghost::Ghost()
     m_AnimationModifyFactor = 6;
 
     m_Direction = Direction::LEFT;
-    m_IsScaredBlue = false;
-    m_IsScaredWhite = false;
+    m_ScaredState = GhostScaredState::NO_SCARED;
 
     LoadImages();
 }
 
 void Ghost::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused */, QWidget* /* unused */)
 {
-    if(!m_IsScaredBlue)
+    if(m_ScaredState == GhostScaredState::NO_SCARED)
     {
         switch(m_Direction)
         {
@@ -63,30 +62,31 @@ void Ghost::paint(QPainter* painter, const QStyleOptionGraphicsItem* /* unused *
             break;
         }
     }
-    else
+    else if(m_ScaredState == GhostScaredState::SCARED_BLUE)
     {
-        if(m_IsScaredWhite)
+        if(m_AnimationState == 0)
         {
-            if(m_AnimationState == 0)
-            {
-                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite1Pixmap);
-            }
-            else
-            {
-                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite2Pixmap);
-            }
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue1Pixmap);
         }
         else
         {
-            if(m_AnimationState == 0)
-            {
-                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue1Pixmap);
-            }
-            else
-            {
-                painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue2Pixmap);
-            }
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredBlue2Pixmap);
         }
+    }
+    else if(m_ScaredState == GhostScaredState::SCARED_WHITE)
+    {
+        if(m_AnimationState == 0)
+        {
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite1Pixmap);
+        }
+        else
+        {
+            painter->drawPixmap(m_X - IMAGE_OFFSET_X, m_Y - IMAGE_OFFSET_Y, IMAGE_WIDTH, 30, m_ScaredWhite2Pixmap);
+        }
+    }
+    else
+    {
+        assert(false);
     }
 }
 

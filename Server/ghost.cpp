@@ -6,8 +6,7 @@ Ghost::Ghost()
     SetY(GHOST_START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
-    SetScaredStateBlue(false);
-    SetScaredStateWhite(false);
+    m_ScaredState = GhostScaredState::NO_SCARED;
     SetScaredStateTimer(0);
 }
 
@@ -17,7 +16,6 @@ void Ghost::Reset()
     SetY(GHOST_START_Y);
     SetDirection(Direction::NO_DIRECTION);
     SetNextDirection(Direction::NO_DIRECTION);
-    SetScaredStateBlue(false);
-    SetScaredStateWhite(false);
+    m_ScaredState = GhostScaredState::NO_SCARED;
     SetScaredStateTimer(0);
 }

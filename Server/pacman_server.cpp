@@ -134,20 +134,21 @@ void PacmanServer::ResetContainersAndVariables()
         m_UpdaterTimer.stop();
     }
 
-    if(m_Ghost.GetScaredBlue())
-    {
-        if(!m_Ghost.GetScaredWhite()) //scared blue
-        {
-            m_IsGhostScaredWhitePacked = "[G:S],";
-        }
-        else //scared white
-        {
-            m_IsGhostScaredWhitePacked = "[G:W],";
-        }
-    }
-    else //no scared
+    if(m_Ghost.GetScaredState() == GhostScaredState::NO_SCARED)
     {
         m_IsGhostScaredWhitePacked = "[G:N],";
+    }
+    else if(m_Ghost.GetScaredState() == GhostScaredState::SCARED_BLUE)
+    {
+        m_IsGhostScaredWhitePacked = "[G:S],";
+    }
+    else if(m_Ghost.GetScaredState() == GhostScaredState::SCARED_WHITE)
+    {
+        m_IsGhostScaredWhitePacked = "[G:W],";
+    }
+    else
+    {
+        assert(false);
     }
 
     QByteArray pointsPacked = "[P:" + QByteArray::number(m_PacmanScore) + "]},";
@@ -285,8 +286,7 @@ void PacmanServer::PackDataToSendToClients()
                           m_Ghost.GetX(),
                           m_Ghost.GetY(),
                           m_GameState,
-                          m_Ghost.GetScaredBlue(),
-                          m_Ghost.GetScaredWhite(),
+                          m_Ghost.GetScaredState(),
                           m_PacmanScore,
                           m_MessageToWrite);
 
@@ -297,7 +297,7 @@ void PacmanServer::CheckCollision()
 {
     if((m_Pacman.GetX() == m_Ghost.GetX()) && (m_Pacman.GetY() == m_Ghost.GetY()))
     {
-        if(m_Ghost.GetScaredBlue() == true)
+        if(m_Ghost.GetScaredState() != GhostScaredState::NO_SCARED)
         {
             //PACMAN WINS
             m_GameState = GameState::PacmanWin;
@@ -372,7 +372,7 @@ void PacmanServer::Updater()
             --m_PowerballItemsCount;
             m_PowerballPositions.remove(i);
 
-            m_Ghost.SetScaredStateBlue(true);
+            m_Ghost.SetScaredState(GhostScaredState::SCARED_BLUE);
         }
     }
 
@@ -390,19 +390,18 @@ void PacmanServer::Updater()
         PrepareRestart();
     }
 
-    if(m_Ghost.GetScaredBlue())
+    if(m_Ghost.GetScaredState() == GhostScaredState::SCARED_BLUE || m_Ghost.GetScaredState() == GhostScaredState::SCARED_WHITE)
     {
         m_Ghost.IncrementScaredStateTimer();
 
         if(m_Ghost.GetScaredStateTimer() == Ghost::SCARED_WHITE_THRESHOLD)
         {
-            m_Ghost.SetScaredStateWhite(true);
+            m_Ghost.SetScaredState(GhostScaredState::SCARED_WHITE);
         }
 
         if(m_Ghost.GetScaredStateTimer() == Ghost::SCARED_TIMEOUT)
         {
-            m_Ghost.SetScaredStateBlue(false);
-            m_Ghost.SetScaredStateWhite(false);
+            m_Ghost.SetScaredState(GhostScaredState::NO_SCARED);
 
             m_Ghost.SetScaredStateTimer(0);
         }

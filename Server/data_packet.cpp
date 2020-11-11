@@ -1,3 +1,4 @@
+#include "../common/common.h"
 #include "data_packet.h"
 
 DataPacket::DataPacket(Direction pacmanDirection,
@@ -7,8 +8,7 @@ DataPacket::DataPacket(Direction pacmanDirection,
                        int ghostX,
                        int ghostY,
                        GameState gameState,
-                       bool isGhostScaredBlue,
-                       bool isGhostScaredWhite,
+                       GhostScaredState ghostScaredState,
                        int score,
                        QByteArray message)
 {
@@ -22,8 +22,7 @@ DataPacket::DataPacket(Direction pacmanDirection,
 
     m_GameState = gameState;
 
-    m_IsGhostScaredBlue = isGhostScaredBlue;
-    m_IsGhostScaredWhite = isGhostScaredWhite;
+    m_GhostScaredState = ghostScaredState;
 
     m_Score = score;
 
@@ -72,22 +71,23 @@ QByteArray DataPacket::Pack()
         gameStatePacked = "{[S:5],";
     }
 
-    QByteArray m_IsGhostScaredWhitePacked;
+    QByteArray ghostScaredStatePacked;
 
-    if(m_IsGhostScaredBlue)
+    if(m_GhostScaredState == GhostScaredState::NO_SCARED)
     {
-        if(m_IsGhostScaredWhite)
-        {
-            m_IsGhostScaredWhitePacked = "[G:W],";
-        }
-        else
-        {
-            m_IsGhostScaredWhitePacked = "[G:S],";
-        }
+        ghostScaredStatePacked = "[G:N],";
+    }
+    else if(m_GhostScaredState == GhostScaredState::SCARED_BLUE)
+    {
+        ghostScaredStatePacked = "[G:S],";
+    }
+    else if(m_GhostScaredState == GhostScaredState::SCARED_WHITE)
+    {
+        ghostScaredStatePacked = "[G:W],";
     }
     else
     {
-        m_IsGhostScaredWhitePacked = "[G:N],";
+        assert(false);
     }
 
     QByteArray pointsPackedByteArray = "[P:" + QByteArray::number(m_Score) + "]},";
@@ -97,7 +97,7 @@ QByteArray DataPacket::Pack()
     fullDataPacket = pacmanCoordinatesPackedByteArray +
             ghostCoordinatesPackedByteArray +
             gameStatePacked +
-            m_IsGhostScaredWhitePacked +
+            ghostScaredStatePacked +
             pointsPackedByteArray +
             messagePackedByteArray;
 

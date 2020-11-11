@@ -278,17 +278,15 @@ void GameWindow::UpdateCoordinatesFromServer()
 
         if(match1.captured(8) == "S")
         {
-            m_Ghostplayer.SetScaredStateBlue(true);
-            m_Ghostplayer.SetScaredStateWhite(false);
+            m_Ghostplayer.SetScaredState(GhostScaredState::SCARED_BLUE);
         }
         else if(match1.captured(8) == "W")
         {
-            m_Ghostplayer.SetScaredStateWhite(true);
+            m_Ghostplayer.SetScaredState(GhostScaredState::SCARED_WHITE);
         }
         else if(match1.captured(8) == "N")
         {
-            m_Ghostplayer.SetScaredStateBlue(false);
-            m_Ghostplayer.SetScaredStateWhite(false);
+            m_Ghostplayer.SetScaredState(GhostScaredState::NO_SCARED);
         }
     }
     else

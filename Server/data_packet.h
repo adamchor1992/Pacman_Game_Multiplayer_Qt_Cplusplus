@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QString>
 #include "../common/common.h"
+#include <QByteArray>
 
 class DataPacket
 {
@@ -13,10 +13,10 @@ public:
                int ghostX,
                int ghostY,
                GameState gameState,
-               bool isGhostScaredBlue,
-               bool isGhostScaredWhite,
+               GhostScaredState ghostScaredState,
                int score,
                QByteArray message);
+
     QByteArray Pack();
 
 private:
@@ -27,8 +27,7 @@ private:
     int m_GhostX;
     int m_GhostY;
     GameState m_GameState;
-    bool m_IsGhostScaredBlue;
-    bool m_IsGhostScaredWhite;
+    GhostScaredState m_GhostScaredState;
     int m_Score;
     QByteArray m_Message;
 };

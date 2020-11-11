@@ -7,14 +7,12 @@ class Ghost : public MovableCharacter
 {
 public:
     Ghost();
-    void SetScaredStateBlue(bool isScaredBlue) {m_IsScaredBlue = isScaredBlue;}
-    void SetScaredStateWhite(bool is_ScaredWhite) {m_IsScaredWhite = is_ScaredWhite;}
+    void SetScaredState(GhostScaredState scaredState) {m_ScaredState = scaredState;}
     void SetColor(QString color);
     void AdvanceAnimation() override;
 
 private:
-    bool m_IsScaredBlue;
-    bool m_IsScaredWhite;
+    GhostScaredState m_ScaredState;
 
     QPixmap m_Left1Pixmap, m_Left2Pixmap;
     QPixmap m_Up1Pixmap, m_Up2Pixmap;

@@ -9,18 +9,16 @@ public:
     static const int SCARED_TIMEOUT = 1000;
 
     Ghost();
-    void SetScaredStateBlue(bool isScaredBlue) {m_IsScaredBlue = isScaredBlue;}
-    void SetScaredStateWhite(bool is_ScaredWhite) {m_IsScaredWhite = is_ScaredWhite;}
+    void SetScaredState(GhostScaredState scaredState) {m_ScaredState = scaredState;}
     void SetScaredStateTimer(int scaredStateTimer) {m_ScaredStateTimer = scaredStateTimer;}
     void IncrementScaredStateTimer() {++m_ScaredStateTimer;}
     int GetScaredStateTimer() const {return m_ScaredStateTimer;}
-    bool GetScaredBlue() const {return m_IsScaredBlue;}
-    bool GetScaredWhite() const {return m_IsScaredWhite;}
+
+    GhostScaredState GetScaredState() const {return m_ScaredState;}
 
     void Reset() override;
 
 private:
-    bool m_IsScaredBlue;
-    bool m_IsScaredWhite;
+    GhostScaredState m_ScaredState;
     int m_ScaredStateTimer;
 };

@@ -19,6 +19,13 @@ enum class GameState
     GhostWin = 5
 };
 
+enum class GhostScaredState
+{
+    NO_SCARED,
+    SCARED_BLUE,
+    SCARED_WHITE
+};
+
 static const char MOVEMENT_LEFT = '1';
 static const char MOVEMENT_UP = '2';
 static const char MOVEMENT_DOWN = '3';
