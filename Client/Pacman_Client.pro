@@ -32,7 +32,6 @@ SOURCES += \
     game_window.cpp \
     ghost.cpp \
     map.cpp \
-    movable_character.cpp \
     pacman.cpp \
     server_connection.cpp \
     sounds.cpp \
