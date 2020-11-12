@@ -2,7 +2,6 @@
 
 #include <QMainWindow>
 #include <QString>
-#include <QTcpSocket>
 #include <QRegularExpression>
 #include <QDebug>
 #include <QHostAddress>
@@ -24,7 +23,6 @@ public:
 
 private:
     Ui::ConnectionDialogWindow* ui;
-    QTcpSocket m_TestSocket;
     QString m_ValidatedIpAddressString;
     QHostAddress m_ValidatedIpAddress;
     bool m_IsValidIpAddress;

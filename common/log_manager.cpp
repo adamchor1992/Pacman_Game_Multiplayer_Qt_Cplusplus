@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <chrono>
 
-std::ofstream LogManager::logFile("log.txt", std::ios_base::out | std::ios_base::app);
+std::ofstream LogManager::logFile("log.txt", std::ios_base::out);
 
 LogManager::LogManager()
 {

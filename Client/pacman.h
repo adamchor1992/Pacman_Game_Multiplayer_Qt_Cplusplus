@@ -14,7 +14,7 @@ private:
     QPixmap m_Down1Pixmap, m_Down2Pixmap, m_Down3Pixmap, m_Down4Pixmap;
     QPixmap m_Right1Pixmap, m_Right2Pixmap, m_Right3Pixmap, m_Right4Pixmap;
 
-    void LoadImages() override;
+    void LoadImages();
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
 };

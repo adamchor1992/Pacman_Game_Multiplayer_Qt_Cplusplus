@@ -6,8 +6,11 @@
 class FoodballManager
 {
 public:
+    static const int WIDTH = 7;
+    static const int HEIGHT = 7;
+
     FoodballManager();
-    QVector<QPoint> GetFoodballPositions() {return m_FoodballPositions;}
+    QVector<QPoint> GetFoodballPositions() const {return m_FoodballPositions;}
 
 private:
     int m_FoodballCount;

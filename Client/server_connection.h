@@ -2,9 +2,6 @@
 
 #include <QTcpSocket>
 #include <QHostAddress>
-#include <QDebug>
-#include <QTimer>
-#include <QStatusBar>
 
 class ServerConnection : public QObject
 {
@@ -16,22 +13,17 @@ public:
     explicit ServerConnection();
     void ConnectToServer(QHostAddress address, uint port);
     void SendPressedKeyToServer(char controlKey);
-    QByteArray& GetDataFromServer() {return m_Coordinates;}
+    QByteArray ReadDataFromServer();
 
 private:
     const int CONNECTION_TIMEOUT = 500;
 
-    QTcpSocket* m_pClientSocket;
-
-    QByteArray m_Coordinates;
-    QByteArray m_MessageFromServer;
+    QTcpSocket m_ServerConnectionSocket;
 
 signals:
-    void GameStarted();
+    void NewDataFromServerAvailable();
 
 private slots:
-    void connected();
-    void disconnected();
-    void ReadDataFromServer();
-    void ShowMessageFromServer();
+    void Connected();
+    void Disconnected();
 };

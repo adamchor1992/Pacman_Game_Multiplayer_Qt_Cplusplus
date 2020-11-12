@@ -21,9 +21,15 @@ enum class GameState
 
 enum class GhostScaredState
 {
-    NO_SCARED,
-    SCARED_BLUE,
-    SCARED_WHITE
+    NO_SCARED = 0,
+    SCARED_BLUE = 1,
+    SCARED_WHITE = 2
+};
+
+enum Character
+{
+    PACMAN = 1,
+    GHOST = 2
 };
 
 static const char MOVEMENT_LEFT = '1';

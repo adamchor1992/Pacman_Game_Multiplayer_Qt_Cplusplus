@@ -6,45 +6,40 @@
 #include <QTcpServer>
 #include <QDebug>
 
-#include "map.h"
 #include "pacman.h"
 #include "ghost.h"
+#include "../common/map.h"
 #include "../common/foodball_manager.h"
 #include "../common/powerball_manager.h"
 
-class PacmanServer : public QObject
+class PacmanServer : public QTcpServer
 {
     Q_OBJECT
 
 public:
-    const int PORT_NUMBER = 5000;
-
-    explicit PacmanServer(QObject* parent = nullptr);
+    explicit PacmanServer();
 
 private:
-    QTcpServer m_Server;
-    QTcpSocket* m_pServerSocket1;
-    QTcpSocket* m_pServerSocket2;
-    QTcpSocket m_TempSocket;
+    const int PORT_NUMBER = 5000;
+    const int GAME_TICK_TIMEOUT = 4;
+    const int SEND_COORDINATES_TIMEOUT = 1;
+    const int PLAYER_READY_TIMEOUT = 2000;
+    const int PLAYER_CONNECTION_TIMEOUT = 3000;
 
-    QMetaObject::Connection m_ConnectionObject_NewConnection;
-    QMetaObject::Connection m_ConnectionObject_WaitForPlayerConnectionTimer;
-    QMetaObject::Connection m_ConnectionObject_WaitForPlayerReadySignalTimer;
-    QMetaObject::Connection m_ConnectionObject_UpdaterTimer;
-    QMetaObject::Connection m_ConnectionObject_SendCoordinatesPlayer1Timer;
-    QMetaObject::Connection m_ConnectionObject_SendCoordinatesPlayer2Timer;
-    QMetaObject::Connection m_ConnectionObject_Socket1Connected;
-    QMetaObject::Connection m_ConnectionObject_Socket1Disconnected;
-    QMetaObject::Connection m_ConnectionObject_Socket1ReadyRead;
-    QMetaObject::Connection m_ConnectionObject_Socket2Connected;
-    QMetaObject::Connection m_ConnectionObject_Socket2Disconnected;
-    QMetaObject::Connection m_ConnectionObject_Socket2ReadyRead;
+    enum Client
+    {
+        CLIENT1 = 1,
+        CLIENT2 = 2
+    };
+
+    QTcpSocket* m_pClientConnectionSocket1;
+    QTcpSocket* m_pClientConnectionSocket2;
+    QTcpSocket m_TempSocket;
 
     QTimer m_WaitForPlayerConnectionTimer;
     QTimer m_WaitForPlayerReadySignalTimer;
-    QTimer m_UpdaterTimer;
-    QTimer m_SendCoordinatesPlayer1Timer;
-    QTimer m_SendCoordinatesPlayer2Timer;
+    QTimer m_GameTickTimer;
+    QTimer m_SendGameDataToClientsTimer;
 
     Map m_Map;
     Pacman m_Pacman;
@@ -53,34 +48,28 @@ private:
     PowerballManager m_PowerballManager;
 
     QByteArray m_dataPacketForClient;
-    QByteArray m_MessageToWrite;
+    QByteArray m_CoordinatesOfObjectToRemove;
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;
 
-    int m_PacmanScore;
-
-    QVector<QPoint> m_PowerballPositions;
-    QVector<QPoint> m_FoodballPositions;
-
-    int m_FoodballItemsCount;
-    int m_PowerballItemsCount;
+    QVector<QPoint> m_RemainingFoodballPositions;
+    QVector<QPoint> m_RemainingPowerballPositions;
 
     bool m_Player1Ready, m_Player2Ready;
 
     void ServerStartListening();
-    void Player1Move();
-    void Player2Move();
     void SetUpAndFillMap();
     void SetUpAndPlacePlayers();
     void StartGame();
+    void TogglePause();
     void PauseGame();
     void ResumeGame();
     void PrepareRestart();
     void CheckCollision();
-    void DisconnectAllSignals();
     void ResetContainersAndVariables();
-    void StopAllTimers();
-    void ReadDirection(QTcpSocket *tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
+    void ReadSignalFromClient(QTcpSocket *tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
+    void SetWinner(Character character);
+    void SetGameState(GameState gameState) {m_GameState = gameState;}
 
     GameState m_GameState;
 
@@ -89,12 +78,14 @@ private slots:
     void WaitForPlayerConnection();
     void WaitForPlayerReadySignals();
 
-    void PackDataToSendToClients();
-    void SendcoordinatesToClient1();
-    void SendcoordinatesToClient2();
-    void Updater();
-    void ReadDirectionFromClient1();
-    void ReadDirectionFromClient2();
+    void PackGameDataToSendToClients();
+    void SendGameDataToClients();
+    void SendGameDataToClient(Client client);
+    void SendMessageToClient(Client client, QByteArray rawMessage);
+    void SendCommandToClient(Client client, QByteArray rawMessage);
+    void GameTick();
+    void ReadSignalFromClient1();
+    void ReadSignalFromClient2();
     void connected1();
     void disconnected1();
     void connected2();

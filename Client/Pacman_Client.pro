@@ -31,31 +31,33 @@ SOURCES += \
     connection_dialog_window.cpp \
     game_window.cpp \
     ghost.cpp \
-    map.cpp \
     pacman.cpp \
+    screen_text_display.cpp \
     server_connection.cpp \
     sounds.cpp \
     status_bar_manager.cpp \
-    text_screen_message.cpp \
+    ../common/map.cpp \
     ../common/foodball_manager.cpp \
     ../common/powerball_manager.cpp \
-    ../common/log_manager.cpp
+    ../common/log_manager.cpp \
+    ../common/data_packet.cpp
 
 HEADERS += \
     connection_dialog_window.h \
     game_window.h \
     ghost.h \
-    map.h \
     movable_character.h \
     pacman.h \
+    screen_text_display.h \
     server_connection.h \
     sounds.h \
     status_bar_manager.h \
-    text_screen_message.h \
     ../common/common.h \
+    ../common/map.h \
     ../common/foodball_manager.h \
     ../common/powerball_manager.h \
-    ../common/log_manager.h
+    ../common/log_manager.h \
+    ../common/data_packet.h
 
 FORMS += \
     connection_dialog_window.ui \

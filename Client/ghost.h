@@ -21,7 +21,7 @@ private:
     QPixmap m_ScaredBlue1Pixmap, m_ScaredBlue2Pixmap;
     QPixmap m_ScaredWhite1Pixmap, m_ScaredWhite2Pixmap;
 
-    void LoadImages() override;
+    void LoadImages();
 
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
 };

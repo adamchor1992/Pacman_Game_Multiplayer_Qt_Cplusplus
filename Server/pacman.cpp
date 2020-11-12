@@ -1,4 +1,3 @@
-#include "map.h"
 #include "pacman.h"
 
 Pacman::Pacman()

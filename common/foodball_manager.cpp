@@ -20,18 +20,19 @@ void FoodballManager::CreateFoodballPositionsVector()
     {
         for(int j = 0; j < 10; j++)
         {
-                if(m_PacmanMapForReference.contains(QPoint(verticalLinesX[i],horizontalLinesY[j])))
+            if(m_PacmanMapForReference.contains(QPoint(verticalLinesX[i],horizontalLinesY[j])))
+            {
+                if((verticalLinesX[i] == 35 && horizontalLinesY[j] == 514) || (verticalLinesX[i] == 579 && horizontalLinesY[j] == 514))
                 {
-                    if((verticalLinesX[i] == 35 && horizontalLinesY[j] == 514) || (verticalLinesX[i] == 579 && horizontalLinesY[j] == 514)) //skip points where powerballs are
-                    {
-                        continue;
-                    }
-                    m_FoodballPositions.push_back(QPoint(verticalLinesX[i],horizontalLinesY[j]));
+                    /*Skip points where powerballs are*/
+                    continue;
                 }
+                m_FoodballPositions.push_back(QPoint(verticalLinesX[i],horizontalLinesY[j]));
+            }
         }
     }
 
-    // Create a new vector without the duplicates
+    /*Create a new vector without the duplicates*/
     QVector<QPoint> unique_foodballpositions;
 
     for (QVector<QPoint>::iterator iter = m_FoodballPositions.begin(); iter != m_FoodballPositions.end();iter++)

@@ -1,10 +1,13 @@
-#include "map.h"
 #include "pacman.h"
 #include <QGraphicsPixmapItem>
 #include <QPainter>
 
 Pacman::Pacman()
 {
+    m_X = PACMAN_START_X;
+    m_Y = PACMAN_START_Y;
+    m_Direction = Direction::NO_DIRECTION;
+
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
     LoadImages();

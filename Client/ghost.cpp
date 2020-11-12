@@ -2,10 +2,13 @@
 
 Ghost::Ghost()
 {
+    m_X = GHOST_START_X;
+    m_Y = GHOST_START_Y;
+    m_Direction = Direction::NO_DIRECTION;
+
     m_AnimationState = 0;
     m_AnimationModifyFactor = 6;
 
-    m_Direction = Direction::LEFT;
     m_ScaredState = GhostScaredState::NO_SCARED;
 
     LoadImages();

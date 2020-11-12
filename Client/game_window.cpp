@@ -1,13 +1,18 @@
 #include "game_window.h"
 #include "ui_game_window.h"
-#include "map.h"
 #include "../common/common.h"
-#include "../common/powerball_manager.h"
 #include "../common/log_manager.h"
+#include "../common/data_packet.h"
 
-GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(parent), ui(new Ui::Game_window)
+GameWindow::GameWindow(QWidget *parent, QHostAddress address) :
+    QMainWindow(parent),
+    ui(new Ui::Game_window),
+    m_FoodballPositions(m_FoodBallManager.GetFoodballPositions()),
+    m_PowerballPositions(m_PowerballManager.GetPowerballPositions())
 {
     ui->setupUi(this);
+
+    setWindowTitle("Pacman");
 
     ui->gameplay_area->setScene(&m_Scene);
     ui->gameplay_area->setRenderHint(QPainter::Antialiasing);
@@ -16,165 +21,150 @@ GameWindow::GameWindow(QWidget *parent, QHostAddress address) : QMainWindow(pare
 
     StatusBarManager(ui->statusbar);
 
-    m_GameState = GameState::BeforeFirstRun;
+    SetGameState(GameState::BeforeFirstRun);
     m_WaitingForRestartKey = false;
     m_RestartPending = false;
 
     m_ServerConnection.ConnectToServer(address, ServerConnection::GAME_PORT);
 
-    GenerateMap();
-    PopulateMap();
-
-    GenerateAndPlacePacman();
-    GenerateAndPlaceGhosts();
+    AddSceneItems();
 
     PrepareGameToStart();
 
-    connect(&m_SceneUpdateTimer, SIGNAL(timeout()), this, SLOT(UpdateScene()), Qt::UniqueConnection);
-    connect(&m_ServerConnection, SIGNAL(GameStarted()), this, SLOT(StartGame()), Qt::UniqueConnection);
+    connect(&m_SceneUpdateTimer, &QTimer::timeout, this, &GameWindow::UpdateScene, Qt::UniqueConnection);
 
-    m_SceneUpdateTimer.start(10);
+    m_SceneUpdateTimer.start(SCENE_UPDATE_TIMEOUT);
 }
 
-void GameWindow::GenerateMap()
+void GameWindow::AddSceneItems()
 {
-    m_pMapItem = m_Scene.addPixmap(m_Pacmap.GetMapBackgroundPicture());
+    m_pMapItem = m_Scene.addPixmap(QPixmap(":/images/pac_map.png"));
+
+    PopulateMap();
+
+    m_Scene.addItem(&m_ScreenTextDisplay);
+    m_Scene.addItem(&m_Pacman);
+    m_Scene.addItem(&m_Ghostplayer);
 }
 
 void GameWindow::PopulateMap()
 {
-    m_PowerballPositions = m_PowerballManager.GetPowerballPositions();
-    m_FoodballPositions = m_FoodBallManager.GetFoodballPositions();
+    const int foodballItemsCount = m_FoodballPositions.size();
+    const int powerballItemsCount = m_PowerballPositions.size();
 
-    m_FoodballItemsCount = m_FoodballPositions.size();
-    m_PowerballItemsCount = m_PowerballPositions.size();
-
-    for(int i=0; i < m_FoodballPositions.size(); i++)
+    for(int i = 0; i < foodballItemsCount; i++)
     {
-        //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
-        m_FoodballGraphicalItemsTableDict.insert(QString(QString::number(m_FoodballPositions.at(i).x()) + "," + QString::number(m_FoodballPositions.at(i).y())), m_Scene.addEllipse(m_FoodballPositions.at(i).x(),m_FoodballPositions.at(i).y(),7,7,QPen(Qt::NoPen),QBrush(Qt::white)));
+        /*Populate table of graphical items in following way (Key : Value) = (QString - "x,y" : pointer to QGraphicsEllipseItem at point ("x,y"))*/
+        m_FoodballGraphicalItemsTableMap.insert(QString(QString::number(m_FoodballPositions.at(i).x()) + "," + QString::number(m_FoodballPositions.at(i).y())),
+                                                m_Scene.addEllipse(m_FoodballPositions.at(i).x(), m_FoodballPositions.at(i).y(), FoodballManager::WIDTH, FoodballManager::HEIGHT, QPen(Qt::NoPen), QBrush(Qt::white)));
     }
 
-    for(int i=0; i < m_PowerballPositions.size(); i++)
+    for(int i = 0; i < powerballItemsCount; i++)
     {
-        //populate table of graphical items in following way (Key ; Value) = (QString - "x,y" ; pointer to QGraphicsEllipseItem at point ("x,y"))
-        m_PowerballGraphicalItemsTableDict.insert(QString(QString::number(m_PowerballPositions.at(i).x()) + "," + QString::number(m_PowerballPositions.at(i).y())), m_Scene.addEllipse(m_PowerballPositions.at(i).x()-5,m_PowerballPositions.at(i).y()-8,15,15,QPen(Qt::NoPen),QBrush(Qt::white)));
+        /*Populate table of graphical items in following way (Key : Value) = (QString - "x,y" : pointer to QGraphicsEllipseItem at point ("x,y"))*/
+        m_PowerballGraphicalItemsTableMap.insert(QString(QString::number(m_PowerballPositions.at(i).x()) + "," + QString::number(m_PowerballPositions.at(i).y())),
+                                                 m_Scene.addEllipse(m_PowerballPositions.at(i).x() - 5, m_PowerballPositions.at(i).y() - 8, PowerballManager::WIDTH, PowerballManager::HEIGHT, QPen(Qt::NoPen), QBrush(Qt::white)));
     }
 
-    assert(m_PowerballPositions.size() == m_PowerballGraphicalItemsTableDict.size());
-    assert(m_FoodballPositions.size() == m_FoodballGraphicalItemsTableDict.size());
+    assert(foodballItemsCount == m_FoodballGraphicalItemsTableMap.size());
+    assert(powerballItemsCount == m_PowerballGraphicalItemsTableMap.size());
 
-    qDebug("Foodball positions size: %d", m_FoodballPositions.size());
-}
-
-void GameWindow::GenerateAndPlacePacman()
-{
-    m_Pacman.SetDirection(Direction::NO_DIRECTION);
-
-    m_Pacman.SetX(PACMAN_START_X);
-    m_Pacman.SetY(PACMAN_START_Y);
-
-    m_Scene.addItem(&m_Pacman);
-}
-
-void GameWindow::GenerateAndPlaceGhosts()
-{
-    m_Ghostplayer.SetDirection(Direction::NO_DIRECTION);
-
-    m_Ghostplayer.SetX(GHOST_START_X);
-    m_Ghostplayer.SetY(GHOST_START_Y);
-
-    m_Scene.addItem(&m_Ghostplayer);
+    qDebug("Foodball positions size: %d", foodballItemsCount);
 }
 
 void GameWindow::PrepareGameToStart()
 {
-    connect(&m_UpdaterTimer, SIGNAL(timeout()), this,SLOT(Updater()), Qt::UniqueConnection);
-    connect(&m_UpdateCoordinatesTimer, SIGNAL(timeout()), this,SLOT(UpdateCoordinatesFromServer()), Qt::UniqueConnection);
-}
+    LogManager::LogToFile("PrepareGameToStart");
 
-void GameWindow::ResetVariablesAndContainers()
-{
-    m_FoodballPositions.clear();
-    m_FoodballPositions.squeeze();
-    m_FoodballGraphicalItemsTable.clear();
-    m_FoodballGraphicalItemsTable.squeeze();
-    m_FoodballGraphicalItemsTableDict.clear();
+    connect(&m_UpdaterTimer, &QTimer::timeout, this, &GameWindow::Updater, Qt::UniqueConnection);
+    connect(&m_ServerConnection, &ServerConnection::NewDataFromServerAvailable, this, &GameWindow::ProcessNewDataFromServer, Qt::UniqueConnection);
 
-    m_PowerballPositions.clear();
-    m_PowerballPositions.squeeze();
-    m_PowerballGraphicalItemsTable.clear();
-    m_PowerballGraphicalItemsTable.squeeze();
-    m_PowerballGraphicalItemsTableDict.clear();
+    m_UpdaterTimer.start(UPDATER_TIMEOUT);
 }
 
 void GameWindow::HideSceneItems()
 {
+    LogManager::LogToFile("HideSceneItems");
+
     m_pMapItem->hide();
     m_Pacman.hide();
     m_Ghostplayer.hide();
 
-    m_Scene.removeItem(&m_Pacman);
-    m_Scene.removeItem(&m_Ghostplayer);
-
-    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableDict.begin() ; iter1 != m_FoodballGraphicalItemsTableDict.end() ;iter1++)
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableMap.begin() ; iter1 != m_FoodballGraphicalItemsTableMap.end() ;iter1++)
     {
-        m_FoodballGraphicalItemsTableDict.value(iter1.key())->hide();
+        m_FoodballGraphicalItemsTableMap.value(iter1.key())->hide();
     }
 
-    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableDict.begin() ; iter2 != m_PowerballGraphicalItemsTableDict.end() ;iter2++)
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableMap.begin() ; iter2 != m_PowerballGraphicalItemsTableMap.end() ;iter2++)
     {
-        m_PowerballGraphicalItemsTableDict.value(iter2.key())->hide();
+        m_PowerballGraphicalItemsTableMap.value(iter2.key())->hide();
+    }
+}
+
+void GameWindow::ShowSceneItems()
+{
+    LogManager::LogToFile("ShowSceneItems");
+
+    m_pMapItem->show();
+    m_Pacman.show();
+    m_Ghostplayer.show();
+
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableMap.begin() ; iter1 != m_FoodballGraphicalItemsTableMap.end() ;iter1++)
+    {
+        m_FoodballGraphicalItemsTableMap.value(iter1.key())->show();
+    }
+
+    for(QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableMap.begin() ; iter2 != m_PowerballGraphicalItemsTableMap.end() ;iter2++)
+    {
+        m_PowerballGraphicalItemsTableMap.value(iter2.key())->show();
     }
 }
 
 void GameWindow::RestartGame()
 {
+    LogManager::LogToFile("RestartGame");
+
     m_Pacman.SetDirection(Direction::NO_DIRECTION);
     m_Pacman.SetX(PACMAN_START_X);
     m_Pacman.SetY(PACMAN_START_Y);
 
-    m_TextScreenMessage.hide();
-    m_Scene.removeItem(&m_TextScreenMessage);
+    m_ScreenTextDisplay.hide();
 
     qDebug() << "Restarting game";
 
-    ResetVariablesAndContainers();
-    PopulateMap();
     PrepareGameToStart();
 
-    m_pMapItem->show();
-    m_Scene.addItem(&m_Pacman);
-    m_Pacman.show();
-    m_Scene.addItem(&m_Ghostplayer);
-    m_Ghostplayer.show();
+    ShowSceneItems();
 
     m_Sounds.m_BeginningSound.play();
 
     StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
 
-    m_UpdaterTimer.start(6);
-    m_UpdateCoordinatesTimer.start(6);
+    m_UpdaterTimer.start(UPDATER_TIMEOUT);
 
     this->setFocus();
 }
 
-//SLOTS
 void GameWindow::StartGame()
 {
+    LogManager::LogToFile("StartGame");
+
     m_Sounds.m_BeginningSound.play();
 
     StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
 
-    m_UpdaterTimer.start(6);
-    m_UpdateCoordinatesTimer.start(6);
+    m_UpdaterTimer.start(UPDATER_TIMEOUT);
     this->setFocus();
 }
 
 void GameWindow::CheckForRestartGameSignal()
 {
+    LogManager::LogToFile("CheckForRestartGameSignal");
+
     qDebug() << "Waiting for restart signal from server";
-    if(m_GameState == GameState::Running && m_RestartPending) //1 is game is running again (set by server)
+    LogManager::LogToFile("Waiting for restart signal from server");
+
+    if(m_GameState == GameState::Running && m_RestartPending)
     {
         m_RestartPending = false;
         m_WaitingForRestartKey = false;
@@ -182,7 +172,7 @@ void GameWindow::CheckForRestartGameSignal()
         RestartGame();
         m_WaitForRestartKeyTimer.stop();
 
-        disconnect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()));
+        disconnect(&m_WaitForRestartKeyTimer, &QTimer::timeout, this, &GameWindow::CheckForRestartGameSignal);
         qDebug() << "GAME RESTARTED on client side";
     }
 }
@@ -223,96 +213,105 @@ void GameWindow::keyPressEvent(QKeyEvent* event)
     }
 }
 
-void GameWindow::UpdateCoordinatesFromServer()
+void GameWindow::RemoveBall(QString& coordinatesOfObjectToBeRemoved)
 {
-    QByteArray dataReceivedFromServer = m_ServerConnection.GetDataFromServer();
+    QMap<QString, QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableMap.find(coordinatesOfObjectToBeRemoved);
+    QMap<QString, QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableMap.find(coordinatesOfObjectToBeRemoved);
 
-    QRegularExpression coordinatesPattern("{D1(0|1|2|3|4)\\[x1:(\\d+),y1:(\\d+)];D2(0|1|2|3|4)\\[x2:(\\d+),y2:(\\d+)]},{\\[S:(0|1|2|3|4|5)\\],\\[G:(S|W|N)\\],\\[P:(\\d+)\\]},{'(.*)'}}");
-
-    QRegularExpression changeStatePattern("{del:\\[(\\d+,\\d+)\\]}");
-
-    QRegularExpressionMatch match1 = coordinatesPattern.match(dataReceivedFromServer);
-    QRegularExpressionMatch match2 = changeStatePattern.match(dataReceivedFromServer);
-
-    if(match1.hasMatch())
+    if(iter1 != m_FoodballGraphicalItemsTableMap.end())
     {
-        LogManager::LogToFile("MATCH 1" + dataReceivedFromServer.toStdString());
+        if(m_FoodballGraphicalItemsTableMap.value(iter1.key())->isVisible())
+        {
+            m_FoodballGraphicalItemsTableMap.value(iter1.key())->hide();
+            m_Sounds.m_EatSound.play();
+        }
+    }
+    else if(iter2 != m_PowerballGraphicalItemsTableMap.end())
+    {
+        if(m_PowerballGraphicalItemsTableMap.value(iter2.key())->isVisible())
+        {
+            m_PowerballGraphicalItemsTableMap.value(iter2.key())->hide();
+            m_Sounds.m_EatSound.play();
+        }
+    }
+}
 
-        QString pacmanX = match1.captured(2);
-        QString pacmanY = match1.captured(3);
-        QString ghostX = match1.captured(5);
-        QString ghostY = match1.captured(6);
+void GameWindow::ProcessGameDataPacket(QJsonObject& jsonObject)
+{
+    LogManager::LogToFile("ProcessGameDataPacket");
 
-        m_Pacman.SetX(pacmanX.toInt());
-        m_Pacman.SetY(pacmanY.toInt());
-        m_Pacman.SetDirection(static_cast<Direction>(match1.captured(1).toInt()));
+    int pacmanX = jsonObject.value("PX").toInt(-1);
+    int pacmanY = jsonObject.value("PY").toInt(-1);
+    Direction pacmanDirection = static_cast<Direction>(jsonObject.value("PD").toInt(-1));
+    int ghostX = jsonObject.value("GX").toInt(-1);
+    int ghostY = jsonObject.value("GY").toInt(-1);
+    Direction ghostDirection = static_cast<Direction>(jsonObject.value("GD").toInt(-1));
+    GameState gameState = static_cast<GameState>(jsonObject.value("GameState").toInt(-1));
+    GhostScaredState ghostScaredState = static_cast<GhostScaredState>(jsonObject.value("GhostScaredState").toInt(-1));
 
-        m_Ghostplayer.SetX(ghostX.toInt());
-        m_Ghostplayer.SetY(ghostY.toInt());
-        m_Ghostplayer.SetDirection(static_cast<Direction>(match1.captured(4).toInt()));
+    m_Pacman.SetX(pacmanX);
+    m_Pacman.SetY(pacmanY);
+    m_Pacman.SetDirection(pacmanDirection);
+    m_Ghostplayer.SetX(ghostX);
+    m_Ghostplayer.SetY(ghostY);
+    m_Ghostplayer.SetDirection(ghostDirection);
+    SetGameState(gameState);
+    m_Ghostplayer.SetScaredState(ghostScaredState);
 
-        if(match1.captured(7) == "0")
-        {
-            m_GameState = GameState::BeforeFirstRun;
-        }
-        else if(match1.captured(7) == "1")
-        {
-            m_GameState = GameState::Running;
-        }
-        else if(match1.captured(7) == "2")
-        {
-            m_GameState = GameState::Paused;
-        }
-        else if(match1.captured(7) == "3")
-        {
-            m_GameState =GameState::Aborted;
-        }
-        else if(match1.captured(7) == "4")
-        {
-            m_GameState = GameState::PacmanWin;
-        }
-        else if(match1.captured(7) == "5")
-        {
-            m_GameState = GameState::GhostWin;
-        }
+    QString coordinatesOfObjectToBeRemoved = jsonObject.value("Object to remove").toString();
 
-        if(match1.captured(8) == "S")
-        {
-            m_Ghostplayer.SetScaredState(GhostScaredState::SCARED_BLUE);
-        }
-        else if(match1.captured(8) == "W")
-        {
-            m_Ghostplayer.SetScaredState(GhostScaredState::SCARED_WHITE);
-        }
-        else if(match1.captured(8) == "N")
-        {
-            m_Ghostplayer.SetScaredState(GhostScaredState::NO_SCARED);
-        }
+    RemoveBall(coordinatesOfObjectToBeRemoved);
+}
+
+void GameWindow::ProcessCommandPacket(QJsonObject& jsonObject)
+{
+    LogManager::LogToFile("ProcessCommandPacket");
+
+    if(jsonObject.value("Payload") == "Game started")
+    {
+        StatusBarManager::ClearMessage();
+        StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
+    }
+}
+
+void GameWindow::ProcessMessagePacket(QJsonObject& jsonObject)
+{
+    LogManager::LogToFile("ProcessMessagePacket");
+    StatusBarManager::ShowMessage(jsonObject.value("Payload").toString());
+}
+
+void GameWindow::ProcessNewDataFromServer()
+{
+    LogManager::LogToFile("ProcessNewDataFromServer");
+
+    QByteArray dataReceivedFromServer = m_ServerConnection.ReadDataFromServer();
+
+    LogManager::LogToFile("Data received from server<START>: " + std::to_string(dataReceivedFromServer.size()) + " bytes>>>>>");
+    LogManager::LogToFile(dataReceivedFromServer.toStdString());
+    LogManager::LogToFile("Data received from server<END>");
+
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(dataReceivedFromServer);
+    QJsonObject jsonObject = jsonDocument.object();
+
+    LogManager::LogToFile("JSON Type: " + std::to_string(jsonObject.value("Type").toInt(-1)));
+
+    if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::GAME_DATA))
+    {
+        ProcessGameDataPacket(jsonObject);
+    }
+    else if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::COMMAND))
+    {
+        ProcessCommandPacket(jsonObject);
+    }
+    else if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::MESSAGE))
+    {
+        ProcessMessagePacket(jsonObject);
     }
     else
     {
-        LogManager::LogToFile("MALFORMED DATA" + dataReceivedFromServer.toStdString());
-    }
-
-    if(match2.hasMatch())
-    {
-        LogManager::LogToFile("MATCH 2" + dataReceivedFromServer.toStdString());
-
-        QString coordinates_of_object_to_remove = match2.captured(1);
-        QMap<QString,QGraphicsEllipseItem*>::iterator iter1 = m_FoodballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);
-        QMap<QString,QGraphicsEllipseItem*>::iterator iter2 = m_PowerballGraphicalItemsTableDict.find(coordinates_of_object_to_remove);
-
-        if(iter1 != m_FoodballGraphicalItemsTableDict.end())
-        {
-            m_FoodballGraphicalItemsTableDict.value(iter1.key())->hide();
-            m_FoodballGraphicalItemsTableDict.remove(iter1.key());
-            m_Sounds.m_EatSound.play();
-        }
-        else if(iter2 != m_PowerballGraphicalItemsTableDict.end())
-        {
-            m_PowerballGraphicalItemsTableDict.value(iter2.key())->hide();
-            m_PowerballGraphicalItemsTableDict.remove(iter2.key());
-        }
+        LogManager::LogToFile("-----UNKNOWN PACKET START-----");
+        LogManager::LogToFile(dataReceivedFromServer.toStdString());
+        LogManager::LogToFile("-----UNKNOWN PACKET END-----");
     }
 }
 
@@ -325,12 +324,12 @@ void GameWindow::Updater()
 {
     if((m_GameState == GameState::PacmanWin) && (!m_WaitingForRestartKey))
     {
+        LogManager::LogToFile("PacmanWin && !m_WaitingForRestartKey");
+
         m_RestartPending = true;
         HideSceneItems();
 
-        m_TextScreenMessage.SetTextState("end_pacman");
-        m_Scene.addItem(&m_TextScreenMessage);
-        m_TextScreenMessage.show();
+        m_ScreenTextDisplay.SetTextDisplayState(ScreenTextDisplay::TextDisplayState::END_PACMAN);
 
         qDebug() << "Pacman wins";
 
@@ -338,7 +337,7 @@ void GameWindow::Updater()
 
         m_UpdaterTimer.stop();
 
-        connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
+        connect(&m_WaitForRestartKeyTimer, &QTimer::timeout, this, &GameWindow::CheckForRestartGameSignal, Qt::UniqueConnection);
         m_WaitForRestartKeyTimer.start(500);
 
         m_WaitingForRestartKey = true;
@@ -346,12 +345,12 @@ void GameWindow::Updater()
 
     if((m_GameState == GameState::GhostWin) && (!m_WaitingForRestartKey))
     {
+        LogManager::LogToFile("GhostWin && !m_WaitingForRestartKey");
+
         m_RestartPending = true;
         HideSceneItems();
 
-        m_TextScreenMessage.SetTextState("end_ghost");
-        m_Scene.addItem(&m_TextScreenMessage);
-        m_TextScreenMessage.show();
+        m_ScreenTextDisplay.SetTextDisplayState(ScreenTextDisplay::TextDisplayState::END_GHOST);
 
         qDebug() << "Ghost wins";
 
@@ -359,7 +358,7 @@ void GameWindow::Updater()
 
         m_UpdaterTimer.stop();
 
-        connect(&m_WaitForRestartKeyTimer, SIGNAL(timeout()), this, SLOT(CheckForRestartGameSignal()), Qt::UniqueConnection);
+        connect(&m_WaitForRestartKeyTimer, &QTimer::timeout, this, &GameWindow::CheckForRestartGameSignal, Qt::UniqueConnection);
         m_WaitForRestartKeyTimer.start(500);
 
         m_WaitingForRestartKey = true;
@@ -367,6 +366,12 @@ void GameWindow::Updater()
 
     m_Pacman.AdvanceAnimation();
     m_Ghostplayer.AdvanceAnimation();
+}
+
+void GameWindow::SetGameState(GameState gameState)
+{
+    LogManager::LogToFile("Setting game state to: " + std::to_string(static_cast<int>(gameState)));
+    m_GameState = gameState;
 }
 
 GameWindow::~GameWindow()
