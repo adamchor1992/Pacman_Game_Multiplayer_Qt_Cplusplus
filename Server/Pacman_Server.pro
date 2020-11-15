@@ -4,7 +4,7 @@ QT += multimedia
 QT += core
 QT += widgets
 
-CONFIG += c++11 console
+CONFIG += c++17 console
 CONFIG -= app_bundle
 
 TARGET = ../../Server/executable/Pacman_Server

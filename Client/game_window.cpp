@@ -240,14 +240,14 @@ void GameWindow::ProcessGameDataPacket(QJsonObject& jsonObject)
 {
     LogManager::LogToFile("ProcessGameDataPacket");
 
-    int pacmanX = jsonObject.value("PX").toInt(-1);
-    int pacmanY = jsonObject.value("PY").toInt(-1);
-    Direction pacmanDirection = static_cast<Direction>(jsonObject.value("PD").toInt(-1));
-    int ghostX = jsonObject.value("GX").toInt(-1);
-    int ghostY = jsonObject.value("GY").toInt(-1);
-    Direction ghostDirection = static_cast<Direction>(jsonObject.value("GD").toInt(-1));
-    GameState gameState = static_cast<GameState>(jsonObject.value("GameState").toInt(-1));
-    GhostScaredState ghostScaredState = static_cast<GhostScaredState>(jsonObject.value("GhostScaredState").toInt(-1));
+    int pacmanX = jsonObject.value(DataPacket::PACMAN_X).toInt(-1);
+    int pacmanY = jsonObject.value(DataPacket::PACMAN_Y).toInt(-1);
+    Direction pacmanDirection = static_cast<Direction>(jsonObject.value(DataPacket::PACMAN_DIRECTION).toInt(-1));
+    int ghostX = jsonObject.value(DataPacket::GHOST_X).toInt(-1);
+    int ghostY = jsonObject.value(DataPacket::GHOST_Y).toInt(-1);
+    Direction ghostDirection = static_cast<Direction>(jsonObject.value(DataPacket::GHOST_DIRECTION).toInt(-1));
+    GameState gameState = static_cast<GameState>(jsonObject.value(DataPacket::GAME_STATE).toInt(-1));
+    GhostScaredState ghostScaredState = static_cast<GhostScaredState>(jsonObject.value(DataPacket::GHOST_SCARED_STATE).toInt(-1));
 
     m_Pacman.SetX(pacmanX);
     m_Pacman.SetY(pacmanY);
@@ -258,7 +258,7 @@ void GameWindow::ProcessGameDataPacket(QJsonObject& jsonObject)
     SetGameState(gameState);
     m_Ghostplayer.SetScaredState(ghostScaredState);
 
-    QString coordinatesOfObjectToBeRemoved = jsonObject.value("Object to remove").toString();
+    QString coordinatesOfObjectToBeRemoved = jsonObject.value(DataPacket::OBJECT_TO_REMOVE).toString();
 
     RemoveBall(coordinatesOfObjectToBeRemoved);
 }
@@ -267,7 +267,7 @@ void GameWindow::ProcessCommandPacket(QJsonObject& jsonObject)
 {
     LogManager::LogToFile("ProcessCommandPacket");
 
-    if(jsonObject.value("Payload") == "Game started")
+    if(jsonObject.value(DataPacket::PAYLOAD) == "Game started")
     {
         StatusBarManager::ClearMessage();
         StatusBarManager::ShowMessage("Game started", StatusBarManager::MESSAGE_TIMEOUT);
@@ -277,7 +277,7 @@ void GameWindow::ProcessCommandPacket(QJsonObject& jsonObject)
 void GameWindow::ProcessMessagePacket(QJsonObject& jsonObject)
 {
     LogManager::LogToFile("ProcessMessagePacket");
-    StatusBarManager::ShowMessage(jsonObject.value("Payload").toString());
+    StatusBarManager::ShowMessage(jsonObject.value(DataPacket::PAYLOAD).toString());
 }
 
 void GameWindow::ProcessNewDataFromServer()
@@ -293,17 +293,17 @@ void GameWindow::ProcessNewDataFromServer()
     QJsonDocument jsonDocument = QJsonDocument::fromJson(dataReceivedFromServer);
     QJsonObject jsonObject = jsonDocument.object();
 
-    LogManager::LogToFile("JSON Type: " + std::to_string(jsonObject.value("Type").toInt(-1)));
+    LogManager::LogToFile("JSON Type: " + std::to_string(jsonObject.value(DataPacket::TYPE).toInt(-1)));
 
-    if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::GAME_DATA))
+    if(jsonObject.value(DataPacket::TYPE).toInt(-1) == static_cast<int>(DataPacket::GAME_DATA))
     {
         ProcessGameDataPacket(jsonObject);
     }
-    else if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::COMMAND))
+    else if(jsonObject.value(DataPacket::TYPE).toInt(-1) == static_cast<int>(DataPacket::COMMAND))
     {
         ProcessCommandPacket(jsonObject);
     }
-    else if(jsonObject.value("Type").toInt(-1) == static_cast<int>(DataPacket::MESSAGE))
+    else if(jsonObject.value(DataPacket::TYPE).toInt(-1) == static_cast<int>(DataPacket::MESSAGE))
     {
         ProcessMessagePacket(jsonObject);
     }

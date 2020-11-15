@@ -15,16 +15,16 @@ QByteArray DataPacket::Pack(int pacmanX,
 {
     QJsonObject dataPacketJsonObject
     {
-        {"Type", static_cast<int>(PacketType::GAME_DATA)},
-        {"PX", pacmanX},
-        {"PY", pacmanY},
-        {"PD", static_cast<int>(pacmanDirection)},
-        {"GX", ghostX},
-        {"GY", ghostY},
-        {"GD", static_cast<int>(ghostDirection)},
-        {"GameState", static_cast<int>(gameState)},
-        {"GhostScaredState", static_cast<int>(ghostScaredState)},
-        {"Object to remove", coordinatesOfObjectToRemove.toStdString().c_str()}
+        {TYPE, static_cast<int>(PacketType::GAME_DATA)},
+        {PACMAN_X, pacmanX},
+        {PACMAN_Y, pacmanY},
+        {PACMAN_DIRECTION, static_cast<int>(pacmanDirection)},
+        {GHOST_X, ghostX},
+        {GHOST_Y, ghostY},
+        {GHOST_DIRECTION, static_cast<int>(ghostDirection)},
+        {GAME_STATE, static_cast<int>(gameState)},
+        {GHOST_SCARED_STATE, static_cast<int>(ghostScaredState)},
+        {OBJECT_TO_REMOVE, coordinatesOfObjectToRemove.toStdString().c_str()}
     };
 
     QJsonDocument dataPacketJsonDocument(dataPacketJsonObject);
@@ -41,8 +41,8 @@ QByteArray DataPacket::Pack(PacketType packetType, QByteArray& payload)
 
     QJsonObject data
     {
-        {"Type", static_cast<int>(packetType)},
-        {"Payload", QJsonValue(payload.toStdString().c_str())}
+        {TYPE, static_cast<int>(packetType)},
+        {PAYLOAD, QJsonValue(payload.toStdString().c_str())}
     };
 
     QJsonDocument dataDocument(data);
