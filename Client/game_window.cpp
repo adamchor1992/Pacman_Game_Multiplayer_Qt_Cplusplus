@@ -286,9 +286,9 @@ void GameWindow::ProcessNewDataFromServer()
 
     QByteArray dataReceivedFromServer = m_ServerConnection.ReadDataFromServer();
 
-    LogManager::LogToFile("Data received from server<START>: " + std::to_string(dataReceivedFromServer.size()) + " bytes>>>>>");
+    LogManager::LogToFile("\nData received from server<START>: " + std::to_string(dataReceivedFromServer.size()) + " bytes>>>>>");
     LogManager::LogToFile(dataReceivedFromServer.toStdString());
-    LogManager::LogToFile("Data received from server<END>");
+    LogManager::LogToFile("Data received from server<END>\n");
 
     QJsonDocument jsonDocument = QJsonDocument::fromJson(dataReceivedFromServer);
     QJsonObject jsonObject = jsonDocument.object();
