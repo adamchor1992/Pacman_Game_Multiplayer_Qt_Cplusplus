@@ -5,10 +5,12 @@
 class LogManager
 {
 public:
-    LogManager();
-
-    static void LogToFile(std::string logMessage);
+    static void ActivateLogging();
+    static void LogToFile(std::string &&logMessage);
 
 private:
-    static std::ofstream logFile;
+    inline static std::string LOG_FILE_NAME = "log.txt";
+
+    static std::ofstream m_LogFile;
+    static bool m_LoggingActive;
 };

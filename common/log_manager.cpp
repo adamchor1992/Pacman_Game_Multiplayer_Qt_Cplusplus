@@ -1,28 +1,33 @@
 #include "log_manager.h"
-#include <cassert>
 #include <QDebug>
 #include <chrono>
 
-std::ofstream LogManager::logFile("log.txt", std::ios_base::out);
+std::ofstream LogManager::m_LogFile(LOG_FILE_NAME, std::ios_base::out);
+bool LogManager::m_LoggingActive = false;
 
-LogManager::LogManager()
+void LogManager::ActivateLogging()
 {
-    if(logFile.is_open())
+    if(m_LogFile.is_open())
     {
         auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-        logFile << "\n\n<<<<<" << std::ctime(&currentTime) << ">>>>>\n\n";
+        m_LogFile << "\n\n<<<<<" << std::ctime(&currentTime) << ">>>>>\n\n";
     }
     else
     {
         qDebug() << "Cannot open log file";
         assert(false);
     }
+
+    m_LoggingActive = true;
 }
 
-void LogManager::LogToFile(std::string logMessage)
+void LogManager::LogToFile(std::string&& logMessage)
 {
-    logFile << logMessage << std::endl;
-    logFile.flush();
+    if(m_LoggingActive == true)
+    {
+        m_LogFile << logMessage << std::endl;
+        m_LogFile.flush();
+    }
 }
 

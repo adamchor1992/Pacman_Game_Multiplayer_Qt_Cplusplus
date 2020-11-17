@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
 
-    LogManager logManager;
+    LogManager::ActivateLogging();
 
     /*If no command line arguments were given*/
     if(argc == 1)
