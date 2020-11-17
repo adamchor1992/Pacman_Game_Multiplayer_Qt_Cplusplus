@@ -6,7 +6,6 @@
 class MovableCharacter
 {
 public:
-    MovableCharacter();
     void SetX(int x) {m_X = x;}
     void SetY(int y) {m_Y = y;}
     void SetDirection(Direction direction) {m_Direction = direction;}
@@ -16,8 +15,8 @@ public:
     Direction GetDirection() const {return m_Direction;}
     Direction GetNextDirection() const {return m_NextDirection;}
     void Move(Map const& map);
-
-    virtual void Reset() = 0;
+    void Reset();
+    virtual ~MovableCharacter() = 0;
 
 protected:
     int m_X, m_Y;

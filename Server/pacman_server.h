@@ -57,6 +57,8 @@ private:
 
     bool m_Player1Ready, m_Player2Ready;
 
+    GameState m_GameState;
+
     void ServerStartListening();
     void SetUpAndFillMap();
     void SetUpAndPlacePlayers();
@@ -67,22 +69,19 @@ private:
     void PrepareRestart();
     void CheckCollision();
     void ResetContainersAndVariables();
-    void ReadSignalFromClient(QTcpSocket *tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
+    void ReadSignalFromClient(QTcpSocket* tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
     void SetWinner(Character character);
     void SetGameState(GameState gameState) {m_GameState = gameState;}
-
-    GameState m_GameState;
+    void SendGameDataToClient(Client client);
+    void SendMessageToClient(Client client, QByteArray&& rawMessage);
+    void SendCommandToClient(Client client, QByteArray&& rawMessage);
 
 private slots:
     void AcceptConnection();
     void WaitForPlayerConnection();
     void WaitForPlayerReadySignals();
-
     void PackGameDataToSendToClients();
     void SendGameDataToClients();
-    void SendGameDataToClient(Client client);
-    void SendMessageToClient(Client client, QByteArray rawMessage);
-    void SendCommandToClient(Client client, QByteArray rawMessage);
     void GameTick();
     void ReadSignalFromClient1();
     void ReadSignalFromClient2();

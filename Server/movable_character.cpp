@@ -1,18 +1,13 @@
 #include "movable_character.h"
 
-MovableCharacter::MovableCharacter()
-{
-
-}
-
 void MovableCharacter::Move(Map const& map)
 {
-    QPoint point;
-
     int x = m_X;
     int y = m_Y;
     Direction direction = m_Direction;
     Direction nextDirection = m_NextDirection;
+
+    QPoint point;
 
     if(nextDirection != direction)
     {
@@ -128,4 +123,9 @@ void MovableCharacter::Move(Map const& map)
 
     SetX(x);
     SetY(y);
+}
+
+MovableCharacter::~MovableCharacter()
+{
+
 }

@@ -216,7 +216,7 @@ void PacmanServer::WaitForPlayerReadySignals()
     }
 }
 
-void PacmanServer::SendMessageToClient(Client client, QByteArray rawMessage)
+void PacmanServer::SendMessageToClient(Client client, QByteArray&& rawMessage)
 {
     qDebug() << "SendMessageToClient";
 
@@ -256,7 +256,7 @@ void PacmanServer::SendMessageToClient(Client client, QByteArray rawMessage)
     }
 }
 
-void PacmanServer::SendCommandToClient(Client client, QByteArray rawMessage)
+void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
 {
     qDebug() << "SendCommandToClient";
 
