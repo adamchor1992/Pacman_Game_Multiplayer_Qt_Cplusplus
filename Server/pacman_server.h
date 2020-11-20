@@ -47,7 +47,7 @@ private:
     FoodballManager m_FoodballManager;
     PowerballManager m_PowerballManager;
 
-    QByteArray m_dataPacketForClient;
+    //QByteArray m_dataPacketForClient;
     QByteArray m_CoordinatesOfObjectToRemove;
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;
@@ -72,7 +72,7 @@ private:
     void ReadSignalFromClient(QTcpSocket* tcpSocket, MovableCharacter& movableCharacter, bool& playerReady);
     void SetWinner(Character character);
     void SetGameState(GameState gameState) {m_GameState = gameState;}
-    void SendGameDataToClient(Client client);
+    void SendGameDataToClient(Client client, QByteArray const& dataPacket);
     void SendMessageToClient(Client client, QByteArray&& rawMessage);
     void SendCommandToClient(Client client, QByteArray&& rawMessage);
 
@@ -80,7 +80,6 @@ private slots:
     void AcceptConnection();
     void WaitForPlayerConnection();
     void WaitForPlayerReadySignals();
-    void PackGameDataToSendToClients();
     void SendGameDataToClients();
     void GameTick();
     void ReadSignalFromClient1();

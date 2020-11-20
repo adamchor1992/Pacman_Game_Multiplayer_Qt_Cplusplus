@@ -20,6 +20,7 @@ public:
     inline static const QString GHOST_SCARED_STATE = "GSS";
     inline static const QString OBJECT_TO_REMOVE = "O";
     inline static const QString PAYLOAD = "P";
+    inline static const QString SEQUENCE_NUMBER = "SN";
 
     enum PacketType
     {
@@ -28,16 +29,23 @@ public:
         COMMAND = 3
     };
 
-    static QByteArray Pack(int pacmanX,
-                           int pacmanY,
-                           Direction pacmanDirection,
-                           int ghostX,
-                           int ghostY,
-                           Direction ghostDirection,
-                           GameState gameState,
-                           GhostScaredState ghostScaredState,
-                           QByteArray coordinatesOfObjectToRemove);
+    static QByteArray& Pack(int pacmanX,
+                            int pacmanY,
+                            Direction pacmanDirection,
+                            int ghostX,
+                            int ghostY,
+                            Direction ghostDirection,
+                            GameState gameState,
+                            GhostScaredState ghostScaredState,
+                            QByteArray coordinatesOfObjectToRemove);
 
-    static QByteArray Pack(PacketType packetType,
-                           QByteArray& payload);
+    static QByteArray& Pack(PacketType packetType,
+                            QByteArray& payload);
+
+    static int GetSequenceNumber() {return m_SequenceNumber;}
+
+private:
+    static int m_SequenceNumber;
+
+    static QByteArray m_Data;
 };

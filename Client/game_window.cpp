@@ -238,7 +238,7 @@ void GameWindow::RemoveBall(QString& coordinatesOfObjectToBeRemoved)
 
 void GameWindow::ProcessGameDataPacket(QJsonObject& jsonObject)
 {
-    LogManager::LogToFile("ProcessGameDataPacket");
+    //LogManager::LogToFile("ProcessGameDataPacket");
 
     int pacmanX = jsonObject.value(DataPacket::PACMAN_X).toInt(-1);
     int pacmanY = jsonObject.value(DataPacket::PACMAN_Y).toInt(-1);
@@ -282,7 +282,7 @@ void GameWindow::ProcessMessagePacket(QJsonObject& jsonObject)
 
 void GameWindow::ProcessNewDataFromServer()
 {
-    LogManager::LogToFile("ProcessNewDataFromServer");
+    //LogManager::LogToFile("ProcessNewDataFromServer");
 
     QByteArray dataReceivedFromServer = m_ServerConnection.ReadDataFromServer();
 
@@ -293,7 +293,9 @@ void GameWindow::ProcessNewDataFromServer()
     QJsonDocument jsonDocument = QJsonDocument::fromJson(dataReceivedFromServer);
     QJsonObject jsonObject = jsonDocument.object();
 
-    LogManager::LogToFile("JSON Type: " + std::to_string(jsonObject.value(DataPacket::TYPE).toInt(-1)));
+    //LogManager::LogToFile("JSON Type: " + std::to_string(jsonObject.value(DataPacket::TYPE).toInt(-1)));
+
+    LogManager::LogToFile("SN: " + std::to_string(jsonObject.value(DataPacket::SEQUENCE_NUMBER).toInt(-1)));
 
     if(jsonObject.value(DataPacket::TYPE).toInt(-1) == static_cast<int>(DataPacket::GAME_DATA))
     {
@@ -370,8 +372,11 @@ void GameWindow::Updater()
 
 void GameWindow::SetGameState(GameState gameState)
 {
-    LogManager::LogToFile("Setting game state to: " + std::to_string(static_cast<int>(gameState)));
-    m_GameState = gameState;
+    if(gameState != m_GameState)
+    {
+        LogManager::LogToFile("Setting game state to: " + std::to_string(static_cast<int>(gameState)));
+        m_GameState = gameState;
+    }
 }
 
 GameWindow::~GameWindow()

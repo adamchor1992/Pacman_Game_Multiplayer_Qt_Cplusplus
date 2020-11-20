@@ -3,7 +3,10 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 
-QByteArray DataPacket::Pack(int pacmanX,
+int DataPacket::m_SequenceNumber = 1;
+QByteArray DataPacket::m_Data;
+
+QByteArray& DataPacket::Pack(int pacmanX,
                             int pacmanY,
                             Direction pacmanDirection,
                             int ghostX,
@@ -24,15 +27,20 @@ QByteArray DataPacket::Pack(int pacmanX,
         {GHOST_DIRECTION, static_cast<int>(ghostDirection)},
         {GAME_STATE, static_cast<int>(gameState)},
         {GHOST_SCARED_STATE, static_cast<int>(ghostScaredState)},
-        {OBJECT_TO_REMOVE, coordinatesOfObjectToRemove.toStdString().c_str()}
+        {OBJECT_TO_REMOVE, coordinatesOfObjectToRemove.toStdString().c_str()},
+        {SEQUENCE_NUMBER, m_SequenceNumber}
     };
 
     QJsonDocument dataPacketJsonDocument(dataPacketJsonObject);
 
-    return (dataPacketJsonDocument.toJson(QJsonDocument::JsonFormat::Compact) + "\n");
+    m_Data = dataPacketJsonDocument.toJson(QJsonDocument::JsonFormat::Compact) + "\n";
+
+    ++m_SequenceNumber;
+
+    return m_Data;
 }
 
-QByteArray DataPacket::Pack(PacketType packetType, QByteArray& payload)
+QByteArray& DataPacket::Pack(PacketType packetType, QByteArray& payload)
 {
     if((packetType != PacketType::COMMAND) && (packetType != PacketType::MESSAGE))
     {
@@ -42,10 +50,15 @@ QByteArray DataPacket::Pack(PacketType packetType, QByteArray& payload)
     QJsonObject data
     {
         {TYPE, static_cast<int>(packetType)},
-        {PAYLOAD, QJsonValue(payload.toStdString().c_str())}
+        {PAYLOAD, QJsonValue(payload.toStdString().c_str())},
+        {SEQUENCE_NUMBER, m_SequenceNumber}
     };
 
     QJsonDocument dataDocument(data);
 
-    return (dataDocument.toJson(QJsonDocument::JsonFormat::Compact) + "\n");
+    m_Data = dataDocument.toJson(QJsonDocument::JsonFormat::Compact) + "\n";
+
+    ++m_SequenceNumber;
+
+    return m_Data;
 }

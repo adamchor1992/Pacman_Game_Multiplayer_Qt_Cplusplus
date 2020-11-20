@@ -237,11 +237,11 @@ void PacmanServer::SendMessageToClient(Client client, QByteArray&& rawMessage)
         assert(false);
     }
 
-    QByteArray packedMessage = DataPacket::Pack(DataPacket::MESSAGE, rawMessage);
+    QByteArray const& packedMessage = DataPacket::Pack(DataPacket::MESSAGE, rawMessage);
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(packedMessage, packedMessage .size());
+        tcpSocket->write(packedMessage);
     }
     else
     {
@@ -277,11 +277,11 @@ void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
         assert(false);
     }
 
-    QByteArray packedMessage = DataPacket::Pack(DataPacket::COMMAND, rawMessage);
+    QByteArray const& packedMessage = DataPacket::Pack(DataPacket::COMMAND, rawMessage);
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(packedMessage, packedMessage .size());
+        tcpSocket->write(packedMessage);
     }
     else
     {
@@ -298,12 +298,23 @@ void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
 
 void PacmanServer::SendGameDataToClients()
 {
-    PackGameDataToSendToClients();
-    SendGameDataToClient(CLIENT1);
-    SendGameDataToClient(CLIENT2);
+    QByteArray const& dataPacketForClient = DataPacket::Pack(m_Pacman.GetX(),
+                                                       m_Pacman.GetY(),
+                                                       m_Pacman.GetDirection(),
+                                                       m_Ghost.GetX(),
+                                                       m_Ghost.GetY(),
+                                                       m_Ghost.GetDirection(),
+                                                       m_GameState,
+                                                       m_Ghost.GetScaredState(),
+                                                       m_CoordinatesOfObjectToRemove);
+
+    SendGameDataToClient(CLIENT1, dataPacketForClient);
+    SendGameDataToClient(CLIENT2, dataPacketForClient);
+
+    qDebug() << "SN: " << DataPacket::GetSequenceNumber();
 }
 
-void PacmanServer::SendGameDataToClient(Client client)
+void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPacket)
 {
     QTcpSocket* tcpSocket = nullptr;
 
@@ -322,7 +333,7 @@ void PacmanServer::SendGameDataToClient(Client client)
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(m_dataPacketForClient, m_dataPacketForClient.size());
+        tcpSocket->write(dataPacket, dataPacket.size());
     }
     else
     {
@@ -335,19 +346,6 @@ void PacmanServer::SendGameDataToClient(Client client)
 
         ++delay;
     }
-}
-
-void PacmanServer::PackGameDataToSendToClients()
-{
-    m_dataPacketForClient = DataPacket::Pack(m_Pacman.GetX(),
-                                             m_Pacman.GetY(),
-                                             m_Pacman.GetDirection(),
-                                             m_Ghost.GetX(),
-                                             m_Ghost.GetY(),
-                                             m_Ghost.GetDirection(),
-                                             m_GameState,
-                                             m_Ghost.GetScaredState(),
-                                             m_CoordinatesOfObjectToRemove);
 }
 
 void PacmanServer::CheckCollision()

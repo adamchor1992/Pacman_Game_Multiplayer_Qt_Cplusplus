@@ -5,8 +5,6 @@
 
 ServerConnection::ServerConnection()
 {
-    LogManager::LogToFile("ServerConnection constructor invoked");
-
     connect(&m_ServerConnectionSocket, &QTcpSocket::connected, this, &ServerConnection::Connected, Qt::UniqueConnection);
     connect(&m_ServerConnectionSocket, &QTcpSocket::disconnected, this, &ServerConnection::Disconnected, Qt::UniqueConnection);
     connect(&m_ServerConnectionSocket, &QTcpSocket::readyRead, this, &ServerConnection::NewDataFromServerAvailable, Qt::UniqueConnection);
@@ -35,7 +33,7 @@ void ServerConnection::SendPressedKeyToServer(char controlKey)
 
 QByteArray ServerConnection::ReadDataFromServer()
 {
-    LogManager::LogToFile("ReadDataFromServer invoked");
+    //LogManager::LogToFile("ReadDataFromServer");
 
     return m_ServerConnectionSocket.readLine();
 }
