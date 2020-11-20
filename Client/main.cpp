@@ -4,11 +4,11 @@
 #include <fstream>
 #include "../common/log_manager.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
 
-    LogManager::ActivateLogging();
+    LogManager::ActivateLogging(argv[1]);
 
     /*If no command line arguments were given*/
     if(argc == 1)

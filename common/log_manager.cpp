@@ -2,11 +2,20 @@
 #include <QDebug>
 #include <chrono>
 
-std::ofstream LogManager::m_LogFile(LOG_FILE_NAME, std::ios_base::out);
+std::ofstream LogManager::m_LogFile;
 bool LogManager::m_LoggingActive = false;
 
-void LogManager::ActivateLogging()
+void LogManager::ActivateLogging(QString fileName)
 {
+    if(fileName.isEmpty())
+    {
+        m_LogFile.open(DEFAULT_LOG_FILE_NAME, std::ios_base::out);
+    }
+    else
+    {
+        m_LogFile.open(fileName.toStdString(), std::ios_base::out);
+    }
+
     if(m_LogFile.is_open())
     {
         auto currentTime = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
