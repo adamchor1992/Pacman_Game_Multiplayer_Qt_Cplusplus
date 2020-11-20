@@ -2,6 +2,7 @@
 
 #include <QVector>
 #include <QPoint>
+#include "map.h"
 
 class FoodballManager
 {
@@ -10,11 +11,5 @@ public:
     static const int HEIGHT = 7;
 
     FoodballManager();
-    QVector<QPoint> GetFoodballPositions() const {return m_FoodballPositions;}
-
-private:
-    int m_FoodballCount;
-    QVector<QPoint> m_FoodballPositions;
-    QVector<QPoint> m_PacmanMapForReference;
-    void CreateFoodballPositionsVector();
+    QVector<QPoint> GenerateFoodballPositions(const Map& map);
 };

@@ -39,8 +39,8 @@ void PacmanServer::SetUpAndFillMap()
 {
     qDebug() << "SetUpAndFillMap";
 
-    m_RemainingFoodballPositions = m_FoodballManager.GetFoodballPositions();
-    m_RemainingPowerballPositions = m_PowerballManager.GetPowerballPositions();
+    m_RemainingFoodballPositions = m_FoodballManager.GenerateFoodballPositions(m_Map);
+    m_RemainingPowerballPositions = m_PowerballManager.GeneratePowerballPositions();
 }
 
 void PacmanServer::SetUpAndPlacePlayers()
@@ -111,8 +111,8 @@ void PacmanServer::ResetContainersAndVariables()
     m_Pacman.Reset();
     m_Ghost.Reset();
 
-    m_RemainingFoodballPositions = m_FoodballManager.GetFoodballPositions();
-    m_RemainingPowerballPositions = m_PowerballManager.GetPowerballPositions();
+    m_RemainingFoodballPositions = m_FoodballManager.GenerateFoodballPositions(m_Map);
+    m_RemainingPowerballPositions = m_PowerballManager.GeneratePowerballPositions();
 }
 
 void PacmanServer::PrepareRestart()

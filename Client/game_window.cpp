@@ -7,8 +7,8 @@
 GameWindow::GameWindow(QWidget *parent, QHostAddress address) :
     QMainWindow(parent),
     ui(new Ui::Game_window),
-    m_FoodballPositions(m_FoodBallManager.GetFoodballPositions()),
-    m_PowerballPositions(m_PowerballManager.GetPowerballPositions())
+    m_FoodballPositions(m_FoodBallManager.GenerateFoodballPositions(m_Map)),
+    m_PowerballPositions(m_PowerballManager.GeneratePowerballPositions())
 {
     ui->setupUi(this);
 
