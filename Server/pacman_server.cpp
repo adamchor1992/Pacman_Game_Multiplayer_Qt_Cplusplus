@@ -1,5 +1,6 @@
 #include "pacman_server.h"
 #include "../common/data_packet.h"
+#include "../common/log_manager.h"
 
 PacmanServer::PacmanServer()
 {
@@ -299,19 +300,19 @@ void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
 void PacmanServer::SendGameDataToClients()
 {
     QByteArray const& dataPacketForClient = DataPacket::Pack(m_Pacman.GetX(),
-                                                       m_Pacman.GetY(),
-                                                       m_Pacman.GetDirection(),
-                                                       m_Ghost.GetX(),
-                                                       m_Ghost.GetY(),
-                                                       m_Ghost.GetDirection(),
-                                                       m_GameState,
-                                                       m_Ghost.GetScaredState(),
-                                                       m_CoordinatesOfObjectToRemove);
+                                                             m_Pacman.GetY(),
+                                                             m_Pacman.GetDirection(),
+                                                             m_Ghost.GetX(),
+                                                             m_Ghost.GetY(),
+                                                             m_Ghost.GetDirection(),
+                                                             m_GameState,
+                                                             m_Ghost.GetScaredState(),
+                                                             m_CoordinatesOfObjectToRemove);
 
     SendGameDataToClient(CLIENT1, dataPacketForClient);
     SendGameDataToClient(CLIENT2, dataPacketForClient);
 
-    qDebug() << "SN: " << DataPacket::GetSequenceNumber();
+    LogManager::LogToFile("SN: " + std::to_string(DataPacket::GetSequenceNumber()));
 }
 
 void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPacket)

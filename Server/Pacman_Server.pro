@@ -29,6 +29,7 @@ SOURCES += \
     ../common/map.cpp \
     ../common/foodball_manager.cpp \
     ../common/powerball_manager.cpp \
+    ../common/log_manager.cpp \
     ../common/data_packet.cpp
 
 HEADERS += \
@@ -40,4 +41,5 @@ HEADERS += \
     ../common/map.h \
     ../common/foodball_manager.h \
     ../common/powerball_manager.h \
+    ../common/log_manager.h \
     ../common/data_packet.h
