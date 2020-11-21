@@ -21,8 +21,8 @@ public:
 
 private:
     const int PORT_NUMBER = 5000;
-    const int GAME_TICK_TIMEOUT = 4;
-    const int SEND_COORDINATES_TIMEOUT = 1;
+    const int GAME_TICK_TIMEOUT = 3;
+    const int SEND_COORDINATES_TIMEOUT = 5;
     const int PLAYER_READY_TIMEOUT = 2000;
     const int PLAYER_CONNECTION_TIMEOUT = 3000;
 
@@ -47,7 +47,6 @@ private:
     FoodballManager m_FoodballManager;
     PowerballManager m_PowerballManager;
 
-    //QByteArray m_dataPacketForClient;
     QByteArray m_CoordinatesOfObjectToRemove;
     QByteArray m_GameStatePacked;
     QByteArray m_IsGhostScaredWhitePacked;

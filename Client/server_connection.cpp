@@ -33,7 +33,7 @@ void ServerConnection::SendPressedKeyToServer(char controlKey)
 
 QByteArray ServerConnection::ReadDataFromServer()
 {
-    //LogManager::LogToFile("ReadDataFromServer");
+    LogManager::LogToFile("Bytes available: " + std::to_string(m_ServerConnectionSocket.bytesAvailable()));
 
     return m_ServerConnectionSocket.readLine();
 }

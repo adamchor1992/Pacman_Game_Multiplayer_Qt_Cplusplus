@@ -241,7 +241,7 @@ void PacmanServer::SendMessageToClient(Client client, QByteArray&& rawMessage)
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(packedMessage);
+        tcpSocket->write(packedMessage, packedMessage.size());
     }
     else
     {
@@ -281,7 +281,7 @@ void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(packedMessage);
+        tcpSocket->write(packedMessage, packedMessage.size());
     }
     else
     {
