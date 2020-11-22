@@ -6,6 +6,8 @@
 class MovableCharacter
 {
 public:
+    static const int RADIUS = 15;
+
     void SetX(int x) {m_X = x;}
     void SetY(int y) {m_Y = y;}
     void SetDirection(Direction direction) {m_Direction = direction;}

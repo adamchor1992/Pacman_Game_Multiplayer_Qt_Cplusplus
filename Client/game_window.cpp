@@ -56,14 +56,14 @@ void GameWindow::PopulateMap()
     {
         /*Populate table of graphical items in following way (Key : Value) = (QString - "x,y" : pointer to QGraphicsEllipseItem at point ("x,y"))*/
         m_FoodballGraphicalItemsTableMap.insert(QString(QString::number(m_FoodballPositions.at(i).x()) + "," + QString::number(m_FoodballPositions.at(i).y())),
-                                                m_Scene.addEllipse(m_FoodballPositions.at(i).x(), m_FoodballPositions.at(i).y(), FoodballManager::WIDTH, FoodballManager::HEIGHT, QPen(Qt::NoPen), QBrush(Qt::white)));
+                                                m_Scene.addEllipse(m_FoodballPositions.at(i).x(), m_FoodballPositions.at(i).y(), FoodballManager::DIAMETER, FoodballManager::DIAMETER, QPen(Qt::NoPen), QBrush(Qt::white)));
     }
 
     for(int i = 0; i < powerballItemsCount; i++)
     {
         /*Populate table of graphical items in following way (Key : Value) = (QString - "x,y" : pointer to QGraphicsEllipseItem at point ("x,y"))*/
         m_PowerballGraphicalItemsTableMap.insert(QString(QString::number(m_PowerballPositions.at(i).x()) + "," + QString::number(m_PowerballPositions.at(i).y())),
-                                                 m_Scene.addEllipse(m_PowerballPositions.at(i).x() - 5, m_PowerballPositions.at(i).y() - 8, PowerballManager::WIDTH, PowerballManager::HEIGHT, QPen(Qt::NoPen), QBrush(Qt::white)));
+                                                 m_Scene.addEllipse(m_PowerballPositions.at(i).x() - 5, m_PowerballPositions.at(i).y() - 8, PowerballManager::DIAMETER, PowerballManager::DIAMETER, QPen(Qt::NoPen), QBrush(Qt::white)));
     }
 
     assert(foodballItemsCount == m_FoodballGraphicalItemsTableMap.size());

@@ -351,7 +351,14 @@ void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPac
 
 void PacmanServer::CheckCollision()
 {
-    if((m_Pacman.GetX() == m_Ghost.GetX()) && (m_Pacman.GetY() == m_Ghost.GetY()))
+    const int PACMAN_X = m_Pacman.GetX();
+    const int PACMAN_Y = m_Pacman.GetY();
+    const int GHOST_X = m_Ghost.GetX();
+    const int GHOST_Y = m_Ghost.GetY();
+
+    auto AreCirclesIntersecting = [](int x1, int y1, int x2, int y2, int radius){return ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) < (4 * radius * radius);};
+
+    if(AreCirclesIntersecting(PACMAN_X, PACMAN_Y, GHOST_X, GHOST_Y, MovableCharacter::RADIUS))
     {
         if(m_Ghost.GetScaredState() != GhostScaredState::NO_SCARED)
         {

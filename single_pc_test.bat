@@ -1,5 +1,5 @@
 cd Server/executable
-start Pacman_Server.exe
+start Pacman_Server.exe single_pc_test_server.txt
 
 timeout 1
 

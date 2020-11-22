@@ -6,8 +6,7 @@
 class PowerballManager
 {
 public:
-    static const int WIDTH = 15;
-    static const int HEIGHT = 15;
+    static const int DIAMETER = 15;
 
     PowerballManager();
     QVector<QPoint> GeneratePowerballPositions();
