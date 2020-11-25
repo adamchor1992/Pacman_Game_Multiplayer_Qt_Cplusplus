@@ -37,6 +37,7 @@ private:
     const int SCENE_HEIGHT = 740;
     const int UPDATER_TIMEOUT = 6;
     const int SCENE_UPDATE_TIMEOUT = 10;
+    const int PROCESS_NEW_DATA_TIMEOUT = 5;
 
     Ui::Game_window* ui;
 
@@ -46,6 +47,7 @@ private:
     QTimer m_SceneUpdateTimer;
     QTimer m_WaitForRestartKeyTimer;
     QTimer m_WaitForGameRestartTimer;
+    QTimer m_ProcessNewDataTimer;
 
     FoodballManager m_FoodBallManager;
     PowerballManager m_PowerballManager;

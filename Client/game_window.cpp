@@ -77,9 +77,10 @@ void GameWindow::PrepareGameToStart()
     LogManager::LogToFile("PrepareGameToStart");
 
     connect(&m_UpdaterTimer, &QTimer::timeout, this, &GameWindow::Updater, Qt::UniqueConnection);
-    connect(&m_ServerConnection, &ServerConnection::NewDataFromServerAvailable, this, &GameWindow::ProcessNewDataFromServer, Qt::UniqueConnection);
+    connect(&m_ProcessNewDataTimer, &QTimer::timeout, this, &GameWindow::ProcessNewDataFromServer, Qt::UniqueConnection);
 
     m_UpdaterTimer.start(UPDATER_TIMEOUT);
+    m_ProcessNewDataTimer.start(PROCESS_NEW_DATA_TIMEOUT);
 }
 
 void GameWindow::HideSceneItems()
@@ -284,7 +285,13 @@ void GameWindow::ProcessNewDataFromServer()
 {
     //LogManager::LogToFile("ProcessNewDataFromServer");
 
-    QByteArray dataReceivedFromServer = m_ServerConnection.ReadDataFromServer();
+    QByteArray dataReceivedFromServer = m_ServerConnection.GetNextPacketFromServer();
+
+    if(dataReceivedFromServer.isEmpty())
+    {
+        LogManager::LogToFile("NO NEW DATA FROM SERVER, RETURNING");
+        return;
+    }
 
     LogManager::LogToFile("\nData received from server<START>: " + std::to_string(dataReceivedFromServer.size()) + " bytes>>>>>");
     LogManager::LogToFile(dataReceivedFromServer.toStdString());
