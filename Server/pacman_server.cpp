@@ -7,7 +7,7 @@ PacmanServer::PacmanServer()
     qDebug() << "PacmanServer";
 
     /*Setting up temporary socket*/
-    m_pClientConnectionSocket1 = &m_TempSocket;
+    m_pClientConnectionTcpSocket1 = &m_TempTcpSocket;
 
     ServerStartListening();
 
@@ -136,13 +136,13 @@ void PacmanServer::AcceptConnection()
     qDebug() << "AcceptConnection";
 
     /*If there is new connection*/
-    if(m_pClientConnectionSocket1->state() == QAbstractSocket::UnconnectedState)
+    if(m_pClientConnectionTcpSocket1->state() == QAbstractSocket::UnconnectedState)
     {
-        m_pClientConnectionSocket1 = nextPendingConnection();
+        m_pClientConnectionTcpSocket1 = nextPendingConnection();
 
-        connect(m_pClientConnectionSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
-        connect(m_pClientConnectionSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
-        connect(m_pClientConnectionSocket1, &QTcpSocket::readyRead, this, &PacmanServer::ReadSignalFromClient1, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket1, &QTcpSocket::readyRead, this, &PacmanServer::ReadSignalFromClient1, Qt::UniqueConnection);
 
         /*Set up timer waiting for players signals*/
         connect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection, Qt::UniqueConnection);
@@ -153,11 +153,11 @@ void PacmanServer::AcceptConnection()
     }
     else
     {
-        m_pClientConnectionSocket2 = nextPendingConnection();
+        m_pClientConnectionTcpSocket2 = nextPendingConnection();
 
-        connect(m_pClientConnectionSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
-        connect(m_pClientConnectionSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
-        connect(m_pClientConnectionSocket2, &QTcpSocket::readyRead, this, &PacmanServer::ReadSignalFromClient2, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
+        connect(m_pClientConnectionTcpSocket2, &QTcpSocket::readyRead, this, &PacmanServer::ReadSignalFromClient2, Qt::UniqueConnection);
 
         m_WaitForPlayerConnectionTimer.stop();
         disconnect(&m_WaitForPlayerConnectionTimer, &QTimer::timeout, this, &PacmanServer::WaitForPlayerConnection);
@@ -226,12 +226,12 @@ void PacmanServer::SendMessageToClient(Client client, QByteArray&& rawMessage)
     if(client == CLIENT1)
     {
         qDebug() << "Send message to client 1: " << rawMessage;
-        tcpSocket = m_pClientConnectionSocket1;
+        tcpSocket = m_pClientConnectionTcpSocket1;
     }
     else if(client == CLIENT2)
     {
         qDebug() << "Send message to client 2: " << rawMessage;
-        tcpSocket = m_pClientConnectionSocket2;
+        tcpSocket = m_pClientConnectionTcpSocket2;
     }
     else
     {
@@ -266,12 +266,12 @@ void PacmanServer::SendCommandToClient(Client client, QByteArray&& rawMessage)
     if(client == CLIENT1)
     {
         qDebug() << "Send command to client 1: " << rawMessage;
-        tcpSocket = m_pClientConnectionSocket1;
+        tcpSocket = m_pClientConnectionTcpSocket1;
     }
     else if(client == CLIENT2)
     {
         qDebug() << "Send command to client 2: " << rawMessage;
-        tcpSocket = m_pClientConnectionSocket2;
+        tcpSocket = m_pClientConnectionTcpSocket2;
     }
     else
     {
@@ -318,14 +318,20 @@ void PacmanServer::SendGameDataToClients()
 void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPacket)
 {
     QTcpSocket* tcpSocket = nullptr;
+    QUdpSocket* udpSocket = nullptr;
+    QHostAddress hostAddress;
 
     if(client == CLIENT1)
     {
-        tcpSocket = m_pClientConnectionSocket1;
+        tcpSocket = m_pClientConnectionTcpSocket1;
+        udpSocket = &m_ClientConnectionUdpSocket1;
+        hostAddress.setAddress(m_pClientConnectionTcpSocket1->peerAddress().toString());
     }
     else if(client == CLIENT2)
     {
-        tcpSocket = m_pClientConnectionSocket2;
+        tcpSocket = m_pClientConnectionTcpSocket2;
+        udpSocket = &m_ClientConnectionUdpSocket2;
+        hostAddress.setAddress(m_pClientConnectionTcpSocket2->peerAddress().toString());
     }
     else
     {
@@ -335,6 +341,7 @@ void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPac
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         tcpSocket->write(dataPacket, dataPacket.size());
+        udpSocket->writeDatagram(dataPacket, hostAddress, PORT_NUMBER);
     }
     else
     {
@@ -494,7 +501,7 @@ void PacmanServer::ReadSignalFromClient1()
 {
     qDebug() << "ReadSignalFromClient1";
 
-    ReadSignalFromClient(m_pClientConnectionSocket1, m_Pacman, m_Player1Ready);
+    ReadSignalFromClient(m_pClientConnectionTcpSocket1, m_Pacman, m_Player1Ready);
 }
 
 /*Socket 2 wrapper*/
@@ -502,7 +509,7 @@ void PacmanServer::ReadSignalFromClient2()
 {
     qDebug() << "ReadSignalFromClient2";
 
-    ReadSignalFromClient(m_pClientConnectionSocket2, m_Ghost, m_Player2Ready);
+    ReadSignalFromClient(m_pClientConnectionTcpSocket2, m_Ghost, m_Player2Ready);
 }
 
 void PacmanServer::connected1()

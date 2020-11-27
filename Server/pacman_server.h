@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QTcpSocket>
 #include <QTcpServer>
+#include <QUdpSocket>
 #include <QDebug>
 
 #include "pacman.h"
@@ -32,9 +33,11 @@ private:
         CLIENT2 = 2
     };
 
-    QTcpSocket* m_pClientConnectionSocket1;
-    QTcpSocket* m_pClientConnectionSocket2;
-    QTcpSocket m_TempSocket;
+    QTcpSocket m_TempTcpSocket;
+    QTcpSocket* m_pClientConnectionTcpSocket1;
+    QTcpSocket* m_pClientConnectionTcpSocket2;
+    QUdpSocket m_ClientConnectionUdpSocket1;
+    QUdpSocket m_ClientConnectionUdpSocket2;
 
     QTimer m_WaitForPlayerConnectionTimer;
     QTimer m_WaitForPlayerReadySignalTimer;

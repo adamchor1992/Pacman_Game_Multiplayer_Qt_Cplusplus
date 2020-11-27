@@ -1,6 +1,6 @@
 set QMAKE_PATH=C:\Qt\5.15.0\mingw81_64\bin
 set MINGW32_MAKE_PATH=C:\Qt\Tools\mingw810_64\bin
-set REPO_PATH=C:\Users\Adam\Desktop\repozytoria\PacmanMultiplayer_Qt_Cplusplus
+set REPO_PATH=C:\Users\Adam\Desktop\repozytoria\PacmanMultiplayer
 set PROCESSOR_COUNT=24
 
 rem DELETE EXECUTABLES
