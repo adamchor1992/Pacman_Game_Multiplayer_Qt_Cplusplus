@@ -23,7 +23,7 @@ public:
 private:
     const int PORT_NUMBER = 5000;
     const int GAME_TICK_TIMEOUT = 3;
-    const int SEND_COORDINATES_TIMEOUT = 5;
+    const int SEND_COORDINATES_TIMEOUT = 16; // 60Hz display
     const int PLAYER_READY_TIMEOUT = 2000;
     const int PLAYER_CONNECTION_TIMEOUT = 3000;
 

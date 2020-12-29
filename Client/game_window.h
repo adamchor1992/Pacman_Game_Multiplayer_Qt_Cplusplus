@@ -37,7 +37,7 @@ private:
     const int SCENE_HEIGHT = 740;
     const int UPDATER_TIMEOUT = 6;
     const int SCENE_UPDATE_TIMEOUT = 10;
-    const int PROCESS_NEW_DATA_TIMEOUT = 5;
+    const int PROCESS_NEW_DATA_TIMEOUT = 1;
 
     Ui::Game_window* ui;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QTcpSocket>
+#include <QUdpSocket>
 #include <QHostAddress>
 #include <QQueue>
 #include <chrono>
@@ -20,7 +21,8 @@ public:
 private:
     const int CONNECTION_TIMEOUT = 500;
 
-    QTcpSocket m_ServerConnectionSocket;
+    QTcpSocket m_ServerConnectionTcpSocket;
+    QUdpSocket m_ServerConnectionUdpSocket;
 
     std::chrono::steady_clock::time_point lastCall;
 
@@ -29,6 +31,7 @@ private:
 private slots:
     void Connected();
     void Disconnected();
-    void ReadDataFromServer();
+    void ReadTcpDataFromServer();
+    void ReadUdpDataFromServer();
     void ReadyReadInvoked();
 };

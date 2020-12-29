@@ -139,6 +139,7 @@ void PacmanServer::AcceptConnection()
     if(m_pClientConnectionTcpSocket1->state() == QAbstractSocket::UnconnectedState)
     {
         m_pClientConnectionTcpSocket1 = nextPendingConnection();
+        m_ClientConnectionUdpSocket1.bind(m_pClientConnectionTcpSocket1->peerAddress(), PORT_NUMBER);
 
         connect(m_pClientConnectionTcpSocket1, &QTcpSocket::connected, this, &PacmanServer::connected1, Qt::UniqueConnection);
         connect(m_pClientConnectionTcpSocket1, &QTcpSocket::disconnected, this, &PacmanServer::disconnected1, Qt::UniqueConnection);
@@ -154,6 +155,7 @@ void PacmanServer::AcceptConnection()
     else
     {
         m_pClientConnectionTcpSocket2 = nextPendingConnection();
+        m_ClientConnectionUdpSocket2.bind(m_pClientConnectionTcpSocket2->peerAddress(), PORT_NUMBER);
 
         connect(m_pClientConnectionTcpSocket2, &QTcpSocket::connected, this, &PacmanServer::connected2, Qt::UniqueConnection);
         connect(m_pClientConnectionTcpSocket2, &QTcpSocket::disconnected, this, &PacmanServer::disconnected2, Qt::UniqueConnection);
@@ -340,7 +342,6 @@ void PacmanServer::SendGameDataToClient(Client client, QByteArray const& dataPac
 
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        tcpSocket->write(dataPacket, dataPacket.size());
         udpSocket->writeDatagram(dataPacket, hostAddress, PORT_NUMBER);
     }
     else
